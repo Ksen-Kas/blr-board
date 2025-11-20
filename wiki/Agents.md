@@ -1,4 +1,4 @@
-# Agents
+# Base Agents 
 
 ## Base Agents (ядра)
 - **CLS_Core v2.0**
