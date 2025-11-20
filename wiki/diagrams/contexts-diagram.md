@@ -9,10 +9,10 @@ graph TD
 
   CtxMau --> Indie_MAU[Indie_Operator_MAU]
   CtxMau --> MauAgent[MAU Agent]
-  CtxMau --> Alina[Алина (Strategist)]
+  CtxMau --> Alina["Алина (Strategist)"]
 
   CtxMia --> MiaVoice[Mia Voice Core]
-  MiaVoice --> Mia_Voice_Operator[Mia_Voice_Operator (Айра)]
+  MiaVoice --> Mia_Voice_Operator["Mia_Voice_Operator (Айра)"]
 
   CtxAndrey --> CLS_Core[CLS_Core v2.0]
   CLS_Core --> CLS_Andrey[CLS_Andrey]

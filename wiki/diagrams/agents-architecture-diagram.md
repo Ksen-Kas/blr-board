@@ -8,22 +8,22 @@ graph LR
     SnapshotLayer[Snapshot Layer]
   end
 
-  subgraph BaseAgents[Base Agents]
+  subgraph BaseAgents
     CLS_Core[CLS_Core v2.0]
     Indie_Core[Indie_Operator_Core]
-    VIC[VIC (Navigator v2.1)]
-    Platon[Platon (Tech-Narrative)]
+    VIC[VIC v2.1]
+    Platon[Platon]
     MiaVoice[Mia Voice Core]
   end
 
-  subgraph InstanceAgents[Instance Agents]
+  subgraph InstanceAgents
     CLS_Andrey[CLS_Andrey]
     Indie_MAU[Indie_Operator_MAU]
-    Mia_Voice_Operator[Mia_Voice_Operator (Айра)]
-    Alina[Алина (Strategist)]
+    Mia_Voice_Operator["Mia_Voice_Operator (Айра)"]
+    Alina["Алина (Strategist)"]
   end
 
-  subgraph ContextAgents[Context-bound Agents]
+  subgraph ContextAgents
     MauAgent[MAU Agent]
     MiaAgent[Mia Agent]
     WeeklyOp[Weekly Cycle Operator]
@@ -32,6 +32,7 @@ graph LR
 
   CoreHub --> NAVI
   CoreHub --> SnapshotLayer
+
   CoreHub --> CLS_Core
   CoreHub --> Indie_Core
   CoreHub --> VIC

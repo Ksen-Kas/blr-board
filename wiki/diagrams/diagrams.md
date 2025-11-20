@@ -1,5 +1,10 @@
 # Diagrams Overview
 
-Includes links to architecture diagrams for the CORE system.
+This directory contains Mermaid diagrams for the CORE system.
 
-See individual files in this directory.
+- core-architecture-diagram.md
+- agents-architecture-diagram.md
+- contexts-diagram.md
+- modes-protocols-diagram.md
+
+Open each file on GitHub to see the rendered diagram.
