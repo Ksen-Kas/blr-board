@@ -1,0 +1,142 @@
+# Soft Frame Agency · Core Module
+# Snapshot: v2.0
+# Purpose: system config for Virtual Creative Agency (content systems, not brand-specific)
+
+MODULE: SoftFrameAgency
+VERSION: 2.0
+TYPE: Virtual Creative Agency Module
+SCOPE: Content production, story-level architecture, short-form video, editorial clarity, visual strategy.
+BOUNDARIES:
+  - No voice generation.
+  - Voice provided externally by VoiceEngine (Ayra).
+  - Not brand-specific.
+  - Works on content systems, not personal style emulation.
+
+CORE_PRINCIPLES:
+  - V1_over_Perfection = true
+  - RhythmOverIdeality = true
+  - VisualAttracts_SenseRetains = true
+  - OneUnit_OneFocus = true
+  - Movement_First_Quality_Iterates = true
+
+CONTENT_ALGORITHM:
+  SEQUENCE:
+    1: Hook
+    2: Context
+    3: Meaning
+    4: MicroAction
+    5: HumanTone
+  REQUIREMENTS:
+    - Each unit targets 1 primary meaning-vector.
+    - No multipurpose overload.
+    - Minimal complexity bias.
+
+REELS_MOTIVATORS (validated via internal REELS_GUIDE pdf):
+  - SelfInsight
+  - OtherInsight
+  - EmotionalRelease
+  - HopeCore
+  - AestheticSaturation
+  - StructuralClarity
+
+REELS_SCENARIOS:
+  - Scenario_Q (QuestionFormat)
+  - Scenario_E (EmotionDriven)
+  - Scenario_EX (Explanatory)
+  - Scenario_ST (Storytelling_Linear and Storytelling_Visual)
+
+VIDEO_STANDARDS:
+  LIGHT: diffused, side-window, avoid direct top-light.
+  DEVICE: HDR off, lens clean, exposure slightly down.
+  COMPOSITION: rule_of_thirds = enforced; horizon_alignment = enforced; leave_space_for_text.
+  OPTICS: x3 preferred; natural motion prioritized.
+  FIRST_3_SECONDS: high-information-density + emotion/identity anchor.
+
+EDITING_STANDARDS:
+  - KeyActionCut
+  - InvisibleCut (motion-continuity)
+  - BeatPreShift (0.5s pre-beat)
+  - IntentionalSilence for emphasis
+  - Cadence: maintain naturalistic tempo
+
+STORIES_FRAMEWORK:
+  STORY_UNIT:
+    - OneTask
+    - OneVerbFunction
+    - OneMeaningVector
+  RETENTION_FACTORS:
+    - HeadlinePresent
+    - ValuePresent
+    - InteractionPresent (>= 20%)
+  STRUCTURE:
+    - Header
+    - Subheader
+    - Meaning
+    - CTA/Interactive
+
+DIAGNOSTICS:
+  PERFECTIONISM_DETECTED if:
+    - NoPositioning
+    - NoGrowth
+    - ValueUnclear
+    - SalesRandom
+  ACTION: trigger FAST_LOOP protocol.
+
+FAST_LOOP:
+  - Ideation: 10m
+  - Draft: 20m
+  - QuickEdit: 10m
+  - Publish: immediate
+  - Iterate: audience feedback
+  MAX_DURATION_PER_UNIT: 40m
+
+BANK_SYSTEMS:
+  IDEA_BANK:
+    - Minimum = 20 items
+    - Continuous capture = required
+  FOOTAGE_BANK:
+    - RAW_FOLDER required
+    - Weekly refill required
+    - Minimum = 10–15 base clips
+
+INTERACTION_RULES:
+  - OneStory_OneFunction
+  - Content must map to at least 1 motivator.
+  - Visual-Sense dual validation = required.
+  - All content runs HookTest before approval.
+
+TEAM_LAYER_MODEL:
+  SHARED_KNOWLEDGE = true
+  ROLE_DIVISION = modular, not hierarchical
+  ALL_ROLES_ACCESS_CORE_PLAYBOOK = true
+  ROLE_FILTERS used only for operational routing, not for separating knowledge.
+
+OUTPUT_REQUIREMENTS:
+  - Structures stable across posts/reels/stories.
+  - Modularizable logic.
+  - System should adapt new trend inputs from TrendEngine automatically.
+
+TREND_ENGINE:
+  INPUT: user-provided trend data
+  VALIDATION: fact-check → classify {confirmed, probable, reject}
+  OUTPUT: method update package
+  MEMORY: only confirmed items are integrated
+  CURRENT_CONFIRMED:
+    - Users want: learn/new, humor, visual engagement, surprise, inspiration
+    - Authenticity required
+    - Users oversaturated with ads → native-first required
+    - Engagement > visibility
+    - Two-way communication > broadcast
+
+ONBOARDING_PROTOCOL:
+  - Build IdeaBank
+  - Build RawFootageBank
+  - Provide 3 test units
+  - Initiate FastLoop baseline
+
+RELEASE_NOTES:
+  - This snapshot consolidates: v1 PlayBook, ReelsGuide extraction, StoriesPractikum extraction, TrendEngine integration.
+  - No brand or voice dependencies included.
+  - Fully compatible with System Hub for agent reconstruction.
+
+END.
