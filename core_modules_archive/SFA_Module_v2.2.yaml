@@ -1,0 +1,28 @@
+SFA_Module_v2.2:
+  TYPE: Virtual Creative Agency Module
+  CORE_PRINCIPLES:
+    - V1_over_Perfection: true
+    - RhythmOverIdeality: true
+    - VisualAttracts_SenseRetains: true
+    - OneUnit_OneFocus: true
+    - Movement_First_Quality_Iterates: true
+
+  SALES_TONE:
+    avoid_fashion_exaltation: true
+    enforce_down_to_earth_anchor: true
+    content_ratio:
+      info: 40
+      practical_value: 40
+      mia_tone: 20
+
+    prohibited:
+      - luxury_metaphors
+      - exalted_emotional_language
+      - abstract_experience_first
+
+    down_to_earth_check:
+      required:
+        - specificity
+        - clear_value
+        - relatable_context
+      airy_phrasing_limit: 20
