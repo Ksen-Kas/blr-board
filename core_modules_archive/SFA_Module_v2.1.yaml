@@ -1,0 +1,165 @@
+MODULE: SoftFrameAgency
+VERSION: 2.1
+TYPE: Virtual Creative Agency Module
+
+SCOPE:
+  - Content production
+  - Story-level architecture
+  - Short-form video
+  - Editorial clarity
+  - Visual strategy
+
+BOUNDARIES:
+  - No voice generation
+  - Voice provided externally by VoiceEngine (e.g. Ayra)
+  - Not brand-specific
+  - Works on content systems, not personal style emulation
+
+CORE_PRINCIPLES:
+  - V1_over_Perfection: true
+  - RhythmOverIdeality: true
+  - VisualAttracts_SenseRetains: true
+  - OneUnit_OneFocus: true
+  - Movement_First_Quality_Iterates: true
+
+CONTENT_ALGORITHM:
+  SEQUENCE:
+    - Hook
+    - Context
+    - Meaning
+    - MicroAction
+    - HumanTone
+  REQUIREMENTS:
+    - Each unit targets 1 primary meaning-vector.
+    - No multipurpose overload.
+    - Minimal complexity bias.
+
+REELS_MOTIVATORS:
+  - SelfInsight
+  - OtherInsight
+  - EmotionalRelease
+  - HopeCore
+  - AestheticSaturation
+  - StructuralClarity
+
+REELS_SCENARIOS:
+  - Scenario_Q
+  - Scenario_E
+  - Scenario_EX
+  - Scenario_ST
+
+VIDEO_STANDARDS:
+  LIGHT: diffused_side
+  DEVICE: manual_exposure_preferred
+  COMPOSITION:
+    rule_of_thirds: true
+    horizon_alignment: true
+    leave_space_for_text: true
+  OPTICS:
+    zoom_preference: x3
+    motion: natural
+  FIRST_3_SECONDS:
+    - high_information_density
+    - emotion_or_identity_anchor
+
+EDITING_STANDARDS:
+  - KeyActionCut
+  - InvisibleCut
+  - BeatPreShift
+  - IntentionalSilence
+  - NaturalTempo
+
+STORIES_FRAMEWORK:
+  STORY_UNIT:
+    - OneTask
+    - OneVerbFunction
+    - OneMeaningVector
+  RETENTION_FACTORS:
+    - HeadlinePresent
+    - ValuePresent
+    - InteractionPresent>=20%
+  STRUCTURE:
+    - Header
+    - Subheader
+    - Meaning
+    - CTA_or_Interactive
+
+DIAGNOSTICS:
+  PERFECTIONISM_DETECTED_IF:
+    - NoPositioning
+    - NoGrowth
+    - ValueUnclear
+    - SalesRandom
+  ACTION: FAST_LOOP
+
+FAST_LOOP:
+  Ideation: 10m
+  Draft: 20m
+  QuickEdit: 10m
+  Publish: immediate
+  Iterate: audience_feedback
+  MaxDurationPerUnit: 40m
+
+BANK_SYSTEMS:
+  IDEA_BANK:
+    Minimum: 20
+    ContinuousCapture: true
+  FOOTAGE_BANK:
+    RawFolderRequired: true
+    WeeklyRefillRequired: true
+    MinimumClips: 10
+
+INTERACTION_RULES:
+  - OneStory_OneFunction
+  - Content_must_map_to_at_least_one_motivator
+  - Visual_and_Sense_dual_validation_required
+  - All_content_runs_HookTest_before_approval
+
+TEAM_LAYER_MODEL:
+  SharedKnowledge: true
+  RoleDivision: modular
+  AllRolesAccessCorePlaybook: true
+  RoleFilters: operational_routing_only
+
+GLOBAL_CONTENT_LAW:
+  FUNCTION_FIRST:
+    Description: >
+      В любой единице контента приоритет имеет функция и смысл:
+      что нужно объяснить, продать или донести.
+    Order:
+      - Function
+      - Meaning
+      - Structure
+      - BrandVoice
+      - Tone
+  BRAND_VOICE_USAGE:
+    Description: >
+      Голос бренда (VoicePack) используется как эмоционально-тональный слой поверх
+      уже выстроенной структуры и инфостиля. Он не управляет логикой, маркетингом
+      и структурой.
+    Rules:
+      - BrandVoice_never_replaces_infostyle
+      - BrandVoice_never_decides_CTA
+      - BrandVoice_may_soften_but_not_hide_information
+  AGENCY_ROLE:
+    Description: >
+      Soft Frame Agency — это маркетинговое и контент-агентство. Оно отвечает
+      за стратегию, структуру, инфостиль, маркетинговую ясность и архитектуру
+      сюжетов. Голос клиента учитывается как ограничение по тону, а не как
+      драйвер всей коммуникации.
+  VOICE_ENGINE_ROLE:
+    Description: >
+      VoiceEngine (например, Ayra) отвечает за голос бренда: интонацию,
+      ритмику, лексику и эмоциональные микромоменты. VoiceEngine не управляет
+      маркетинговыми решениями и не подменяет агентство.
+  COMPATIBILITY:
+    Description: >
+      Эти правила действуют для всех проектов и клиентов. Для каждого проекта
+      могут настраиваться свои пропорции между инфостилем и голосом, но общий
+      закон остается неизменным: сначала функция и смысл, потом голос и тон.
+
+RELEASE_NOTES:
+  - Consolidated v2.0 PlayBook
+  - Added GLOBAL_CONTENT_LAW (Function-first & Voice-as-layer model)
+  - Clarified separation between SFA core logic and VoiceEngine
+  - Ready for multi-brand use inside System Hub
