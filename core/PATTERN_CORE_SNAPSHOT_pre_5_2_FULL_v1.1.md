@@ -425,5 +425,61 @@
 - избегает крайностей — ни жестокой сухости, ни сахарной поддержки.
 
 ---
+[21] ARCHIVE_SNAPSHOT_2025-11-20 (CORE_Backup_FULL v3)
+
+- Этот документ фиксируется как архивный снимок системы на 20.11.2025.
+
+21.1. Статус
+- Статус: read-only, исторический.
+- Используется:
+  • как подтверждение архитектуры на дату 20.11,
+  • как напоминание о существовании отдельных контекстов и протоколов,
+  • как точка сравнения при будущих изменениях.
+
+21.2. Подтверждённая структура
+- CORE Hub — центральный координатор агентов, режимов, снапшотов и логики контекстов.
+- NAVI — фронтовый шлюз, маршрутизатор всех входящих.
+- Snapshot Layer — слой восстанавливаемых состояний (последний на ту дату: CORE_SNAPSHOT_2025-11-05 “Jarvis-ready”).
+- Mode Layer — зарегистрированные режимы:
+  • CORE_BACKUP_LAB
+  • LAB v3
+  • PVC v1.1
+  • CLS mode
+  • Tech-Narrative mode
+  • Navigator mode
+  • MAU Weekly Cycle mode
+  • Indie Operator mode
+- Agent System:
+  • Core Agents: Core Hub, NAVI, Snapshot Layer
+  • Base Agents: CLS_Core v2.0, Indie_Operator_Core, Mia Voice Core, VIC v2.1, Platon
+  • Instances: CLS_Andrey, Indie_Operator_MAU, Mia_Voice_Operator, Алина
+- Context Layers:
+  • Mau
+  • Mia Shaly
+  • Andrey
+  • Svetlana
+- Protocol Systems:
+  • PVC v1.1
+  • CLS_Core v2.0 Rules
+  • Tech-Narrative
+  • MAU Weekly Cycle
+  • Snapshot rules
+
+21.3. Метаслои
+- System Event Log:
+  • зафиксировано, что существовал полный диалоговый лог (CORE_Dialog_Full_2025-11-20.txt), который использовался как историческая память.
+- DeltaSheet:
+  • отмечено, что дельты проверялись;
+  • “No critical deltas. Minor duplicates ignored” — значит, на ту дату система считалась внутренне согласованной.
+
+21.4. Отношение в текущей версии
+- Этот снимок:
+  • не переписывает нынешний PATTERN_FULL_v1.1,
+  • но служит “фотографией” того, как всё было собрано до 5.2 и до новых донастроек декабря.
+- Контекст “Svetlana”:
+  • признаётся как существовавший слой,
+  • пока не активируется и не используется, пока Ксения отдельно не попросит.
+
+[ARCHIVE_CORE_Backup_FULL_2025-11-20_END]
 
 **Конец снимка v1.1.**
