@@ -1,5 +1,6 @@
 .env
-.DS_Store
+credentials.json
 __pycache__/
 *.pyc
-notion_export/
+*.pyo
+.DS_Store
