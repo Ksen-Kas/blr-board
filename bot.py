@@ -148,17 +148,21 @@ async def handle_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
         return
 
     if data == "add_to_tracker":
+        logger.info("callback add_to_tracker: chat_id=%s, result present=%s", chat_id, bool(result))
         if not result:
             await query.message.reply_text("Нет данных для добавления. Отправь вакансию заново.")
             return
 
         company = result.get("company", "")
         role = result.get("role", "")
+        logger.info("callback add_to_tracker: company=%r role=%r", company, role)
 
         try:
+            logger.info("callback add_to_tracker: calling check_duplicate")
             dup = sheets.check_duplicate(company, role)
+            logger.info("callback add_to_tracker: check_duplicate result=%s", dup)
         except Exception as exc:
-            logger.error("check_duplicate failed: %s", exc)
+            logger.error("check_duplicate failed: %s", exc, exc_info=True)
             await query.message.reply_text(f"❌ Ошибка проверки дубля: {exc}")
             return
 
@@ -172,14 +176,16 @@ async def handle_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
             )
         else:
             try:
+                logger.info("callback add_to_tracker: no duplicate, calling add_row")
                 sheets.add_row(result)
+                logger.info("callback add_to_tracker: add_row completed successfully")
                 user_state.pop(chat_id, None)
                 await query.edit_message_reply_markup(reply_markup=None)
                 await query.message.reply_text(
                     f"✅ Добавлено: {company} — {role}"
                 )
             except Exception as exc:
-                logger.error("add_row failed: %s", exc)
+                logger.error("add_row failed: %s", exc, exc_info=True)
                 await query.message.reply_text(f"❌ Ошибка записи: {exc}")
         return
 
