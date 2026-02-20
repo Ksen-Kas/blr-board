@@ -1,3 +1,0 @@
-# CORE Agent Architecture
-
-Placeholder.

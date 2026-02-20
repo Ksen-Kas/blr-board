@@ -1,3 +1,0 @@
-# Snapshot Guide
-
-Placeholder.

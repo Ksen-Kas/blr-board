@@ -1,3 +1,0 @@
-# CoreOS Rules
-
-Placeholder.
