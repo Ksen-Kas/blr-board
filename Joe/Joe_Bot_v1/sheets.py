@@ -33,13 +33,8 @@ COLUMN_ORDER = [
 
 
 def get_sheet() -> gspread.Worksheet:
-    if config.GOOGLE_CREDENTIALS_JSON_CONTENT:
-        info = json.loads(config.GOOGLE_CREDENTIALS_JSON_CONTENT)
-        creds = Credentials.from_service_account_info(info, scopes=SCOPES)
-    else:
-        creds = Credentials.from_service_account_file(
-            config.GOOGLE_CREDENTIALS_JSON, scopes=SCOPES
-        )
+    info = json.loads(config.GOOGLE_CREDENTIALS_JSON_CONTENT)
+    creds = Credentials.from_service_account_info(info, scopes=SCOPES)
     client = gspread.authorize(creds)
     return client.open_by_key(config.GOOGLE_SHEET_ID).worksheet("Pipeline")
 
