@@ -41,7 +41,18 @@ def _fallback_pdf(text: str, title: str | None = None) -> bytes:
         if not line.strip():
             pdf.ln(4)
             continue
-        pdf.multi_cell(0, 5, line)
+        cleaned = line.replace("\t", " ").strip()
+        if not cleaned:
+            pdf.ln(4)
+            continue
+        try:
+            pdf.multi_cell(0, 5, cleaned)
+        except Exception:
+            for word in cleaned.split(" "):
+                if not word:
+                    pdf.multi_cell(0, 5, " ")
+                else:
+                    pdf.multi_cell(0, 5, word)
 
     return pdf.output(dest="S").encode("latin-1", errors="ignore")
 

@@ -32,6 +32,7 @@
 - fix: CV/Letter copy + PDF actions now show feedback and handle errors
 - fix: Added PDF fallback renderer when WeasyPrint system libs are missing
 - fix: PDF fallback now strips unsupported unicode characters
+- fix: PDF fallback handles long/unbreakable lines safely
 - feat: Pipeline screen — AddJobBar (URL/text input → evaluate/add), LetterPopup (click CL → modal), polished table with 83 real jobs
 - feat: JobCard screen — scoring, inline status editor, all data sections, actions
 - feat: CVScreen — tailor CV with canon check, copy changes/full CV, re-tailor
