@@ -74,15 +74,15 @@ export default function CVScreen() {
     if (result) navigator.clipboard.writeText(result.changes_summary);
   };
 
-  if (!job) return <div className="p-6 text-gray-500">Loading...</div>;
+  if (!job) return <div className="p-6 text-muted">Loading...</div>;
 
   // Canon check color
   const canonColor = result
     ? result.canon_check.startsWith("OK")
-      ? "bg-green-50 border-green-200 text-green-800"
+      ? "bg-green-500/10 border-green-500/30 text-green-300"
       : result.canon_check.startsWith("WARN")
-        ? "bg-yellow-50 border-yellow-200 text-yellow-800"
-        : "bg-red-50 border-red-200 text-red-800"
+        ? "bg-yellow-500/10 border-yellow-500/30 text-yellow-300"
+        : "bg-red-500/10 border-red-500/30 text-red-300"
     : "";
 
   // Joe recommendation based on scoring
@@ -97,34 +97,34 @@ export default function CVScreen() {
     <div className="p-6 max-w-4xl mx-auto">
       <button
         onClick={() => navigate(`/job/${rowNum}`)}
-        className="text-blue-600 hover:underline text-sm mb-4 inline-block cursor-pointer"
+        className="text-accent hover:text-accent-hover text-sm mb-4 inline-block cursor-pointer"
       >
         &larr; {job.company} — {job.role}
       </button>
 
       {/* Recommendation */}
       {recommendation && !result && !tailoring && (
-        <div className="mb-4 p-3 border rounded-lg bg-blue-50 text-blue-800 text-sm">
+        <div className="mb-4 p-3 border border-accent/30 rounded-lg bg-accent/10 text-accent text-sm">
           {recommendation}
         </div>
       )}
 
       {/* Before tailoring — two buttons */}
       {!result && !tailoring && (
-        <div className="border rounded-lg p-6 text-center space-y-4">
-          <p className="text-gray-600">
+        <div className="border border-border rounded-lg p-6 text-center space-y-4 bg-surface">
+          <p className="text-muted">
             Joe will make minimal adjustments to your canonical resume for this role.
           </p>
           <div className="flex gap-3 justify-center">
             <button
               onClick={() => navigate(`/job/${rowNum}/letter`)}
-              className="px-5 py-2.5 border rounded-lg hover:bg-gray-50 text-sm cursor-pointer"
+              className="px-5 py-2.5 border border-border rounded-lg hover:bg-surface-alt text-sm cursor-pointer text-muted hover:text-text"
             >
               Use Canon CV
             </button>
             <button
               onClick={handleTailor}
-              className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium cursor-pointer"
+              className="px-6 py-2.5 bg-accent text-bg rounded-lg hover:bg-accent-hover font-medium cursor-pointer"
             >
               Tailor CV &rarr;
             </button>
@@ -134,14 +134,14 @@ export default function CVScreen() {
 
       {/* Loading */}
       {tailoring && (
-        <div className="border rounded-lg p-6 text-center">
-          <div className="animate-pulse text-gray-500">Tailoring CV against JD...</div>
+        <div className="border border-border rounded-lg p-6 text-center bg-surface">
+          <div className="animate-pulse text-muted">Tailoring CV against JD...</div>
         </div>
       )}
 
       {/* Error */}
       {error && (
-        <div className="border border-red-200 rounded-lg p-4 bg-red-50 text-red-700 text-sm mb-4">
+        <div className="border border-red-500/30 rounded-lg p-4 bg-red-500/10 text-red-300 text-sm mb-4">
           {error}
         </div>
       )}
@@ -155,27 +155,27 @@ export default function CVScreen() {
           </div>
 
           {/* Changes */}
-          <div className="border rounded-lg overflow-hidden">
-            <div className="bg-gray-50 px-4 py-2 flex items-center justify-between">
-              <span className="text-sm font-medium text-gray-700">Changes</span>
+          <div className="border border-border rounded-lg overflow-hidden">
+            <div className="bg-surface px-4 py-2 flex items-center justify-between">
+              <span className="text-sm font-medium text-muted">Changes</span>
               <button
                 onClick={handleCopyChanges}
-                className="text-xs text-blue-600 hover:underline cursor-pointer"
+                className="text-xs text-accent hover:text-accent-hover cursor-pointer"
               >
                 Copy changes
               </button>
             </div>
             <div className="px-4 py-3">
-              <pre className="whitespace-pre-wrap text-sm leading-relaxed">
+              <pre className="whitespace-pre-wrap text-sm leading-relaxed text-text">
                 {result.changes_summary}
               </pre>
             </div>
           </div>
 
           {/* Full tailored CV */}
-          <div className="border rounded-lg overflow-hidden">
-            <div className="bg-gray-50 px-4 py-2 flex items-center justify-between">
-              <span className="text-sm font-medium text-gray-700">Tailored CV</span>
+          <div className="border border-border rounded-lg overflow-hidden">
+            <div className="bg-surface px-4 py-2 flex items-center justify-between">
+              <span className="text-sm font-medium text-muted">Tailored CV</span>
               <div className="flex gap-3">
                 <button
                   onClick={() =>
@@ -187,45 +187,45 @@ export default function CVScreen() {
                       role: job.role,
                     })
                   }
-                  className="text-xs text-blue-600 hover:underline cursor-pointer"
+                  className="text-xs text-accent hover:text-accent-hover cursor-pointer"
                 >
                   Download PDF
                 </button>
                 <button
                   onClick={handleCopyCV}
-                  className="text-xs text-blue-600 hover:underline cursor-pointer"
+                  className="text-xs text-accent hover:text-accent-hover cursor-pointer"
                 >
                   Copy full CV
                 </button>
               </div>
             </div>
             <div className="px-4 py-3 max-h-[500px] overflow-y-auto">
-              <pre className="whitespace-pre-wrap text-sm leading-relaxed">
+              <pre className="whitespace-pre-wrap text-sm leading-relaxed text-text">
                 {result.tailored_cv}
               </pre>
             </div>
           </div>
 
-          {/* Actions — primary left, secondary right, no Back */}
+          {/* Actions */}
           <div className="flex gap-3 pt-2">
             <button
               onClick={() => navigate(`/job/${rowNum}/letter`)}
-              className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 text-sm font-medium cursor-pointer"
+              className="px-4 py-2 bg-green-500/20 text-green-300 border border-green-500/30 rounded-lg hover:bg-green-500/30 text-sm font-medium cursor-pointer"
             >
               Next: Letter &rarr;
             </button>
             <button
               onClick={() => setShowRetailorInput(true)}
-              className="px-4 py-2 border rounded hover:bg-gray-50 text-sm cursor-pointer"
+              className="px-4 py-2 border border-border rounded-lg hover:bg-surface-alt text-sm cursor-pointer text-muted hover:text-text"
             >
               Re-tailor
             </button>
           </div>
 
-          {/* Re-tailor input modal */}
+          {/* Re-tailor input */}
           {showRetailorInput && (
-            <div className="border rounded-lg p-4 bg-gray-50 space-y-3">
-              <label className="block text-sm font-medium text-gray-700">
+            <div className="border border-border rounded-lg p-4 bg-surface space-y-3">
+              <label className="block text-sm font-medium text-muted">
                 What to change?
               </label>
               <textarea
@@ -233,18 +233,18 @@ export default function CVScreen() {
                 onChange={(e) => setRetailorNotes(e.target.value)}
                 rows={3}
                 placeholder="e.g., emphasize data analytics more, remove mention of X..."
-                className="w-full border rounded px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-200"
+                className="w-full border border-border bg-input rounded-lg px-3 py-2 text-sm text-text resize-none placeholder:text-muted/50 focus:outline-none focus:ring-2 focus:ring-accent/30"
               />
               <div className="flex gap-2">
                 <button
                   onClick={handleRetailor}
-                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm cursor-pointer"
+                  className="px-4 py-2 bg-accent text-bg rounded-lg hover:bg-accent-hover text-sm font-medium cursor-pointer"
                 >
                   Apply
                 </button>
                 <button
                   onClick={() => { setShowRetailorInput(false); setRetailorNotes(""); }}
-                  className="px-4 py-2 border rounded hover:bg-gray-50 text-sm cursor-pointer"
+                  className="px-4 py-2 border border-border rounded-lg hover:bg-surface-alt text-sm cursor-pointer text-muted"
                 >
                   Cancel
                 </button>

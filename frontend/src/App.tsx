@@ -1,11 +1,28 @@
 import { useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Link, useLocation } from "react-router-dom";
 import Pipeline from "./pages/Pipeline";
 import JobCard from "./pages/JobCard";
 import CVScreen from "./pages/CVScreen";
 import LetterScreen from "./pages/LetterScreen";
 import Dashboard from "./pages/Dashboard";
 import api, { clearAuth, setBasicAuth, setUnauthorizedHandler } from "./api/client";
+
+function NavLink({ to, children }: { to: string; children: React.ReactNode }) {
+  const location = useLocation();
+  const active = location.pathname === to;
+  return (
+    <Link
+      to={to}
+      className={`text-sm font-medium px-3 py-1.5 rounded-lg ${
+        active
+          ? "bg-accent/15 text-accent"
+          : "text-muted hover:text-text"
+      }`}
+    >
+      {children}
+    </Link>
+  );
+}
 
 function App() {
   const [authed, setAuthed] = useState(false);
@@ -43,11 +60,11 @@ function App() {
 
   if (!authed) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center px-6">
-        <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 shadow-lg">
+      <div className="min-h-screen bg-bg flex items-center justify-center px-6">
+        <div className="w-full max-w-md rounded-2xl border border-border bg-surface p-8">
           <div className="mb-6">
-            <h1 className="text-2xl font-semibold text-slate-900">Joe v2</h1>
-            <p className="mt-2 text-sm text-slate-500">
+            <h1 className="text-2xl font-semibold text-text">Joe v2</h1>
+            <p className="mt-2 text-sm text-muted">
               Private workspace. Enter the backend credentials to continue.
             </p>
           </div>
@@ -59,19 +76,15 @@ function App() {
 
   return (
     <BrowserRouter>
-      <nav className="border-b px-8 py-3 flex gap-6 items-center justify-between">
-        <span className="font-bold text-lg">Joe v2</span>
-        <div className="flex items-center gap-6">
-          <Link to="/" className="text-blue-600 hover:underline">
-            Pipeline
-          </Link>
-          <Link to="/dashboard" className="text-blue-600 hover:underline">
-            Dashboard
-          </Link>
+      <nav className="border-b border-border px-8 py-3 flex items-center justify-between bg-surface">
+        <span className="font-bold text-lg text-text">Joe v2</span>
+        <div className="flex items-center gap-2">
+          <NavLink to="/">Pipeline</NavLink>
+          <NavLink to="/dashboard">Dashboard</NavLink>
           <button
             type="button"
             onClick={handleLogout}
-            className="text-sm text-slate-600 hover:text-slate-900"
+            className="text-sm text-muted hover:text-text ml-4"
           >
             Log out
           </button>
@@ -109,32 +122,32 @@ function LoginForm({ onLogin, loading, error }: LoginFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-slate-700">Username</label>
+        <label className="block text-sm font-medium text-muted">Username</label>
         <input
           type="text"
           value={username}
           onChange={(event) => setUsername(event.target.value)}
-          className="mt-2 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+          className="mt-2 w-full rounded-lg border border-border bg-input px-3 py-2 text-sm text-text focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/30"
           placeholder="joe_admin"
           autoComplete="username"
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-slate-700">Password</label>
+        <label className="block text-sm font-medium text-muted">Password</label>
         <input
           type="password"
           value={password}
           onChange={(event) => setPassword(event.target.value)}
-          className="mt-2 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+          className="mt-2 w-full rounded-lg border border-border bg-input px-3 py-2 text-sm text-text focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/30"
           placeholder="••••••••"
           autoComplete="current-password"
         />
       </div>
-      {error ? <p className="text-sm text-red-600">{error}</p> : null}
+      {error ? <p className="text-sm text-red-400">{error}</p> : null}
       <button
         type="submit"
         disabled={!canSubmit}
-        className="w-full rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-300"
+        className="w-full rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-bg hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-40"
       >
         {loading ? "Checking..." : "Log in"}
       </button>

@@ -87,7 +87,7 @@ export default function JobCard() {
     setShowTouchForm(false);
   };
 
-  if (!job) return <div className="p-6 text-gray-500">Loading...</div>;
+  if (!job) return <div className="p-6 text-muted">Loading...</div>;
 
   const stopFlags = job.stop_flags || "";
   const roleFit = job.role_fit || "";
@@ -104,17 +104,17 @@ export default function JobCard() {
     <div className="p-6 max-w-3xl mx-auto">
       <button
         onClick={() => navigate("/")}
-        className="text-blue-600 hover:underline text-sm mb-4 inline-block cursor-pointer"
+        className="text-accent hover:text-accent-hover text-sm mb-4 inline-block cursor-pointer"
       >
         &larr; Pipeline
       </button>
 
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-bold">
+        <h1 className="text-2xl font-bold text-text">
           {fitIcon} {job.company} — {job.role}
         </h1>
-        <p className="text-gray-500">{job.region}</p>
+        <p className="text-muted">{job.region}</p>
 
         {/* Source link — domain only, full URL on hover */}
         {job.source && (
@@ -122,7 +122,7 @@ export default function JobCard() {
             href={job.source}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-600 text-sm hover:underline cursor-pointer"
+            className="text-accent text-sm hover:text-accent-hover cursor-pointer"
             title={job.source}
           >
             {extractDomain(job.source)}
@@ -130,36 +130,36 @@ export default function JobCard() {
         )}
 
         <div className="flex items-center gap-3 mt-2 text-sm">
-          <span className="text-gray-600">
+          <span className="text-muted">
             {roleFit || "Not scored"} | {job.operator_vs_contractor || "—"} | {job.seniority || "—"}
           </span>
-          <span className="text-gray-400">|</span>
+          <span className="text-border">|</span>
 
-          {/* Status dropdown with chevron */}
+          {/* Status dropdown */}
           <div className="relative inline-block">
             <select
               value={status}
               onChange={(e) => handleStatusChange(e.target.value)}
-              className="appearance-none bg-white border rounded px-3 py-1 pr-7 text-sm font-medium cursor-pointer hover:border-gray-400 transition-colors"
+              className="appearance-none bg-surface border border-border rounded-lg px-3 py-1 pr-7 text-sm font-medium cursor-pointer hover:border-muted text-text"
             >
               {JOB_STATUSES.map((s) => (
                 <option key={s}>{s}</option>
               ))}
             </select>
-            <span className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none text-xs">
+            <span className="absolute right-2 top-1/2 -translate-y-1/2 text-muted pointer-events-none text-xs">
               ▼
             </span>
           </div>
 
           {job.submission_count && Number(job.submission_count) > 1 && (
-            <span className="bg-orange-100 text-orange-700 text-xs px-2 py-0.5 rounded">
+            <span className="bg-orange-500/15 text-orange-300 text-xs px-2 py-0.5 rounded">
               Submission #{job.submission_count}
             </span>
           )}
 
           {job.possible_duplicate && (
             <span
-              className="bg-yellow-100 text-yellow-700 text-xs px-2 py-0.5 rounded cursor-help"
+              className="bg-yellow-500/15 text-yellow-300 text-xs px-2 py-0.5 rounded cursor-help"
               title={job.duplicate_of || "Duplicate detected"}
             >
               Duplicate of: {job.duplicate_of || "?"}
@@ -167,41 +167,41 @@ export default function JobCard() {
           )}
 
           {job.needs_followup && (
-            <span className="bg-red-100 text-red-700 text-xs px-2 py-0.5 rounded">
+            <span className="bg-red-500/15 text-red-300 text-xs px-2 py-0.5 rounded">
               🔔 Needs follow-up
             </span>
           )}
         </div>
       </div>
 
-      {/* Timeline — moved to top */}
+      {/* Timeline */}
       {(job.applied_date || job.followup_1 || job.followup_2 || job.response_date) && (
-        <div className="mb-4 p-3 border rounded-lg bg-gray-50">
+        <div className="mb-4 p-3 border border-border rounded-lg bg-surface">
           <div className="grid grid-cols-2 gap-2 text-sm">
-            {job.applied_date && <div><span className="text-gray-500">Applied:</span> {job.applied_date}</div>}
-            {job.followup_1 && <div><span className="text-gray-500">Follow-up 1:</span> {job.followup_1}</div>}
-            {job.followup_2 && <div><span className="text-gray-500">Follow-up 2:</span> {job.followup_2}</div>}
-            {job.response_date && <div><span className="text-gray-500">Response:</span> {job.response_date}</div>}
-            {job.days_to_response && <div><span className="text-gray-500">Days to response:</span> {job.days_to_response}</div>}
+            {job.applied_date && <div><span className="text-muted">Applied:</span> <span className="text-text">{job.applied_date}</span></div>}
+            {job.followup_1 && <div><span className="text-muted">Follow-up 1:</span> <span className="text-text">{job.followup_1}</span></div>}
+            {job.followup_2 && <div><span className="text-muted">Follow-up 2:</span> <span className="text-text">{job.followup_2}</span></div>}
+            {job.response_date && <div><span className="text-muted">Response:</span> <span className="text-text">{job.response_date}</span></div>}
+            {job.days_to_response && <div><span className="text-muted">Days to response:</span> <span className="text-text">{job.days_to_response}</span></div>}
           </div>
         </div>
       )}
 
       {/* Stop flags banner */}
       {stopFlags && (
-        <div className="mb-4 p-3 border border-red-200 rounded-lg bg-red-50 text-red-800 text-sm">
+        <div className="mb-4 p-3 border border-red-500/30 rounded-lg bg-red-500/10 text-red-300 text-sm">
           <strong>Stop flags:</strong> {stopFlags}
         </div>
       )}
 
-      {/* Scoring result (if just scored) */}
+      {/* Scoring result */}
       {scoreResult && (
-        <div className="mb-4 p-4 border rounded-lg bg-blue-50 text-sm">
-          <div className="font-medium mb-1">
+        <div className="mb-4 p-4 border border-accent/30 rounded-lg bg-accent/10 text-sm">
+          <div className="font-medium mb-1 text-text">
             {scoreResult.role_fit} | CV: {scoreResult.cv_ready === "YES" ? "Ready" : "Needs work"}
             {scoreResult.cv_note && ` — ${scoreResult.cv_note}`}
           </div>
-          <p className="text-gray-700">{scoreResult.summary}</p>
+          <p className="text-muted">{scoreResult.summary}</p>
         </div>
       )}
 
@@ -209,31 +209,31 @@ export default function JobCard() {
       <div className="space-y-4 mb-6">
         {job.comment && (
           <Section title="Summary / Comment">
-            <pre className="whitespace-pre-wrap text-sm leading-relaxed">{job.comment}</pre>
+            <pre className="whitespace-pre-wrap text-sm leading-relaxed text-text">{job.comment}</pre>
           </Section>
         )}
 
         {job.contact && (
           <Section title="Contact">
-            <p className="text-sm">{job.contact}</p>
+            <p className="text-sm text-text">{job.contact}</p>
           </Section>
         )}
 
         {job.cl && (
           <Section title="Cover Letter">
-            <pre className="whitespace-pre-wrap text-sm leading-relaxed">{job.cl}</pre>
+            <pre className="whitespace-pre-wrap text-sm leading-relaxed text-text">{job.cl}</pre>
           </Section>
         )}
 
         {job.cv && (
           <Section title="CV Changes">
-            <pre className="whitespace-pre-wrap text-sm leading-relaxed">{job.cv}</pre>
+            <pre className="whitespace-pre-wrap text-sm leading-relaxed text-text">{job.cv}</pre>
           </Section>
         )}
 
         {job.reapply_reason && (
           <Section title="Reapply Reason">
-            <p className="text-sm">{job.reapply_reason}</p>
+            <p className="text-sm text-text">{job.reapply_reason}</p>
           </Section>
         )}
 
@@ -257,32 +257,32 @@ export default function JobCard() {
                 }
                 return (
                   <div key={i} className="flex gap-2 text-sm">
-                    <span className="text-gray-400 shrink-0 w-36">{ev.timestamp}</span>
-                    <span className="text-gray-500 shrink-0 w-28">{ev.event_type}</span>
-                    <span>{detail}</span>
+                    <span className="text-muted shrink-0 w-36">{ev.timestamp}</span>
+                    <span className="text-muted shrink-0 w-28">{ev.event_type}</span>
+                    <span className="text-text">{detail}</span>
                   </div>
                 );
               })}
             </div>
           ) : (
-            <p className="text-sm text-gray-400">No events yet</p>
+            <p className="text-sm text-muted">No events yet</p>
           )}
 
           {/* Add touchpoint */}
           {!showTouchForm ? (
             <button
               onClick={() => setShowTouchForm(true)}
-              className="mt-2 text-sm text-blue-600 hover:underline cursor-pointer"
+              className="mt-2 text-sm text-accent hover:text-accent-hover cursor-pointer"
             >
               + Touchpoint
             </button>
           ) : (
-            <div className="mt-3 p-3 bg-gray-50 rounded space-y-2">
+            <div className="mt-3 p-3 bg-surface-alt rounded-lg space-y-2">
               <div className="flex gap-2">
                 <select
                   value={touchChannel}
                   onChange={(e) => setTouchChannel(e.target.value)}
-                  className="border rounded px-2 py-1 text-sm cursor-pointer"
+                  className="border border-border bg-input text-text rounded-lg px-2 py-1 text-sm cursor-pointer"
                 >
                   <option>Email</option>
                   <option>LinkedIn</option>
@@ -293,7 +293,7 @@ export default function JobCard() {
                 <select
                   value={touchDirection}
                   onChange={(e) => setTouchDirection(e.target.value)}
-                  className="border rounded px-2 py-1 text-sm cursor-pointer"
+                  className="border border-border bg-input text-text rounded-lg px-2 py-1 text-sm cursor-pointer"
                 >
                   <option>Outbound</option>
                   <option>Inbound</option>
@@ -304,18 +304,18 @@ export default function JobCard() {
                 onChange={(e) => setTouchNote(e.target.value)}
                 placeholder="Note..."
                 rows={2}
-                className="w-full border rounded px-2 py-1 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-200"
+                className="w-full border border-border bg-input rounded-lg px-2 py-1 text-sm text-text resize-none placeholder:text-muted/50 focus:outline-none focus:ring-2 focus:ring-accent/30"
               />
               <div className="flex gap-2">
                 <button
                   onClick={handleAddTouchpoint}
-                  className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 cursor-pointer"
+                  className="px-3 py-1 text-sm bg-accent text-bg rounded-lg hover:bg-accent-hover cursor-pointer font-medium"
                 >
                   Save
                 </button>
                 <button
                   onClick={() => setShowTouchForm(false)}
-                  className="px-3 py-1 text-sm border rounded hover:bg-gray-50 cursor-pointer"
+                  className="px-3 py-1 text-sm border border-border rounded-lg hover:bg-surface-alt cursor-pointer text-muted"
                 >
                   Cancel
                 </button>
@@ -325,11 +325,11 @@ export default function JobCard() {
         </Section>
       </div>
 
-      {/* Actions — simplified: primary left, secondary right, no Back button */}
-      <div className="flex flex-wrap gap-3 border-t pt-4">
+      {/* Actions */}
+      <div className="flex flex-wrap gap-3 border-t border-border pt-4">
         <button
           onClick={handlePrepare}
-          className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 text-sm font-medium cursor-pointer"
+          className="px-4 py-2 bg-green-500/20 text-green-300 border border-green-500/30 rounded-lg hover:bg-green-500/30 text-sm font-medium cursor-pointer"
         >
           Prepare Application &rarr;
         </button>
@@ -337,14 +337,14 @@ export default function JobCard() {
           <button
             onClick={handleScore}
             disabled={scoring}
-            className="px-4 py-2 border rounded hover:bg-gray-50 disabled:opacity-40 text-sm cursor-pointer"
+            className="px-4 py-2 border border-border rounded-lg hover:bg-surface-alt disabled:opacity-40 text-sm cursor-pointer text-muted hover:text-text"
           >
             {scoring ? "Scoring..." : "Evaluate Fit"}
           </button>
         )}
         <button
           onClick={() => navigate(`/job/${job.row_num}/letter`)}
-          className="px-4 py-2 border rounded hover:bg-gray-50 text-sm cursor-pointer"
+          className="px-4 py-2 border border-border rounded-lg hover:bg-surface-alt text-sm cursor-pointer text-muted hover:text-text"
         >
           Letter Only
         </button>
@@ -355,8 +355,8 @@ export default function JobCard() {
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="border rounded-lg overflow-hidden">
-      <div className="bg-gray-50 px-4 py-2 text-sm font-medium text-gray-700">{title}</div>
+    <div className="border border-border rounded-lg overflow-hidden">
+      <div className="bg-surface px-4 py-2 text-sm font-medium text-muted">{title}</div>
       <div className="px-4 py-3">{children}</div>
     </div>
   );

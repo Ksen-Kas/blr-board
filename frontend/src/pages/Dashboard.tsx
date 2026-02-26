@@ -28,7 +28,7 @@ export default function Dashboard() {
     getJobs().then(setJobs);
   }, []);
 
-  if (!stats) return <div className="p-6 text-gray-500">Loading...</div>;
+  if (!stats) return <div className="p-6 text-muted">Loading...</div>;
 
   // Active statuses for funnel (skip zero counts except key ones)
   const funnel = STATUS_CARDS.filter((s) => (stats.by_status[s.key] || 0) > 0);
@@ -51,11 +51,11 @@ export default function Dashboard() {
 
   return (
     <div className="p-6 max-w-5xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
+      <h1 className="text-2xl font-bold mb-6 text-text">Dashboard</h1>
 
       {/* Summary cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <StatCard label="Total" value={stats.total} accent="bg-blue-600" />
+        <StatCard label="Total" value={stats.total} accent="bg-blue-500" />
         <StatCard
           label="Active"
           value={
@@ -65,7 +65,7 @@ export default function Dashboard() {
             (stats.by_status["Screening req"] || 0) +
             (stats.by_status["In Progress"] || 0)
           }
-          accent="bg-green-600"
+          accent="bg-green-500"
         />
         <StatCard
           label="Responses"
@@ -74,24 +74,24 @@ export default function Dashboard() {
             (stats.by_status["HR Screen"] || 0) +
             (stats.by_status["Interview"] || 0)
           }
-          accent="bg-purple-600"
+          accent="bg-purple-500"
         />
         <StatCard label="Needs Attention" value={needsAttention} accent="bg-orange-500" />
       </div>
 
       {/* Funnel */}
       <div className="mb-8">
-        <h2 className="text-lg font-bold mb-4">Pipeline Funnel</h2>
+        <h2 className="text-lg font-bold mb-4 text-text">Pipeline Funnel</h2>
         <div className="space-y-2">
           {funnel.map((s) => {
             const count = stats.by_status[s.key] || 0;
             const pct = Math.round((count / maxCount) * 100);
             return (
               <div key={s.key} className="flex items-center gap-3">
-                <div className="w-28 text-sm text-gray-600 text-right">{s.label}</div>
-                <div className="flex-1 bg-gray-100 rounded-full h-6 overflow-hidden">
+                <div className="w-28 text-sm text-muted text-right">{s.label}</div>
+                <div className="flex-1 bg-surface rounded-full h-6 overflow-hidden">
                   <div
-                    className={`${s.color} h-full rounded-full flex items-center justify-end pr-2 text-white text-xs font-medium transition-all`}
+                    className={`${s.color} h-full rounded-full flex items-center justify-end pr-2 text-white text-xs font-medium`}
                     style={{ width: `${Math.max(pct, 8)}%` }}
                   >
                     {count}
@@ -106,11 +106,11 @@ export default function Dashboard() {
       {/* Recent activity */}
       {recent.length > 0 && (
         <div>
-          <h2 className="text-lg font-bold mb-4">Recent Activity</h2>
-          <div className="border rounded-lg overflow-hidden">
+          <h2 className="text-lg font-bold mb-4 text-text">Recent Activity</h2>
+          <div className="border border-border rounded-lg overflow-hidden">
             <table className="w-full text-sm">
               <thead>
-                <tr className="bg-gray-50 text-left text-gray-600">
+                <tr className="bg-surface text-left text-muted">
                   <th className="px-3 py-2 font-medium">Company</th>
                   <th className="px-3 py-2 font-medium">Role</th>
                   <th className="px-3 py-2 font-medium">Status</th>
@@ -120,12 +120,12 @@ export default function Dashboard() {
               </thead>
               <tbody>
                 {recent.map((j) => (
-                  <tr key={j.row_num} className="border-t">
-                    <td className="px-3 py-2 font-medium">{j.company}</td>
-                    <td className="px-3 py-2">{j.role}</td>
-                    <td className="px-3 py-2">{j.status}</td>
-                    <td className="px-3 py-2 text-gray-500">{j.applied_date || "—"}</td>
-                    <td className="px-3 py-2 text-gray-500">{j.response_date || "—"}</td>
+                  <tr key={j.row_num} className="border-t border-border">
+                    <td className="px-3 py-2 font-medium text-text">{j.company}</td>
+                    <td className="px-3 py-2 text-text">{j.role}</td>
+                    <td className="px-3 py-2 text-muted">{j.status}</td>
+                    <td className="px-3 py-2 text-muted">{j.applied_date || "—"}</td>
+                    <td className="px-3 py-2 text-muted">{j.response_date || "—"}</td>
                   </tr>
                 ))}
               </tbody>
@@ -139,11 +139,11 @@ export default function Dashboard() {
 
 function StatCard({ label, value, accent }: { label: string; value: number; accent: string }) {
   return (
-    <div className="border rounded-lg overflow-hidden">
+    <div className="border border-border rounded-lg overflow-hidden bg-surface">
       <div className={`${accent} h-1`} />
       <div className="p-4">
-        <div className="text-3xl font-bold">{value}</div>
-        <div className="text-sm text-gray-500">{label}</div>
+        <div className="text-3xl font-bold text-text">{value}</div>
+        <div className="text-sm text-muted">{label}</div>
       </div>
     </div>
   );

@@ -16,15 +16,14 @@ function fitColor(roleFit: string, stopFlags: string) {
   const hasFlags = !!stopFlags;
   const fit = roleFit.toLowerCase();
   if (hasFlags) {
-    // Stop flags (visa, citizenship) or strong_mismatch → red; warnings → yellow
     const flags = stopFlags.toLowerCase();
     if (flags.includes("visa") || flags.includes("citizenship") || flags.includes("strong_mismatch"))
-      return "text-red-500";
-    return "text-yellow-500";
+      return "text-red-400";
+    return "text-yellow-400";
   }
-  if (fit === "strong") return "text-green-500";
+  if (fit === "strong") return "text-green-400";
   if (fit === "stretch" || fit === "partial") return "text-emerald-300";
-  return "text-gray-400";
+  return "text-muted";
 }
 
 /** Days since applied */
@@ -97,18 +96,18 @@ export default function Pipeline() {
   return (
     <div className="p-6 max-w-[1400px] mx-auto">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Pipeline</h1>
+        <h1 className="text-2xl font-bold text-text">Pipeline</h1>
         <div className="flex gap-2 items-center">
           <button
             onClick={() => {
               refreshCache();
               loadJobs();
             }}
-            className="px-3 py-1.5 text-sm border rounded hover:bg-gray-50 cursor-pointer"
+            className="px-3 py-1.5 text-sm border border-border rounded-lg hover:bg-surface-alt cursor-pointer text-muted hover:text-text"
           >
             Refresh
           </button>
-          <span className="px-3 py-1.5 text-sm text-gray-500">
+          <span className="px-3 py-1.5 text-sm text-muted">
             {filtered.length} jobs
           </span>
         </div>
@@ -117,22 +116,22 @@ export default function Pipeline() {
       <AddJobBar onAdded={loadJobs} />
 
       {loading ? (
-        <div className="text-gray-500 py-8 text-center">Loading...</div>
+        <div className="text-muted py-8 text-center">Loading...</div>
       ) : (
-        <div className="overflow-x-auto border rounded-lg">
+        <div className="overflow-x-auto border border-border rounded-lg">
           <table className="w-full border-collapse text-sm">
             <thead>
-              <tr className="text-left bg-gray-50 text-gray-600">
+              <tr className="text-left bg-surface text-muted">
                 <th className="px-3 py-2.5 font-medium w-8">#</th>
                 <th
-                  className="px-3 py-2.5 font-medium cursor-pointer hover:text-gray-900 select-none"
+                  className="px-3 py-2.5 font-medium cursor-pointer hover:text-text select-none"
                   onClick={() => handleSort("company")}
                 >
                   Company{sortIndicator("company")}
                 </th>
                 <th className="px-3 py-2.5 font-medium">Role</th>
                 <th
-                  className="px-3 py-2.5 font-medium cursor-pointer hover:text-gray-900 select-none"
+                  className="px-3 py-2.5 font-medium cursor-pointer hover:text-text select-none"
                   onClick={() => handleSort("region")}
                 >
                   Region{sortIndicator("region")}
@@ -142,7 +141,7 @@ export default function Pipeline() {
                   <select
                     value={statusFilter}
                     onChange={(e) => setStatusFilter(e.target.value)}
-                    className="font-medium text-gray-600 bg-transparent border-none outline-none cursor-pointer text-sm p-0"
+                    className="font-medium text-muted bg-transparent border-none outline-none cursor-pointer text-sm p-0"
                   >
                     <option value="All">Status ▼</option>
                     {JOB_STATUSES.map((s) => (
@@ -152,7 +151,7 @@ export default function Pipeline() {
                 </th>
                 <th className="px-3 py-2.5 font-medium w-24">Applied</th>
                 <th
-                  className="px-3 py-2.5 font-medium w-16 cursor-pointer hover:text-gray-900 select-none"
+                  className="px-3 py-2.5 font-medium w-16 cursor-pointer hover:text-text select-none"
                   onClick={() => handleSort("days")}
                 >
                   Days{sortIndicator("days")}
@@ -168,10 +167,10 @@ export default function Pipeline() {
                 return (
                   <tr
                     key={job.row_num}
-                    className="border-t cursor-pointer hover:bg-blue-50/50 transition-colors"
+                    className="border-t border-border cursor-pointer hover:bg-surface-alt/50"
                     onClick={() => navigate(`/job/${job.row_num}`)}
                   >
-                    <td className="px-3 py-2 text-gray-400">
+                    <td className="px-3 py-2 text-muted">
                       {job.row_num}
                       {job.possible_duplicate && (
                         <span className="ml-1 cursor-help" title={`Duplicate of: ${job.duplicate_of}`}>🔁</span>
@@ -180,29 +179,29 @@ export default function Pipeline() {
                         <span className="ml-1" title="Needs follow-up">🔔</span>
                       )}
                     </td>
-                    <td className="px-3 py-2 font-medium">{job.company}</td>
-                    <td className="px-3 py-2">{job.role}</td>
-                    <td className="px-3 py-2 text-gray-600">{job.region}</td>
+                    <td className="px-3 py-2 font-medium text-text">{job.company}</td>
+                    <td className="px-3 py-2 text-text">{job.role}</td>
+                    <td className="px-3 py-2 text-muted">{job.region}</td>
                     <td className="px-3 py-2">
                       <span className={fitColor(job.role_fit, job.stop_flags)}>
                         ●
                       </span>{" "}
-                      {job.role_fit || "—"}
+                      <span className="text-muted">{job.role_fit || "—"}</span>
                     </td>
                     <td className="px-3 py-2">
                       <StatusBadge status={job.status} />
                     </td>
-                    <td className="px-3 py-2 text-gray-600">
+                    <td className="px-3 py-2 text-muted">
                       {job.applied_date || "—"}
                     </td>
-                    <td className="px-3 py-2 text-gray-600">
+                    <td className="px-3 py-2 text-muted">
                       {days !== null ? days : "—"}
                     </td>
-                    <td className="px-3 py-2 text-gray-600">
+                    <td className="px-3 py-2 text-muted">
                       {job.days_to_response || "—"}
                     </td>
                     <td
-                      className="px-3 py-2 max-w-[200px] truncate text-gray-500"
+                      className="px-3 py-2 max-w-[200px] truncate text-muted"
                       onClick={(e) => {
                         if (job.cl) {
                           e.stopPropagation();
@@ -211,7 +210,7 @@ export default function Pipeline() {
                       }}
                     >
                       {job.cl ? (
-                        <span className="underline decoration-dotted cursor-pointer">
+                        <span className="underline decoration-dotted cursor-pointer text-accent/70 hover:text-accent">
                           {job.cl.slice(0, 50)}…
                         </span>
                       ) : (
@@ -227,7 +226,7 @@ export default function Pipeline() {
       )}
 
       {jobs.length === 0 && !loading && (
-        <p className="text-gray-500 mt-4 text-center">
+        <p className="text-muted mt-4 text-center">
           No jobs yet. Send a JD to the Telegram bot or use the input above.
         </p>
       )}
@@ -306,7 +305,7 @@ function AddJobBar({ onAdded }: { onAdded: () => void }) {
   };
 
   return (
-    <div className="mb-6 border rounded-lg p-4 bg-white">
+    <div className="mb-6 border border-border rounded-lg p-4 bg-surface">
       <div className="flex gap-2">
         <div className="flex-1 flex flex-col gap-2">
           <textarea
@@ -315,28 +314,28 @@ function AddJobBar({ onAdded }: { onAdded: () => void }) {
             onChange={(e) => setInput(e.target.value)}
             placeholder="Paste job description text or URL..."
             rows={4}
-            className="w-full border rounded px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-200"
+            className="w-full border border-border rounded-lg px-3 py-2 text-sm resize-none bg-input text-text placeholder:text-muted/50 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent"
           />
           <textarea
             value={contact}
             onChange={(e) => setContact(e.target.value)}
             placeholder="Recruiter name, email, LinkedIn... (optional)"
             rows={2}
-            className="w-full border rounded px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-200"
+            className="w-full border border-border rounded-lg px-3 py-2 text-sm resize-none bg-input text-text placeholder:text-muted/50 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent"
           />
         </div>
         <div className="flex flex-col gap-1">
           <button
             onClick={handleEvaluate}
             disabled={evaluating || !input.trim()}
-            className="px-3 py-1.5 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-40 cursor-pointer"
+            className="px-3 py-1.5 text-sm bg-accent text-bg rounded-lg hover:bg-accent-hover disabled:opacity-40 cursor-pointer font-medium"
           >
             {evaluating ? "..." : "Evaluate"}
           </button>
           <button
             onClick={handleAdd}
             disabled={evaluating || !input.trim()}
-            className="px-3 py-1.5 text-sm bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-40 cursor-pointer"
+            className="px-3 py-1.5 text-sm bg-green-500/20 text-green-300 border border-green-500/30 rounded-lg hover:bg-green-500/30 disabled:opacity-40 cursor-pointer font-medium"
           >
             + Add
           </button>
@@ -344,32 +343,32 @@ function AddJobBar({ onAdded }: { onAdded: () => void }) {
       </div>
 
       {error && (
-        <div className="mt-3 p-3 bg-red-50 rounded text-sm text-red-700">
+        <div className="mt-3 p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-sm text-red-400">
           {error}
         </div>
       )}
 
       {result && !("error" in result) && (
-        <div className="mt-3 p-3 bg-gray-50 rounded text-sm">
-          <div className="font-medium">
+        <div className="mt-3 p-3 bg-surface-alt rounded-lg text-sm">
+          <div className="font-medium text-text">
             {result.company as string} — {result.role as string} (
             {result.region as string})
           </div>
-          <div className="mt-1">
-            Role Fit: <strong>{result.role_fit as string}</strong>
+          <div className="mt-1 text-muted">
+            Role Fit: <strong className="text-text">{result.role_fit as string}</strong>
             {typeof result.stop_flags === "string" &&
               result.stop_flags !== "" &&
               result.stop_flags !== "NONE" && (
-              <span className="ml-2 text-red-600">
+              <span className="ml-2 text-red-400">
                 Flags: {result.stop_flags as string}
               </span>
             )}
           </div>
           {typeof result.summary === "string" && result.summary && (
-            <div className="mt-1 text-gray-600">{result.summary as string}</div>
+            <div className="mt-1 text-muted">{result.summary as string}</div>
           )}
           {typeof result.duplicate === "object" && result.duplicate !== null && (
-            <div className="mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded text-yellow-800">
+            <div className="mt-2 p-2 bg-yellow-500/10 border border-yellow-500/20 rounded-lg text-yellow-300">
               Possible duplicate — already in tracker (row{" "}
               {(result.duplicate as { row_num?: number }).row_num ?? "?"})
             </div>
@@ -389,36 +388,36 @@ function LetterPopup({ job, onClose }: { job: Job; onClose: () => void }) {
 
   return (
     <div
-      className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
+      className="fixed inset-0 bg-black/60 flex items-center justify-center z-50"
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[80vh] flex flex-col"
+        className="bg-surface border border-border rounded-xl shadow-xl max-w-2xl w-full mx-4 max-h-[80vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between p-4 border-b">
-          <h2 className="font-bold">
+        <div className="flex items-center justify-between p-4 border-b border-border">
+          <h2 className="font-bold text-text">
             {job.company} — {job.role}
           </h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-700 text-xl cursor-pointer">
+          <button onClick={onClose} className="text-muted hover:text-text text-xl cursor-pointer">
             &times;
           </button>
         </div>
         <div className="p-4 overflow-y-auto flex-1">
-          <pre className="whitespace-pre-wrap text-sm leading-relaxed">
+          <pre className="whitespace-pre-wrap text-sm leading-relaxed text-text">
             {job.cl}
           </pre>
         </div>
-        <div className="flex gap-2 p-4 border-t">
+        <div className="flex gap-2 p-4 border-t border-border">
           <button
             onClick={handleCopy}
-            className="px-3 py-1.5 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 cursor-pointer"
+            className="px-3 py-1.5 text-sm bg-accent text-bg rounded-lg hover:bg-accent-hover cursor-pointer font-medium"
           >
             Copy
           </button>
           <button
             onClick={onClose}
-            className="px-3 py-1.5 text-sm border rounded hover:bg-gray-50 cursor-pointer"
+            className="px-3 py-1.5 text-sm border border-border rounded-lg hover:bg-surface-alt cursor-pointer text-muted"
           >
             Close
           </button>
@@ -432,15 +431,15 @@ function LetterPopup({ job, onClose }: { job: Job; onClose: () => void }) {
 
 function StatusBadge({ status }: { status: string }) {
   const s = status.toLowerCase();
-  let color = "bg-gray-100 text-gray-700";
-  if (s === "new") color = "bg-blue-100 text-blue-800";
-  else if (s === "in progress") color = "bg-yellow-100 text-yellow-800";
-  else if (s === "applied") color = "bg-green-100 text-green-800";
-  else if (s === "waiting") color = "bg-orange-100 text-orange-800";
-  else if (s === "response") color = "bg-purple-100 text-purple-800";
-  else if (s === "interview") color = "bg-indigo-100 text-indigo-800";
-  else if (s === "no response") color = "bg-gray-200 text-gray-600";
-  else if (s === "closed") color = "bg-red-100 text-red-800";
+  let color = "bg-white/5 text-muted";
+  if (s === "new") color = "bg-blue-500/15 text-blue-300";
+  else if (s === "in progress") color = "bg-yellow-500/15 text-yellow-300";
+  else if (s === "applied") color = "bg-green-500/15 text-green-300";
+  else if (s === "waiting") color = "bg-orange-500/15 text-orange-300";
+  else if (s === "response") color = "bg-purple-500/15 text-purple-300";
+  else if (s === "interview") color = "bg-indigo-500/15 text-indigo-300";
+  else if (s === "no response") color = "bg-white/5 text-muted";
+  else if (s === "closed") color = "bg-red-500/15 text-red-300";
 
   return (
     <span className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${color}`}>

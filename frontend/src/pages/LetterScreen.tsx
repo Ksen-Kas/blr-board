@@ -27,7 +27,6 @@ export default function LetterScreen() {
       const jdText = job.comment || `${job.role} at ${job.company}, ${job.region}`;
       const res = await generateLetter(jdText, notes);
       setResult(res);
-      // Save letter to sheet
       await updateJob(job.row_num, { cl: `Subject: ${res.subject}\n\n${res.body}` });
     } catch (e: unknown) {
       const msg =
@@ -61,13 +60,13 @@ export default function LetterScreen() {
     setError("");
   };
 
-  if (!job) return <div className="p-6 text-gray-500">Loading...</div>;
+  if (!job) return <div className="p-6 text-muted">Loading...</div>;
 
   return (
     <div className="p-6 max-w-3xl mx-auto">
       <button
         onClick={() => navigate(`/job/${rowNum}`)}
-        className="text-blue-600 hover:underline text-sm mb-4 inline-block cursor-pointer"
+        className="text-accent hover:text-accent-hover text-sm mb-4 inline-block cursor-pointer"
       >
         &larr; {job.company} — {job.role}
       </button>
@@ -75,21 +74,21 @@ export default function LetterScreen() {
       {/* Input: notes */}
       {!result && !generating && (
         <div className="space-y-4">
-          <div className="border rounded-lg p-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+          <div className="border border-border rounded-lg p-4 bg-surface">
+            <label className="block text-sm font-medium text-muted mb-2">
               Notes for the letter (optional)
             </label>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              className="w-full border rounded-lg p-3 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-200"
+              className="w-full border border-border bg-input rounded-lg p-3 text-sm text-text resize-none placeholder:text-muted/50 focus:outline-none focus:ring-2 focus:ring-accent/30"
               rows={3}
               placeholder="What to emphasize? Leave empty — Joe generates by canon rules."
             />
           </div>
           <button
             onClick={handleGenerate}
-            className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium cursor-pointer"
+            className="px-6 py-2.5 bg-accent text-bg rounded-lg hover:bg-accent-hover font-medium cursor-pointer"
           >
             Generate Letter
           </button>
@@ -98,14 +97,14 @@ export default function LetterScreen() {
 
       {/* Loading */}
       {generating && (
-        <div className="border rounded-lg p-6 text-center">
-          <div className="animate-pulse text-gray-500">Generating cover letter...</div>
+        <div className="border border-border rounded-lg p-6 text-center bg-surface">
+          <div className="animate-pulse text-muted">Generating cover letter...</div>
         </div>
       )}
 
       {/* Error */}
       {error && (
-        <div className="border border-red-200 rounded-lg p-4 bg-red-50 text-red-700 text-sm mb-4">
+        <div className="border border-red-500/30 rounded-lg p-4 bg-red-500/10 text-red-300 text-sm mb-4">
           {error}
         </div>
       )}
@@ -114,17 +113,17 @@ export default function LetterScreen() {
       {result && (
         <div className="space-y-4">
           {/* Subject */}
-          <div className="border rounded-lg overflow-hidden">
-            <div className="bg-gray-50 px-4 py-2 text-sm font-medium text-gray-700">Subject</div>
+          <div className="border border-border rounded-lg overflow-hidden">
+            <div className="bg-surface px-4 py-2 text-sm font-medium text-muted">Subject</div>
             <div className="px-4 py-3">
-              <p className="text-sm font-medium">{result.subject}</p>
+              <p className="text-sm font-medium text-text">{result.subject}</p>
             </div>
           </div>
 
           {/* Body */}
-          <div className="border rounded-lg overflow-hidden">
-            <div className="bg-gray-50 px-4 py-2 flex items-center justify-between">
-              <span className="text-sm font-medium text-gray-700">Letter</span>
+          <div className="border border-border rounded-lg overflow-hidden">
+            <div className="bg-surface px-4 py-2 flex items-center justify-between">
+              <span className="text-sm font-medium text-muted">Letter</span>
               <div className="flex gap-3">
                 <button
                   onClick={() =>
@@ -137,25 +136,25 @@ export default function LetterScreen() {
                       role: job.role,
                     })
                   }
-                  className="text-xs text-blue-600 hover:underline cursor-pointer"
+                  className="text-xs text-accent hover:text-accent-hover cursor-pointer"
                 >
                   Download PDF
                 </button>
-                <button onClick={handleCopyBody} className="text-xs text-blue-600 hover:underline cursor-pointer">
+                <button onClick={handleCopyBody} className="text-xs text-accent hover:text-accent-hover cursor-pointer">
                   Copy body
                 </button>
-                <button onClick={handleCopyAll} className="text-xs text-blue-600 hover:underline cursor-pointer">
+                <button onClick={handleCopyAll} className="text-xs text-accent hover:text-accent-hover cursor-pointer">
                   Copy with subject
                 </button>
               </div>
             </div>
             <div className="px-4 py-3">
-              <pre className="whitespace-pre-wrap text-sm leading-relaxed">{result.body}</pre>
+              <pre className="whitespace-pre-wrap text-sm leading-relaxed text-text">{result.body}</pre>
             </div>
           </div>
 
           {/* Word count */}
-          <div className="text-xs text-gray-400">
+          <div className="text-xs text-muted">
             {result.body.split(/\s+/).length} words
           </div>
 
@@ -163,19 +162,19 @@ export default function LetterScreen() {
           <div className="flex gap-3 pt-2">
             <button
               onClick={handleDone}
-              className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 text-sm font-medium cursor-pointer"
+              className="px-4 py-2 bg-green-500/20 text-green-300 border border-green-500/30 rounded-lg hover:bg-green-500/30 text-sm font-medium cursor-pointer"
             >
               Done &rarr; Mark Applied
             </button>
             <button
               onClick={() => navigate(`/job/${rowNum}`)}
-              className="px-4 py-2 bg-gray-100 rounded hover:bg-gray-200 text-sm cursor-pointer"
+              className="px-4 py-2 bg-surface-alt rounded-lg hover:bg-border text-sm cursor-pointer text-muted"
             >
               Done (keep status)
             </button>
             <button
               onClick={handleRegenerate}
-              className="px-4 py-2 border rounded hover:bg-gray-50 text-sm cursor-pointer"
+              className="px-4 py-2 border border-border rounded-lg hover:bg-surface-alt text-sm cursor-pointer text-muted hover:text-text"
             >
               Regenerate
             </button>
