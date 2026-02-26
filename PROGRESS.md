@@ -34,6 +34,7 @@
 - fix: PDF fallback now strips unsupported unicode characters
 - fix: PDF fallback handles long/unbreakable lines safely
 - fix: PDF fallback splits long tokens to avoid FPDF width errors
+- docs: Updated local snapshot and MVP description with latest state
 - feat: Pipeline screen — AddJobBar (URL/text input → evaluate/add), LetterPopup (click CL → modal), polished table with 83 real jobs
 - feat: JobCard screen — scoring, inline status editor, all data sections, actions
 - feat: CVScreen — tailor CV with canon check, copy changes/full CV, re-tailor
