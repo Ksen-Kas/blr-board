@@ -63,8 +63,10 @@ export const downloadCvPdf = async (data: {
   const a = document.createElement("a");
   a.href = url;
   a.download = `CV_${data.company}_${data.role}.pdf`.replace(/ /g, "_");
+  document.body.appendChild(a);
   a.click();
-  URL.revokeObjectURL(url);
+  a.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
 };
 
 export const downloadLetterPdf = async (data: {
@@ -78,6 +80,8 @@ export const downloadLetterPdf = async (data: {
   const a = document.createElement("a");
   a.href = url;
   a.download = `CL_${data.company}_${data.role}.pdf`.replace(/ /g, "_");
+  document.body.appendChild(a);
   a.click();
-  URL.revokeObjectURL(url);
+  a.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
 };

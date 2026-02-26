@@ -10,6 +10,8 @@ export default function LetterScreen() {
   const [notes, setNotes] = useState("");
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState("");
+  const [actionMessage, setActionMessage] = useState("");
+  const [actionKind, setActionKind] = useState<"success" | "error" | "info">("info");
   const [result, setResult] = useState<{
     subject: string;
     body: string;
@@ -46,13 +48,60 @@ export default function LetterScreen() {
   };
 
   const handleCopyAll = () => {
-    if (result) {
-      navigator.clipboard.writeText(`Subject: ${result.subject}\n\n${result.body}`);
+    if (!result) return;
+    if (!navigator.clipboard) {
+      setActionKind("error");
+      setActionMessage("Clipboard not available in this browser.");
+      return;
     }
+    navigator.clipboard
+      .writeText(`Subject: ${result.subject}\n\n${result.body}`)
+      .then(() => {
+        setActionKind("success");
+        setActionMessage("Letter copied with subject.");
+      })
+      .catch(() => {
+        setActionKind("error");
+        setActionMessage("Copy failed.");
+      });
   };
 
   const handleCopyBody = () => {
-    if (result) navigator.clipboard.writeText(result.body);
+    if (!result) return;
+    if (!navigator.clipboard) {
+      setActionKind("error");
+      setActionMessage("Clipboard not available in this browser.");
+      return;
+    }
+    navigator.clipboard
+      .writeText(result.body)
+      .then(() => {
+        setActionKind("success");
+        setActionMessage("Letter body copied.");
+      })
+      .catch(() => {
+        setActionKind("error");
+        setActionMessage("Copy failed.");
+      });
+  };
+
+  const handleDownloadPdf = async () => {
+    if (!result || !job) return;
+    try {
+      setActionKind("info");
+      setActionMessage("Preparing PDF...");
+      await downloadLetterPdf({
+        subject: result.subject,
+        body: result.body,
+        company: job.company,
+        role: job.role,
+      });
+      setActionKind("success");
+      setActionMessage("PDF download started.");
+    } catch {
+      setActionKind("error");
+      setActionMessage("PDF generation failed. Try again or use Copy.");
+    }
   };
 
   const handleRegenerate = () => {
@@ -109,6 +158,20 @@ export default function LetterScreen() {
         </div>
       )}
 
+      {actionMessage && (
+        <div
+          className={`mb-4 border rounded-lg p-3 text-sm ${
+            actionKind === "success"
+              ? "border-green-500/30 bg-green-500/10 text-green-300"
+              : actionKind === "error"
+                ? "border-red-500/30 bg-red-500/10 text-red-300"
+                : "border-border bg-surface text-muted"
+          }`}
+        >
+          {actionMessage}
+        </div>
+      )}
+
       {/* Result */}
       {result && (
         <div className="space-y-4">
@@ -126,16 +189,7 @@ export default function LetterScreen() {
               <span className="text-sm font-medium text-muted">Letter</span>
               <div className="flex gap-3">
                 <button
-                  onClick={() =>
-                    result &&
-                    job &&
-                    downloadLetterPdf({
-                      subject: result.subject,
-                      body: result.body,
-                      company: job.company,
-                      role: job.role,
-                    })
-                  }
+                  onClick={handleDownloadPdf}
                   className="text-xs text-accent hover:text-accent-hover cursor-pointer"
                 >
                   Download PDF

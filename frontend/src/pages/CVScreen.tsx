@@ -9,6 +9,8 @@ export default function CVScreen() {
   const [job, setJob] = useState<Job | null>(null);
   const [tailoring, setTailoring] = useState(false);
   const [error, setError] = useState("");
+  const [actionMessage, setActionMessage] = useState("");
+  const [actionKind, setActionKind] = useState<"success" | "error" | "info">("info");
   const [result, setResult] = useState<{
     tailored_cv: string;
     changes_summary: string;
@@ -67,11 +69,59 @@ export default function CVScreen() {
   };
 
   const handleCopyCV = () => {
-    if (result) navigator.clipboard.writeText(result.tailored_cv);
+    if (!result) return;
+    if (!navigator.clipboard) {
+      setActionKind("error");
+      setActionMessage("Clipboard not available in this browser.");
+      return;
+    }
+    navigator.clipboard
+      .writeText(result.tailored_cv)
+      .then(() => {
+        setActionKind("success");
+        setActionMessage("Full CV copied.");
+      })
+      .catch(() => {
+        setActionKind("error");
+        setActionMessage("Copy failed.");
+      });
   };
 
   const handleCopyChanges = () => {
-    if (result) navigator.clipboard.writeText(result.changes_summary);
+    if (!result) return;
+    if (!navigator.clipboard) {
+      setActionKind("error");
+      setActionMessage("Clipboard not available in this browser.");
+      return;
+    }
+    navigator.clipboard
+      .writeText(result.changes_summary)
+      .then(() => {
+        setActionKind("success");
+        setActionMessage("Changes copied.");
+      })
+      .catch(() => {
+        setActionKind("error");
+        setActionMessage("Copy failed.");
+      });
+  };
+
+  const handleDownloadPdf = async () => {
+    if (!result || !job) return;
+    try {
+      setActionKind("info");
+      setActionMessage("Preparing PDF...");
+      await downloadCvPdf({
+        tailored_cv: result.tailored_cv,
+        company: job.company,
+        role: job.role,
+      });
+      setActionKind("success");
+      setActionMessage("PDF download started.");
+    } catch {
+      setActionKind("error");
+      setActionMessage("PDF generation failed. Try again or use Copy.");
+    }
   };
 
   if (!job) return <div className="p-6 text-muted">Loading...</div>;
@@ -146,6 +196,20 @@ export default function CVScreen() {
         </div>
       )}
 
+      {actionMessage && (
+        <div
+          className={`mb-4 border rounded-lg p-3 text-sm ${
+            actionKind === "success"
+              ? "border-green-500/30 bg-green-500/10 text-green-300"
+              : actionKind === "error"
+                ? "border-red-500/30 bg-red-500/10 text-red-300"
+                : "border-border bg-surface text-muted"
+          }`}
+        >
+          {actionMessage}
+        </div>
+      )}
+
       {/* Results */}
       {result && (
         <div className="space-y-4">
@@ -178,15 +242,7 @@ export default function CVScreen() {
               <span className="text-sm font-medium text-muted">Tailored CV</span>
               <div className="flex gap-3">
                 <button
-                  onClick={() =>
-                    result &&
-                    job &&
-                    downloadCvPdf({
-                      tailored_cv: result.tailored_cv,
-                      company: job.company,
-                      role: job.role,
-                    })
-                  }
+                  onClick={handleDownloadPdf}
                   className="text-xs text-accent hover:text-accent-hover cursor-pointer"
                 >
                   Download PDF
