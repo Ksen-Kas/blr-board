@@ -433,6 +433,8 @@ function StatusBadge({ status }: { status: string }) {
   const s = status.toLowerCase();
   let color = "bg-white/5 text-muted";
   if (s === "new") color = "bg-blue-500/15 text-blue-300";
+  else if (s === "screening") color = "bg-purple-500/15 text-purple-300";
+  else if (s === "screening req") color = "bg-purple-500/20 text-purple-200";
   else if (s === "in progress") color = "bg-yellow-500/15 text-yellow-300";
   else if (s === "applied") color = "bg-green-500/15 text-green-300";
   else if (s === "waiting") color = "bg-orange-500/15 text-orange-300";

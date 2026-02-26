@@ -119,5 +119,66 @@ def evaluate_fit(jd_text: str, source_url: str | None = None) -> dict:
     )
 
     result = _parse_response(raw)
+    result["stop_flags"] = _validate_stop_flags(jd_text, result.get("stop_flags", ""))
     result["source_url"] = source_url or ""
     return result
+
+
+def _validate_stop_flags(jd_text: str, stop_flags: str) -> str:
+    """Drop visa/citizenship flags unless JD has explicit wording."""
+    if not stop_flags or stop_flags == "NONE":
+        return "NONE"
+
+    text = jd_text.lower()
+
+    citizenship_markers = [
+        "citizenship",
+        "citizen",
+        "nationals only",
+        "national only",
+        "only nationals",
+        "only citizens",
+        "must be a citizen",
+        "saudi national",
+        "saudi nationals",
+        "uae national",
+        "emirati",
+        "emiratis only",
+        "qatari national",
+        "kuwaiti national",
+        "omani national",
+        "bahraini national",
+        "gcc nationals",
+        "local nationals",
+        "local national",
+    ]
+
+    visa_markers = [
+        "no visa sponsorship",
+        "visa sponsorship not",
+        "cannot sponsor",
+        "does not sponsor",
+        "visa not available",
+        "work visa not available",
+        "must have work authorization",
+        "must be authorized to work",
+        "requires work authorization",
+        "no sponsorship",
+    ]
+
+    has_citizenship = any(m in text for m in citizenship_markers)
+    has_visa = any(m in text for m in visa_markers)
+
+    flags = [f.strip() for f in stop_flags.split(",") if f.strip()]
+    kept = []
+    for f in flags:
+        if f == "citizenship":
+            if has_citizenship:
+                kept.append(f)
+        elif f == "visa_required":
+            if has_visa:
+                kept.append(f)
+        else:
+            kept.append(f)
+
+    return ", ".join(kept) if kept else "NONE"

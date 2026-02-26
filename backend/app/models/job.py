@@ -5,6 +5,8 @@ from pydantic import BaseModel
 
 class JobStatus(str, Enum):
     NEW = "New"
+    SCREENING = "Screening"
+    SCREENING_REQ = "Screening Req"
     IN_PROGRESS = "In Progress"
     APPLIED = "Applied"
     WAITING = "Waiting"

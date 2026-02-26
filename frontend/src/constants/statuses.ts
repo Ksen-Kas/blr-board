@@ -1,5 +1,7 @@
 export const JOB_STATUSES = [
   "New",
+  "Screening",
+  "Screening Req",
   "In Progress",
   "Applied",
   "Waiting",

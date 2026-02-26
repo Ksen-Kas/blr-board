@@ -24,6 +24,8 @@
 - fix: Removed internal API key usage from frontend client
 - docs: Expanded MVP product description (architecture, services, bot, repo)
 - fix: Allow basic auth to access internal-key-protected API routes
+- fix: Added Screening statuses + purple badge styling + filter alignment
+- fix: Guard visa/citizenship flags unless explicitly stated in JD
 - feat: Pipeline screen — AddJobBar (URL/text input → evaluate/add), LetterPopup (click CL → modal), polished table with 83 real jobs
 - feat: JobCard screen — scoring, inline status editor, all data sections, actions
 - feat: CVScreen — tailor CV with canon check, copy changes/full CV, re-tailor
