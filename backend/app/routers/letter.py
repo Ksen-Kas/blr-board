@@ -38,7 +38,11 @@ def generate(req: LetterRequest, _: None = Depends(require_internal_api_key)) ->
 
 @router.post("/pdf")
 def letter_pdf(req: LetterPdfRequest, _: None = Depends(require_internal_api_key)):
-    pdf_bytes = render_letter_pdf(req.subject, req.body, req.company, req.role)
+    try:
+        pdf_bytes = render_letter_pdf(req.subject, req.body, req.company, req.role)
+    except Exception as e:
+        logger.error("Letter PDF generation failed: %s", e)
+        raise HTTPException(500, f"PDF generation failed: {e}")
     filename = f"CL_{req.company}_{req.role}.pdf".replace(" ", "_")
     return Response(
         content=pdf_bytes,

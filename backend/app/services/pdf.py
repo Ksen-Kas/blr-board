@@ -64,7 +64,7 @@ def _fallback_pdf(text: str, title: str | None = None) -> bytes:
                 else:
                     pdf.multi_cell(0, 5, word)
 
-    return pdf.output(dest="S").encode("latin-1", errors="ignore")
+    return bytes(pdf.output())
 
 CV_CSS = """
 @page {
@@ -113,35 +113,35 @@ body {
 
 def render_cv_pdf(markdown_text: str, company: str, role: str) -> bytes:
     """Convert markdown CV to styled PDF bytes."""
-    # Import lazily so API startup does not crash when system libs are missing.
+    html_body = markdown.markdown(markdown_text, extensions=["tables", "sane_lists"])
+
     try:
         from weasyprint import HTML
-    except Exception:
-        html_body = markdown.markdown(markdown_text, extensions=["tables", "sane_lists"])
-        text = _html_to_text(html_body)
-        return _fallback_pdf(text, title=f"{company} — {role}")
 
-    html_body = markdown.markdown(markdown_text, extensions=["tables", "sane_lists"])
-    html = f"""<!DOCTYPE html>
+        html = f"""<!DOCTYPE html>
 <html><head><meta charset="utf-8"><style>{CV_CSS}</style></head>
 <body>{html_body}</body></html>"""
-    return HTML(string=html).write_pdf()
+        return HTML(string=html).write_pdf()
+    except Exception:
+        text = _html_to_text(html_body)
+        return _fallback_pdf(text, title=f"{company} - {role}")
 
 
 def render_letter_pdf(subject: str, body: str, company: str, role: str) -> bytes:
     """Convert cover letter text to styled PDF bytes."""
-    # Import lazily so API startup does not crash when system libs are missing.
     try:
         from weasyprint import HTML
-    except Exception:
-        return _fallback_pdf(body, title=subject)
+        from html import escape
 
-    # Convert plain-text paragraphs to HTML
-    paragraphs = "".join(f"<p>{p}</p>" for p in body.split("\n\n") if p.strip())
-    html = f"""<!DOCTYPE html>
+        paragraphs = "".join(
+            f"<p>{escape(p)}</p>" for p in body.split("\n\n") if p.strip()
+        )
+        html = f"""<!DOCTYPE html>
 <html><head><meta charset="utf-8"><style>{LETTER_CSS}</style></head>
 <body>
-<div class="subject">{subject}</div>
+<div class="subject">{escape(subject)}</div>
 <div class="body">{paragraphs}</div>
 </body></html>"""
-    return HTML(string=html).write_pdf()
+        return HTML(string=html).write_pdf()
+    except Exception:
+        return _fallback_pdf(body, title=subject)

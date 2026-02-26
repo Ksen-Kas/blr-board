@@ -36,7 +36,11 @@ def tailor(req: TailorRequest, _: None = Depends(require_internal_api_key)) -> d
 
 @router.post("/pdf")
 def cv_pdf(req: CvPdfRequest, _: None = Depends(require_internal_api_key)):
-    pdf_bytes = render_cv_pdf(req.tailored_cv, req.company, req.role)
+    try:
+        pdf_bytes = render_cv_pdf(req.tailored_cv, req.company, req.role)
+    except Exception as e:
+        logger.error("CV PDF generation failed: %s", e)
+        raise HTTPException(500, f"PDF generation failed: {e}")
     filename = f"CV_{req.company}_{req.role}.pdf".replace(" ", "_")
     return Response(
         content=pdf_bytes,
