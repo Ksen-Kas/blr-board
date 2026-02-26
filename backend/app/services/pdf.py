@@ -1,5 +1,7 @@
 """PDF rendering service — markdown/text → styled PDF bytes via WeasyPrint."""
 
+import re
+
 import markdown
 from bs4 import BeautifulSoup
 
@@ -71,43 +73,119 @@ def _fallback_pdf(text: str, title: str | None = None) -> bytes:
 
     return bytes(pdf.output())
 
+
+def _prepare_cv_markdown(md: str) -> str:
+    """Pre-process CV markdown so the name renders as h1.
+
+    The canonical resume uses **Name** (bold paragraph) instead of # Name.
+    This converts the first bold-only line to a proper h1 heading, and strips
+    internal section markers like '## Header' and '---' dividers.
+    """
+    lines = md.strip().splitlines()
+    result: list[str] = []
+    name_done = False
+
+    for line in lines:
+        stripped = line.strip()
+
+        # Skip '## Header' marker — it's structural, not visible
+        if stripped.lower() == "## header":
+            continue
+
+        # Skip horizontal rules
+        if re.fullmatch(r"-{3,}", stripped):
+            continue
+
+        # Convert first **Name** line to # Name
+        if not name_done:
+            m = re.fullmatch(r"\*\*(.+?)\*\*\s*", stripped)
+            if m:
+                result.append(f"# {m.group(1)}")
+                name_done = True
+                continue
+
+        result.append(line)
+
+    return "\n".join(result)
+
+
+# ─── CSS ──────────────────────────────────────────────────────────────────────
+# Matches the reference layout: Andrey_Kasyanov_PMC_Specialist_RE_CV.pdf
+# A4, 1-inch margins, Arial, clean bullets, no decorative rules.
+
 CV_CSS = """
 @page {
     size: A4;
-    margin: 2cm 2.5cm;
+    margin: 1.8cm 2.2cm;
 }
 body {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: 11pt;
-    line-height: 1.5;
-    color: #222;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.3;
+    color: #000;
 }
-h1 { font-size: 20pt; margin: 0 0 4pt; color: #111; }
-h2 { font-size: 13pt; margin: 18pt 0 4pt; color: #333; border-bottom: 1px solid #ccc; padding-bottom: 3pt; }
-h3 { font-size: 11pt; margin: 12pt 0 2pt; color: #444; }
-p { margin: 4pt 0; }
-ul { margin: 4pt 0 4pt 18pt; padding: 0; }
-li { margin: 2pt 0; }
-strong { color: #111; }
-a { color: #1a5276; text-decoration: none; }
+h1 {
+    font-size: 22pt;
+    font-weight: bold;
+    margin: 0 0 3pt;
+    color: #000;
+    line-height: 1.15;
+}
+h2 {
+    font-size: 12pt;
+    font-weight: bold;
+    margin: 16pt 0 5pt;
+    color: #000;
+}
+h3 {
+    font-size: 10.5pt;
+    font-weight: bold;
+    margin: 10pt 0 1pt;
+    color: #000;
+}
+p {
+    margin: 1pt 0;
+}
+ul {
+    margin: 2pt 0;
+    padding-left: 18pt;
+    list-style-type: disc;
+}
+li {
+    margin: 1pt 0;
+    padding-left: 2pt;
+}
+strong {
+    color: #000;
+    font-weight: bold;
+}
+a {
+    color: #1155cc;
+    text-decoration: none;
+}
+hr {
+    border: none;
+    height: 0;
+    margin: 0;
+}
 """
 
 LETTER_CSS = """
 @page {
     size: A4;
-    margin: 2.5cm 3cm;
+    margin: 2.54cm 2.54cm;
 }
 body {
-    font-family: Georgia, "Times New Roman", serif;
-    font-size: 11pt;
-    line-height: 1.6;
-    color: #222;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.5;
+    color: #000;
 }
 .subject {
-    font-size: 13pt;
+    font-size: 12pt;
     font-weight: bold;
-    margin-bottom: 18pt;
-    color: #111;
+    margin-bottom: 16pt;
+    color: #000;
 }
 .body p {
     margin: 0 0 10pt;
@@ -118,7 +196,8 @@ body {
 
 def render_cv_pdf(markdown_text: str, company: str, role: str) -> bytes:
     """Convert markdown CV to styled PDF bytes."""
-    html_body = markdown.markdown(markdown_text, extensions=["tables", "sane_lists"])
+    cleaned_md = _prepare_cv_markdown(markdown_text)
+    html_body = markdown.markdown(cleaned_md, extensions=["tables", "sane_lists"])
 
     try:
         from weasyprint import HTML

@@ -187,6 +187,14 @@ Task complete if:
 
 ---
 
+## Context Window Management
+
+- When ~10% of the context window remains, warn the user immediately
+- Suggest saving current state (commit, update PROGRESS.md) before starting a new session
+- Do NOT wait for the limit — proactively alert early
+
+---
+
 ## Git & Documentation Rules (AUTO)
 
 **Claude Code выполняет это автоматически, без напоминаний от пользователя.**
