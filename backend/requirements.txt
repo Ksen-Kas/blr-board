@@ -9,3 +9,4 @@ httpx>=0.24.0
 beautifulsoup4>=4.12.0
 weasyprint==63.1
 markdown==3.7
+fpdf2==2.7.9

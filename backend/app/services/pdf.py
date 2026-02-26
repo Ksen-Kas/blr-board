@@ -1,6 +1,38 @@
 """PDF rendering service — markdown/text → styled PDF bytes via WeasyPrint."""
 
 import markdown
+from bs4 import BeautifulSoup
+
+
+def _html_to_text(html: str) -> str:
+    soup = BeautifulSoup(html, "html.parser")
+    text = soup.get_text("\n")
+    lines = [line.rstrip() for line in text.splitlines()]
+    return "\n".join(lines).strip()
+
+
+def _fallback_pdf(text: str, title: str | None = None) -> bytes:
+    """Fallback PDF renderer that avoids system deps (no WeasyPrint)."""
+    from fpdf import FPDF
+
+    pdf = FPDF()
+    pdf.set_auto_page_break(True, margin=15)
+    pdf.add_page()
+    pdf.set_font("Helvetica", size=11)
+
+    if title:
+        pdf.set_font("Helvetica", style="B", size=12)
+        pdf.multi_cell(0, 6, title)
+        pdf.ln(2)
+        pdf.set_font("Helvetica", size=11)
+
+    for line in text.splitlines():
+        if not line.strip():
+            pdf.ln(4)
+            continue
+        pdf.multi_cell(0, 5, line)
+
+    return pdf.output(dest="S").encode("latin-1", errors="ignore")
 
 CV_CSS = """
 @page {
@@ -50,7 +82,12 @@ body {
 def render_cv_pdf(markdown_text: str, company: str, role: str) -> bytes:
     """Convert markdown CV to styled PDF bytes."""
     # Import lazily so API startup does not crash when system libs are missing.
-    from weasyprint import HTML
+    try:
+        from weasyprint import HTML
+    except Exception:
+        html_body = markdown.markdown(markdown_text, extensions=["tables", "sane_lists"])
+        text = _html_to_text(html_body)
+        return _fallback_pdf(text, title=f"{company} — {role}")
 
     html_body = markdown.markdown(markdown_text, extensions=["tables", "sane_lists"])
     html = f"""<!DOCTYPE html>
@@ -62,7 +99,10 @@ def render_cv_pdf(markdown_text: str, company: str, role: str) -> bytes:
 def render_letter_pdf(subject: str, body: str, company: str, role: str) -> bytes:
     """Convert cover letter text to styled PDF bytes."""
     # Import lazily so API startup does not crash when system libs are missing.
-    from weasyprint import HTML
+    try:
+        from weasyprint import HTML
+    except Exception:
+        return _fallback_pdf(body, title=subject)
 
     # Convert plain-text paragraphs to HTML
     paragraphs = "".join(f"<p>{p}</p>" for p in body.split("\n\n") if p.strip())
