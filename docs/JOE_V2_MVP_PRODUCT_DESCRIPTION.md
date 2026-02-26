@@ -1,8 +1,10 @@
 # Joe v2 MVP — Описание продукта для сравнения с конкурентами
 
-**Версия:** 1.0  
-**Дата:** 2026-02-25  
-**Назначение:** Детальное описание MVP как продукта для проведения конкурентного анализа.
+**Версия:** 1.1  
+**Дата:** 2026-02-26  
+**Назначение:** Короткое и понятное описание MVP + техническая реализация для ориентира команде.
+
+**Git repo:** https://github.com/Ksen-Kas/joe_services
 
 ---
 
@@ -95,7 +97,11 @@
 ### 4.7 Интеграции MVP
 - **Google Sheets:** чтение/запись pipeline, один лист (например 21 колонка).
 - **Claude API:** скоринг, CV tailor, letter generation.
-- **Telegram-бот (опционально):** тот же Sheets, запись из бота и из веба в одну таблицу.
+- **Telegram-бот (текущая версия):**
+  - Пишет в тот же Google Sheets (Pipeline).
+  - **Без скоринга** и без расхода токенов Claude.
+  - При ссылке добавляет карточку сразу; LinkedIn помечает комментом «вставь JD вручную».
+  - Парсинг не-LinkedIn URL используется только как проверка доступности текста.
 
 ---
 
@@ -137,11 +143,56 @@
 | AI | Claude API (скоринг, CV, letter) |
 | Хранение | Google Sheets (service account) |
 | PDF | WeasyPrint (markdown/text → PDF) |
-| Деплой (целевой) | Railway (или аналог); фронт — отдельно при необходимости |
+| Деплой (целевой) | Railway (GitHub-based deploy) |
 
 ---
 
-## 8. Модульность и расширяемость
+## 8. Архитектура и реализация (кратко, понятным языком)
+
+### 8.1 Общая схема
+- **Frontend (SPA)** → вызывает **Backend API** → записывает/читает **Google Sheets**.
+- **AI‑модули** вызываются только из backend.
+- **Telegram‑бот** пишет в ту же таблицу (Pipeline), чтобы всё было в одном месте.
+
+### 8.2 Backend (FastAPI)
+**Роуты API:**
+- `GET/POST /api/jobs` — чтение/добавление вакансий в Pipeline
+- `PATCH /api/jobs/{row}` — обновление полей
+- `POST /api/jobs/refresh` — сброс кэша
+- `POST /api/scoring/evaluate` — оценка соответствия (JD текст/URL)
+- `POST /api/cv/tailor` + `POST /api/cv/pdf` — CV
+- `POST /api/letter/generate` + `POST /api/letter/pdf` — письмо
+- `GET /api/pipeline/stats` — статистика для Dashboard
+
+**Сервисы внутри backend:**
+- `sheets` — Google Sheets (Pipeline + Events)
+- `parser` — парсинг JD (Jina Reader → BS4 fallback)
+- `canon` — канонические данные (CLIENT_SPACE или env fallback)
+- `claude` — вызовы Claude API
+- `pdf` — сборка PDF (WeasyPrint)
+- `contact_parser` — извлечение контакта из JD
+
+### 8.3 Frontend (React)
+**Экраны:**
+- Pipeline (таблица, фильтры, статусы)
+- JobCard (детали, события, подготовка)
+- CVScreen / LetterScreen (генерация + апрув)
+- Dashboard (сводка + воронка)
+
+### 8.4 Telegram‑бот (текущая версия)
+- Polling‑бот на Python.
+- Принимает URL или текст, **не оценивает**, сразу создаёт запись в Pipeline.
+- LinkedIn → пометка, что JD нужно вставить вручную.
+- Напоминания сохраняются (scheduler).
+
+### 8.5 Репозиторий и ветки
+- **Git repo:** https://github.com/Ksen-Kas/joe_services  
+- **MVP‑стек (web):** ветка `mvp-service`
+- **Legacy бот:** `main` (Telegram)
+
+---
+
+## 9. Модульность и расширяемость
 
 - **Letter Module** — подключаемый: замена папки `modules/letter` и правил (letter_rules, examples, banned_phrases) не ломает CV и скоринг.
 - **Интерфейс письма:** `generate_letter(jd, canon, notes) → letter`.
@@ -149,7 +200,7 @@
 
 ---
 
-## 9. Критерии готовности задачи (Done)
+## 10. Критерии готовности задачи (Done)
 
 - Создан хотя бы один артефакт (CV и/или письмо).
 - Для CV присутствует CANON CHECK.
@@ -158,7 +209,7 @@
 
 ---
 
-## 10. Шаблон для сравнения с конкурентами
+## 11. Шаблон для сравнения с конкурентами
 
 Ниже — таблица измерений. Копируй блок для каждого конкурента и заполняй столбец «Конкурент X».
 
