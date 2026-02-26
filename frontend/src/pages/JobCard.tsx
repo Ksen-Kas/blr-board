@@ -19,6 +19,8 @@ export default function JobCard() {
   const [job, setJob] = useState<Job | null>(null);
   const [scoring, setScoring] = useState(false);
   const [scoreResult, setScoreResult] = useState<Record<string, string> | null>(null);
+  const [scoreError, setScoreError] = useState("");
+  const [jdOverride, setJdOverride] = useState("");
   const [status, setStatus] = useState("");
   const [events, setEvents] = useState<JobEvent[]>([]);
   const [showTouchForm, setShowTouchForm] = useState(false);
@@ -39,9 +41,24 @@ export default function JobCard() {
   const handleScore = async () => {
     if (!job) return;
     setScoring(true);
+    setScoreError("");
     try {
-      const jdText = job.comment || `${job.role} at ${job.company}, ${job.region}`;
-      const res = await evaluateJD({ jd_text: jdText });
+      const override = jdOverride.trim();
+      const hasSource = !!job.source?.trim();
+      const hasComment = !!job.comment?.trim();
+
+      if (!override && !hasSource && !hasComment) {
+        setScoreError("Paste JD text or add a source URL before scoring.");
+        return;
+      }
+
+      const payload = override
+        ? { jd_text: override }
+        : hasSource
+        ? { source_url: job.source }
+        : { jd_text: job.comment };
+
+      const res = await evaluateJD(payload);
       setScoreResult(res);
       await updateJob(job.row_num, {
         role_fit: res.role_fit || "",
@@ -56,6 +73,12 @@ export default function JobCard() {
             }
           : prev
       );
+    } catch (e: unknown) {
+      const msg =
+        e && typeof e === "object" && "response" in e
+          ? String((e as { response?: { data?: { detail?: string } } }).response?.data?.detail || "Scoring failed")
+          : "Scoring failed. Check that the backend is running.";
+      setScoreError(msg);
     } finally {
       setScoring(false);
     }
@@ -204,6 +227,24 @@ export default function JobCard() {
           <p className="text-muted">{scoreResult.summary}</p>
         </div>
       )}
+
+      {/* Scoring input */}
+      <div className="mb-4 p-4 border border-border rounded-lg bg-surface">
+        <div className="text-sm font-medium text-text">Scoring Input</div>
+        <p className="text-xs text-muted mt-1">
+          If the job is from LinkedIn or the page doesn’t parse, paste JD text here.
+        </p>
+        <textarea
+          value={jdOverride}
+          onChange={(e) => setJdOverride(e.target.value)}
+          placeholder="Paste JD text (optional, but required for LinkedIn)..."
+          rows={4}
+          className="mt-3 w-full border border-border rounded-lg px-3 py-2 text-sm resize-none bg-input text-text placeholder:text-muted/50 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent"
+        />
+        {scoreError ? (
+          <div className="mt-3 text-sm text-red-400">{scoreError}</div>
+        ) : null}
+      </div>
 
       {/* Info sections */}
       <div className="space-y-4 mb-6">
