@@ -46,11 +46,16 @@ async def require_basic_auth(request: Request) -> None:
     )
 
 
-def require_internal_api_key(x_app_key: str = Header(default="", alias="X-App-Key")) -> None:
-    if not config.INTERNAL_API_KEY:
+def require_internal_api_key(
+    request: Request,
+    x_app_key: str = Header(default="", alias="X-App-Key"),
+) -> None:
+    if config.INTERNAL_API_KEY and secrets.compare_digest(x_app_key, config.INTERNAL_API_KEY):
         return
-    if secrets.compare_digest(x_app_key, config.INTERNAL_API_KEY):
-        return
+    if _auth_enabled():
+        auth_header = request.headers.get("Authorization", "")
+        if _check_basic_auth(auth_header):
+            return
     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid API key")
 
 

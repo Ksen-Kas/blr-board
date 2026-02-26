@@ -23,6 +23,7 @@
 - fix: Frontend now requires Basic Auth login before loading app
 - fix: Removed internal API key usage from frontend client
 - docs: Expanded MVP product description (architecture, services, bot, repo)
+- fix: Allow basic auth to access internal-key-protected API routes
 - feat: Pipeline screen — AddJobBar (URL/text input → evaluate/add), LetterPopup (click CL → modal), polished table with 83 real jobs
 - feat: JobCard screen — scoring, inline status editor, all data sections, actions
 - feat: CVScreen — tailor CV with canon check, copy changes/full CV, re-tailor
