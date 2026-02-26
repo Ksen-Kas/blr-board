@@ -40,9 +40,14 @@ def _fallback_pdf(text: str, title: str | None = None) -> bytes:
     pdf.add_page()
     pdf.set_font("Helvetica", size=11)
 
+    def _mc(h: int, txt: str) -> None:
+        """multi_cell with cursor reset — fpdf2 doesn't auto-reset x."""
+        pdf.set_x(pdf.l_margin)
+        pdf.multi_cell(0, h, txt)
+
     if title:
         pdf.set_font("Helvetica", style="B", size=12)
-        pdf.multi_cell(0, 6, _safe_text(title))
+        _mc(6, _safe_text(title))
         pdf.ln(2)
         pdf.set_font("Helvetica", size=11)
 
@@ -56,13 +61,13 @@ def _fallback_pdf(text: str, title: str | None = None) -> bytes:
             pdf.ln(4)
             continue
         try:
-            pdf.multi_cell(0, 5, cleaned)
+            _mc(5, cleaned)
         except Exception:
             for word in cleaned.split(" "):
-                if not word:
-                    pdf.multi_cell(0, 5, " ")
-                else:
-                    pdf.multi_cell(0, 5, word)
+                try:
+                    _mc(5, word if word else " ")
+                except Exception:
+                    pass
 
     return bytes(pdf.output())
 
