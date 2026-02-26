@@ -25,6 +25,16 @@ def _fallback_pdf(text: str, title: str | None = None) -> bytes:
         )
         return value.encode("latin-1", errors="ignore").decode("latin-1")
 
+    def _break_long_tokens(value: str, max_len: int = 40) -> str:
+        parts: list[str] = []
+        for token in value.split(" "):
+            if len(token) <= max_len:
+                parts.append(token)
+                continue
+            chunks = [token[i : i + max_len] for i in range(0, len(token), max_len)]
+            parts.extend(chunks)
+        return " ".join(parts)
+
     pdf = FPDF()
     pdf.set_auto_page_break(True, margin=15)
     pdf.add_page()
@@ -36,12 +46,12 @@ def _fallback_pdf(text: str, title: str | None = None) -> bytes:
         pdf.ln(2)
         pdf.set_font("Helvetica", size=11)
 
-    safe_body = _safe_text(text)
+    safe_body = _break_long_tokens(_safe_text(text))
     for line in safe_body.splitlines():
         if not line.strip():
             pdf.ln(4)
             continue
-        cleaned = line.replace("\t", " ").strip()
+        cleaned = _break_long_tokens(line.replace("\t", " ").strip())
         if not cleaned:
             pdf.ln(4)
             continue
