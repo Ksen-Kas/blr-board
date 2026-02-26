@@ -15,6 +15,16 @@ def _fallback_pdf(text: str, title: str | None = None) -> bytes:
     """Fallback PDF renderer that avoids system deps (no WeasyPrint)."""
     from fpdf import FPDF
 
+    def _safe_text(value: str) -> str:
+        value = (
+            value.replace("\u2014", "-")
+            .replace("\u2013", "-")
+            .replace("\u2012", "-")
+            .replace("\u2011", "-")
+            .replace("\u00a0", " ")
+        )
+        return value.encode("latin-1", errors="ignore").decode("latin-1")
+
     pdf = FPDF()
     pdf.set_auto_page_break(True, margin=15)
     pdf.add_page()
@@ -22,11 +32,12 @@ def _fallback_pdf(text: str, title: str | None = None) -> bytes:
 
     if title:
         pdf.set_font("Helvetica", style="B", size=12)
-        pdf.multi_cell(0, 6, title)
+        pdf.multi_cell(0, 6, _safe_text(title))
         pdf.ln(2)
         pdf.set_font("Helvetica", size=11)
 
-    for line in text.splitlines():
+    safe_body = _safe_text(text)
+    for line in safe_body.splitlines():
         if not line.strip():
             pdf.ln(4)
             continue
