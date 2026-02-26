@@ -1,0 +1,75 @@
+"""PDF rendering service — markdown/text → styled PDF bytes via WeasyPrint."""
+
+import markdown
+
+CV_CSS = """
+@page {
+    size: A4;
+    margin: 2cm 2.5cm;
+}
+body {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 11pt;
+    line-height: 1.5;
+    color: #222;
+}
+h1 { font-size: 20pt; margin: 0 0 4pt; color: #111; }
+h2 { font-size: 13pt; margin: 18pt 0 4pt; color: #333; border-bottom: 1px solid #ccc; padding-bottom: 3pt; }
+h3 { font-size: 11pt; margin: 12pt 0 2pt; color: #444; }
+p { margin: 4pt 0; }
+ul { margin: 4pt 0 4pt 18pt; padding: 0; }
+li { margin: 2pt 0; }
+strong { color: #111; }
+a { color: #1a5276; text-decoration: none; }
+"""
+
+LETTER_CSS = """
+@page {
+    size: A4;
+    margin: 2.5cm 3cm;
+}
+body {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 11pt;
+    line-height: 1.6;
+    color: #222;
+}
+.subject {
+    font-size: 13pt;
+    font-weight: bold;
+    margin-bottom: 18pt;
+    color: #111;
+}
+.body p {
+    margin: 0 0 10pt;
+    text-align: left;
+}
+"""
+
+
+def render_cv_pdf(markdown_text: str, company: str, role: str) -> bytes:
+    """Convert markdown CV to styled PDF bytes."""
+    # Import lazily so API startup does not crash when system libs are missing.
+    from weasyprint import HTML
+
+    html_body = markdown.markdown(markdown_text, extensions=["tables", "sane_lists"])
+    html = f"""<!DOCTYPE html>
+<html><head><meta charset="utf-8"><style>{CV_CSS}</style></head>
+<body>{html_body}</body></html>"""
+    return HTML(string=html).write_pdf()
+
+
+def render_letter_pdf(subject: str, body: str, company: str, role: str) -> bytes:
+    """Convert cover letter text to styled PDF bytes."""
+    # Import lazily so API startup does not crash when system libs are missing.
+    from weasyprint import HTML
+
+    # Convert plain-text paragraphs to HTML
+    paragraphs = "".join(f"<p>{p}</p>" for p in body.split("\n\n") if p.strip())
+    html = f"""<!DOCTYPE html>
+<html><head><meta charset="utf-8"><style>{LETTER_CSS}</style></head>
+<body>
+<div class="subject">{subject}</div>
+<div class="body">{paragraphs}</div>
+</body></html>"""
+    return HTML(string=html).write_pdf()

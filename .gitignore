@@ -1,6 +1,25 @@
-.env
-credentials.json
+# Dependencies
+node_modules/
 __pycache__/
 *.pyc
-*.pyo
+.venv/
+venv/
+
+# Environment
+.env
+backend/.env
+.deploy_secrets_local.txt
+
+# Build
+frontend/dist/
+*.egg-info/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
 .DS_Store
+
+# Google credentials
+*service_account*.json
