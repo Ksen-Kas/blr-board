@@ -228,7 +228,15 @@ export default function JobCard() {
 
         <div className="flex items-center gap-3 mt-2 text-sm">
           <span className="text-muted">
-            Fit: {roleFit || "Not scored"} | Type: {job.operator_vs_contractor || "—"} | Level: {job.seniority || "—"}
+            <span>Fit {roleFit || "Not scored"}</span>
+            <span className="mx-1 text-border">|</span>
+            <span className={job.operator_vs_contractor ? "text-muted" : "text-muted/50"}>
+              {job.operator_vs_contractor || "Type"}
+            </span>
+            <span className="mx-1 text-border">|</span>
+            <span className={job.seniority ? "text-muted" : "text-muted/50"}>
+              {job.seniority || "Level"}
+            </span>
           </span>
           <span className={`rounded-full border px-2 py-0.5 text-xs font-semibold ${fitBadgeClass}`}>
             FIT: {roleFit || "N/A"}
