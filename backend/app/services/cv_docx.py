@@ -200,7 +200,7 @@ def render_canonical_cv_pdf() -> bytes:
         # Graceful fallback if LibreOffice is unavailable in runtime.
         from app.services.pdf import render_cv_pdf
 
-        return render_cv_pdf(get_canonical_resume(), company="Canonical", role="Resume")
+        return render_cv_pdf(get_canonical_resume(), company="", role="")
 
 
 def render_tailored_cv_pdf(tailored_markdown: str) -> bytes:
@@ -223,7 +223,7 @@ def render_tailored_cv_pdf(tailored_markdown: str) -> bytes:
         # Graceful fallback if LibreOffice is unavailable in runtime.
         from app.services.pdf import render_cv_pdf
 
-        return render_cv_pdf(tailored_markdown, company="Tailored", role="Resume")
+        return render_cv_pdf(tailored_markdown, company="", role="")
 
 
 def build_track_changes_preview(canonical_md: str, tailored_md: str) -> list[dict]:

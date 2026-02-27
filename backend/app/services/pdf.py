@@ -313,7 +313,10 @@ def render_cv_pdf(markdown_text: str, company: str, role: str) -> bytes:
         return HTML(string=html).write_pdf()
     except Exception:
         text = _html_to_text(html_body)
-        return _fallback_pdf(text, title=f"{company} - {role}")
+        title = None
+        if company.strip() and role.strip():
+            title = f"{company} - {role}"
+        return _fallback_pdf(text, title=title)
 
 
 def render_letter_pdf(subject: str, body: str, company: str, role: str) -> bytes:
