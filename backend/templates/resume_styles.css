@@ -57,19 +57,19 @@ body {
 }
 
 .resume-section {
-  margin-top: 12.84pt;
+  margin-top: 16pt;
 }
 
 .technical-section {
-  margin-top: 17.12pt;
+  margin-top: 19pt;
 }
 
 .experience-section {
-  margin-top: 13.74pt;
+  margin-top: 17pt;
 }
 
 .resume-section h2 {
-  margin: 0 0 4pt;
+  margin: 1pt 0 5pt;
   font-size: 12pt;
   line-height: 1.2;
   font-weight: 700;
