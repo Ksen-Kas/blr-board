@@ -1,0 +1,133 @@
+@page {
+  size: A4;
+  margin: 1.8cm 2.15cm;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.3;
+  color: #000;
+  background: #fff;
+}
+
+.resume-page {
+  width: 100%;
+}
+
+.resume-header h1 {
+  margin: 0;
+  font-size: 16pt;
+  line-height: 1.2;
+  font-weight: 700;
+  color: #000;
+}
+
+.resume-header .title {
+  margin: 1pt 0 0;
+  font-size: 11pt;
+  font-weight: 700;
+  color: #2d2d2d;
+  line-height: 1.2;
+}
+
+.resume-header .tagline {
+  margin: 1pt 0 0;
+  font-size: 11pt;
+  font-weight: 700;
+  color: #2d2d2d;
+  line-height: 1.2;
+}
+
+.contact-line {
+  margin: 2pt 0 8pt;
+  font-size: 9pt;
+  line-height: 1.3;
+  color: #444;
+}
+
+.contact-line span + span::before {
+  content: " | ";
+  color: #777;
+}
+
+.resume-section {
+  margin-top: 12.84pt;
+}
+
+.technical-section {
+  margin-top: 17.12pt;
+}
+
+.experience-section {
+  margin-top: 13.74pt;
+}
+
+.resume-section h2 {
+  margin: 0 0 4pt;
+  font-size: 12pt;
+  line-height: 1.2;
+  font-weight: 700;
+  color: #000;
+  text-transform: uppercase;
+  break-after: avoid;
+}
+
+.resume-section p {
+  margin: 1pt 0;
+}
+
+.job-block {
+  margin-top: 10pt;
+  break-inside: avoid;
+}
+
+.job-block h3 {
+  margin: 0;
+  font-size: 10.5pt;
+  line-height: 1.22;
+  font-weight: 700;
+}
+
+.job-role {
+  margin: 1pt 0 1pt;
+  font-size: 10pt;
+  font-weight: 700;
+  color: #222;
+}
+
+.bullet-list {
+  margin: 2pt 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bullet-list li {
+  position: relative;
+  padding-left: 14pt;
+  margin: 1pt 0;
+  line-height: 1.28;
+  break-inside: avoid;
+}
+
+.bullet-list li::before {
+  content: "\2022";
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.contact-line a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.preview-mode .diff-added {
+  background: #dff5df;
+  border-radius: 3px;
+}

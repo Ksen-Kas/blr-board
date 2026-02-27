@@ -6,6 +6,7 @@ import {
   updateJob,
   downloadCvPdf,
   downloadCanonicalCvPdf,
+  getTailoredCvPreviewHtml,
 } from "../api/jobs";
 import type { Job } from "../types/job";
 
@@ -30,6 +31,8 @@ export default function CVScreen() {
   const [result, setResult] = useState<TailorResult | null>(null);
   const [showRetailorInput, setShowRetailorInput] = useState(false);
   const [retailorNotes, setRetailorNotes] = useState("");
+  const [previewHtml, setPreviewHtml] = useState("");
+  const [previewLoading, setPreviewLoading] = useState(false);
 
   useEffect(() => {
     if (rowNum) getJob(Number(rowNum)).then(setJob);
@@ -46,6 +49,15 @@ export default function CVScreen() {
         : jdText;
       const res = await tailorCV(fullText);
       setResult(res);
+      setPreviewLoading(true);
+      try {
+        const html = await getTailoredCvPreviewHtml(res.tailored_cv);
+        setPreviewHtml(html);
+      } catch {
+        setPreviewHtml("");
+      } finally {
+        setPreviewLoading(false);
+      }
       await updateJob(job.row_num, { cv: res.changes_summary });
     } catch (e: unknown) {
       const msg =
@@ -166,6 +178,28 @@ export default function CVScreen() {
 
       {result && (
         <div className="mt-5 space-y-4">
+          <div className="surface-card overflow-hidden">
+            <div className="bg-surface-alt border-b border-border px-4 py-3 text-sm font-bold text-text uppercase tracking-wide">
+              Preview
+            </div>
+            <div className="p-4">
+              <div className="text-xs text-muted mb-2">
+                Green highlight marks added or changed lines.
+              </div>
+              {previewLoading ? (
+                <div className="text-sm text-muted">Preparing HTML preview...</div>
+              ) : previewHtml ? (
+                <iframe
+                  title="Tailored CV preview"
+                  srcDoc={previewHtml}
+                  className="w-full h-[720px] border border-border rounded-xl bg-white"
+                />
+              ) : (
+                <div className="text-sm text-muted">Preview unavailable. You can still download the PDF.</div>
+              )}
+            </div>
+          </div>
+
           {(trackSections.length > 0 ? trackSections : [{ section: "Changes", lines: [] }]).map((section) => (
             <div key={section.section} className="surface-card overflow-hidden">
               <div className="bg-surface-alt border-b border-border px-4 py-3 text-sm font-bold text-text uppercase tracking-wide">

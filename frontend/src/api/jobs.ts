@@ -66,7 +66,7 @@ export const downloadCvPdf = async (data: {
   company: string;
   role: string;
 }) => {
-  const res = await api.post("/cv/pdf", data, { responseType: "blob" });
+  const res = await api.post("/cv/tailored-pdf", data, { responseType: "blob" });
   const url = URL.createObjectURL(res.data);
   const a = document.createElement("a");
   a.href = url;
@@ -81,7 +81,10 @@ export const downloadCanonicalCvPdf = async (data: {
   company: string;
   role: string;
 }) => {
-  const res = await api.post("/cv/pdf/canonical", data, { responseType: "blob" });
+  const res = await api.get("/cv/canonical-pdf", {
+    params: { company: data.company, role: data.role },
+    responseType: "blob",
+  });
   const url = URL.createObjectURL(res.data);
   const a = document.createElement("a");
   a.href = url;
@@ -91,6 +94,11 @@ export const downloadCanonicalCvPdf = async (data: {
   a.remove();
   window.setTimeout(() => URL.revokeObjectURL(url), 1000);
 };
+
+export const getTailoredCvPreviewHtml = (tailored_cv: string) =>
+  api
+    .post<string>("/cv/tailored-preview-html", { tailored_cv }, { responseType: "text" })
+    .then((r) => r.data);
 
 export const downloadLetterPdf = async (data: {
   subject: string;

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ name }} - Resume</title>
+  <style>{{ css }}</style>
+</head>
+<body class="{% if preview_mode %}preview-mode{% endif %}">
+  <main class="resume-page">
+    <header class="resume-header">
+      <h1>{{ name }}</h1>
+      {% if title %}<p class="title">{{ title }}</p>{% endif %}
+      {% if tagline %}<p class="tagline {% if tagline_changed %}diff-added{% endif %}">{{ tagline }}</p>{% endif %}
+      <p class="contact-line">
+        {% if location %}<span>{{ location }}</span>{% endif %}
+        {% if email %}<span>{{ email }}</span>{% endif %}
+        {% if linkedin_url %}<span><a href="{{ linkedin_url }}">{{ linkedin_label or "LinkedIn" }}</a></span>{% endif %}
+        {% if phone %}<span>{{ phone }}</span>{% endif %}
+      </p>
+    </header>
+
+    <section class="resume-section">
+      <h2>Professional Summary</h2>
+      <p class="{% if summary_changed %}diff-added{% endif %}">{{ summary }}</p>
+    </section>
+
+    <section class="resume-section">
+      <h2>Core Competencies</h2>
+      <ul class="bullet-list">
+        {% for item in skills %}
+        <li class="{% if item.changed %}diff-added{% endif %}">{{ item.text }}</li>
+        {% endfor %}
+      </ul>
+    </section>
+
+    <section class="resume-section experience-section">
+      <h2>Experience</h2>
+      {% for job in experience %}
+      <article class="job-block">
+        <h3 class="{% if job.company_changed %}diff-added{% endif %}">{{ job.company_line }}</h3>
+        {% if job.role %}<p class="job-role {% if job.role_changed %}diff-added{% endif %}">{{ job.role }}</p>{% endif %}
+        {% if job.bullets %}
+        <ul class="bullet-list">
+          {% for bullet in job.bullets %}
+          <li class="{% if bullet.changed %}diff-added{% endif %}">{{ bullet.text }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+      </article>
+      {% endfor %}
+    </section>
+
+    <section class="resume-section technical-section">
+      <h2>Technical Toolkit</h2>
+      <ul class="bullet-list">
+        {% for item in toolkit %}
+        <li class="{% if item.changed %}diff-added{% endif %}">{{ item.text }}</li>
+        {% endfor %}
+      </ul>
+    </section>
+
+    <section class="resume-section">
+      <h2>Education</h2>
+      {% for item in education %}
+      <p class="{% if item.changed %}diff-added{% endif %}">
+        {% if item.school %}<strong>{{ item.school }}{% if item.details %} — {{ item.details }}{% endif %}</strong>
+        {% else %}{{ item.text }}{% endif %}
+      </p>
+      {% endfor %}
+    </section>
+  </main>
+</body>
+</html>
