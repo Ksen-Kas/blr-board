@@ -193,12 +193,177 @@ def _render_html(data: dict, preview_mode: bool = False) -> str:
     return template.render(**payload)
 
 
+def _safe_pdf_text(value: str) -> str:
+    value = (
+        value.replace("\u2014", "-")
+        .replace("\u2013", "-")
+        .replace("\u2012", "-")
+        .replace("\u2011", "-")
+        .replace("\u00a0", " ")
+    )
+    return value.encode("latin-1", errors="ignore").decode("latin-1")
+
+
+def _minimal_pdf(text: str, title: str = "") -> bytes:
+    def esc(value: str) -> str:
+        return value.replace("\\", "\\\\").replace("(", "\\(").replace(")", "\\)")
+
+    lines = []
+    if title:
+        lines.append(title)
+        lines.append("")
+    lines.extend(text.splitlines())
+    lines = [esc(_safe_pdf_text(line)) for line in lines if line is not None]
+
+    y = 800
+    content_parts = ["BT", "/F1 11 Tf", "50 800 Td"]
+    first = True
+    for line in lines:
+        if not first:
+            content_parts.append("0 -14 Td")
+        content_parts.append(f"({line or ' '}) Tj")
+        first = False
+        y -= 14
+        if y < 60:
+            break
+    content_parts.append("ET")
+    content = "\n".join(content_parts).encode("latin-1", errors="ignore")
+
+    objs = []
+    objs.append(b"1 0 obj<< /Type /Catalog /Pages 2 0 R >>endobj\n")
+    objs.append(b"2 0 obj<< /Type /Pages /Kids [3 0 R] /Count 1 >>endobj\n")
+    objs.append(
+        b"3 0 obj<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] "
+        b"/Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>endobj\n"
+    )
+    objs.append(b"4 0 obj<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>endobj\n")
+    objs.append(
+        f"5 0 obj<< /Length {len(content)} >>stream\n".encode("latin-1")
+        + content
+        + b"\nendstream\nendobj\n"
+    )
+
+    pdf = bytearray(b"%PDF-1.4\n")
+    offsets = [0]
+    for obj in objs:
+        offsets.append(len(pdf))
+        pdf.extend(obj)
+
+    xref_pos = len(pdf)
+    pdf.extend(f"xref\n0 {len(objs)+1}\n".encode("latin-1"))
+    pdf.extend(b"0000000000 65535 f \n")
+    for off in offsets[1:]:
+        pdf.extend(f"{off:010d} 00000 n \n".encode("latin-1"))
+    pdf.extend(
+        (
+            f"trailer<< /Size {len(objs)+1} /Root 1 0 R >>\n"
+            f"startxref\n{xref_pos}\n%%EOF\n"
+        ).encode("latin-1")
+    )
+    return bytes(pdf)
+
+
+def _fallback_pdf(text: str, title: str = "") -> bytes:
+    try:
+        from fpdf import FPDF
+    except Exception:
+        return _minimal_pdf(text, title=title)
+
+    pdf = FPDF()
+    pdf.set_auto_page_break(True, margin=15)
+    pdf.add_page()
+    pdf.set_font("Helvetica", size=11)
+
+    if title:
+        pdf.set_font("Helvetica", style="B", size=12)
+        pdf.multi_cell(0, 6, _safe_pdf_text(title))
+        pdf.ln(2)
+        pdf.set_font("Helvetica", size=11)
+
+    for line in text.splitlines():
+        if not line.strip():
+            pdf.ln(3)
+            continue
+        pdf.multi_cell(0, 5, _safe_pdf_text(line))
+
+    return bytes(pdf.output())
+
+
+def _resume_data_to_text(data: dict) -> str:
+    lines: list[str] = []
+
+    header_bits = [data.get("name", ""), data.get("title", ""), data.get("tagline", "")]
+    lines.extend([bit for bit in header_bits if bit])
+
+    contact_bits = [
+        data.get("location", ""),
+        data.get("email", ""),
+        data.get("linkedin_label", ""),
+        data.get("phone", ""),
+    ]
+    if any(contact_bits):
+        lines.append(" | ".join(bit for bit in contact_bits if bit))
+
+    summary = data.get("summary", "")
+    if summary:
+        lines.extend(["", "PROFESSIONAL SUMMARY", summary])
+
+    skills = data.get("skills", [])
+    if skills:
+        lines.append("")
+        lines.append("CORE COMPETENCIES")
+        for item in skills:
+            text = item.get("text", "") if isinstance(item, dict) else str(item)
+            if text:
+                lines.append(f"- {text}")
+
+    experience = data.get("experience", [])
+    if experience:
+        lines.append("")
+        lines.append("EXPERIENCE")
+        for job in experience:
+            company = job.get("company_line", "") if isinstance(job, dict) else ""
+            role = job.get("role", "") if isinstance(job, dict) else ""
+            if company:
+                lines.append(company)
+            if role:
+                lines.append(role)
+            for bullet in job.get("bullets", []) if isinstance(job, dict) else []:
+                bullet_text = bullet.get("text", "") if isinstance(bullet, dict) else str(bullet)
+                if bullet_text:
+                    lines.append(f"- {bullet_text}")
+            lines.append("")
+
+    toolkit = data.get("toolkit", [])
+    if toolkit:
+        lines.append("TECHNICAL TOOLKIT")
+        for item in toolkit:
+            text = item.get("text", "") if isinstance(item, dict) else str(item)
+            if text:
+                lines.append(f"- {text}")
+
+    education = data.get("education", [])
+    if education:
+        lines.append("")
+        lines.append("EDUCATION")
+        for item in education:
+            text = item.get("text", "") if isinstance(item, dict) else str(item)
+            if text:
+                lines.append(f"- {text}")
+
+    return "\n".join(lines).strip()
+
+
 def generate_cv_pdf(data: dict) -> bytes:
     """Render resume data as a PDF using WeasyPrint."""
-    from weasyprint import HTML
-
     html = _render_html(data=data, preview_mode=False)
-    return HTML(string=html).write_pdf()
+    try:
+        from weasyprint import HTML
+
+        return HTML(string=html).write_pdf()
+    except Exception:
+        text = _resume_data_to_text(data)
+        return _fallback_pdf(text, title=data.get("name", ""))
 
 
 def generate_cv_pdf_from_markdown(markdown_text: str) -> bytes:

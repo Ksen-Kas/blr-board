@@ -40,6 +40,7 @@ export default function JobCard() {
   const [touchNote, setTouchNote] = useState("");
   const [touchChannel, setTouchChannel] = useState("Email");
   const [touchDirection, setTouchDirection] = useState("Outbound");
+  const [touchSaving, setTouchSaving] = useState(false);
   const [statusMessage, setStatusMessage] = useState("");
   const [statusMessageKind, setStatusMessageKind] = useState<"success" | "error" | "info">("info");
   const [statusUpdating, setStatusUpdating] = useState(false);
@@ -137,16 +138,21 @@ export default function JobCard() {
   };
 
   const handleAddTouchpoint = async () => {
-    if (!job || !touchNote.trim()) return;
+    if (!job || !touchNote.trim() || touchSaving) return;
+    setTouchSaving(true);
     const data = JSON.stringify({
       channel: touchChannel,
       direction: touchDirection,
-      note: touchNote,
+      note: touchNote.trim(),
     });
-    await addEvent(job.row_num, "touchpoint", data);
-    setEvents(await getEvents(job.row_num));
-    setTouchNote("");
-    setShowTouchForm(false);
+    try {
+      await addEvent(job.row_num, "touchpoint", data);
+      setEvents(await getEvents(job.row_num));
+      setTouchNote("");
+      setShowTouchForm(false);
+    } finally {
+      setTouchSaving(false);
+    }
   };
 
   if (!job) return <div className="p-6 text-muted">Loading...</div>;
@@ -194,7 +200,12 @@ export default function JobCard() {
       : []),
   ];
 
-  const touchpointRows = [...eventRows, ...timelineRows].sort((a, b) => b.sortMs - a.sortMs);
+  const touchpointRows = [...eventRows, ...timelineRows]
+    .sort((a, b) => b.sortMs - a.sortMs)
+    .filter((row, index, all) => {
+      const key = `${row.timestamp}|${row.eventType}|${row.detail}`;
+      return index === all.findIndex((candidate) => `${candidate.timestamp}|${candidate.eventType}|${candidate.detail}` === key);
+    });
 
   return (
     <div className="p-6 max-w-3xl mx-auto">
@@ -436,13 +447,15 @@ export default function JobCard() {
               <div className="flex gap-2">
                 <button
                   onClick={handleAddTouchpoint}
-                  className="px-3 py-1 text-sm bg-accent text-white rounded-full hover:bg-accent-hover cursor-pointer font-semibold"
+                  disabled={touchSaving || !touchNote.trim()}
+                  className="px-3 py-1 text-sm bg-accent text-white rounded-full hover:bg-accent-hover disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer font-semibold"
                 >
-                  Save
+                  {touchSaving ? "Saving..." : "Save"}
                 </button>
                 <button
                   onClick={() => setShowTouchForm(false)}
-                  className="px-3 py-1 text-sm border border-border rounded-full hover:bg-surface-alt cursor-pointer text-muted"
+                  disabled={touchSaving}
+                  className="px-3 py-1 text-sm border border-border rounded-full hover:bg-surface-alt disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer text-muted"
                 >
                   Cancel
                 </button>
