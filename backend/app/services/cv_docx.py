@@ -121,6 +121,8 @@ def _extract_sections(markdown_text: str) -> dict[str, list[str]]:
         if not line or re.fullmatch(r"-{3,}", line):
             continue
         low = line.lower()
+        if low.startswith("# canonical resume"):
+            continue
         if low.startswith("**version:") or low.startswith("**status:"):
             continue
 
@@ -131,6 +133,8 @@ def _extract_sections(markdown_text: str) -> dict[str, list[str]]:
             continue
 
         cleaned = _clean_markdown_line(line)
+        if cleaned.lower().startswith("canonical resume"):
+            continue
         if cleaned:
             sections.setdefault(current, []).append(cleaned)
 
