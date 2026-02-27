@@ -190,7 +190,13 @@ def _render_docx_to_pdf_bytes(docx_path: Path) -> bytes:
 
 def render_canonical_cv_pdf() -> bytes:
     template = _canonical_template_path()
-    return _render_docx_to_pdf_bytes(template)
+    try:
+        return _render_docx_to_pdf_bytes(template)
+    except Exception:
+        # Graceful fallback if LibreOffice is unavailable in runtime.
+        from app.services.pdf import render_cv_pdf
+
+        return render_cv_pdf(get_canonical_resume(), company="Canonical", role="Resume")
 
 
 def render_tailored_cv_pdf(tailored_markdown: str) -> bytes:
@@ -198,16 +204,22 @@ def render_tailored_cv_pdf(tailored_markdown: str) -> bytes:
     canonical_md = get_canonical_resume()
     replacements = _build_replacements(canonical_md, tailored_markdown)
 
-    with tempfile.TemporaryDirectory(prefix="joe_cv_docx_") as tmp:
-        tmp_dir = Path(tmp)
-        docx_copy = tmp_dir / "tailored_resume.docx"
-        shutil.copy2(template, docx_copy)
+    try:
+        with tempfile.TemporaryDirectory(prefix="joe_cv_docx_") as tmp:
+            tmp_dir = Path(tmp)
+            docx_copy = tmp_dir / "tailored_resume.docx"
+            shutil.copy2(template, docx_copy)
 
-        doc = Document(str(docx_copy))
-        _apply_replacements(doc, replacements)
-        doc.save(str(docx_copy))
+            doc = Document(str(docx_copy))
+            _apply_replacements(doc, replacements)
+            doc.save(str(docx_copy))
 
-        return _render_docx_to_pdf_bytes(docx_copy)
+            return _render_docx_to_pdf_bytes(docx_copy)
+    except Exception:
+        # Graceful fallback if LibreOffice is unavailable in runtime.
+        from app.services.pdf import render_cv_pdf
+
+        return render_cv_pdf(tailored_markdown, company="Tailored", role="Resume")
 
 
 def build_track_changes_preview(canonical_md: str, tailored_md: str) -> list[dict]:
