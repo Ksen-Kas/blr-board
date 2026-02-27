@@ -27,6 +27,9 @@ export default function JobCard() {
   const [touchNote, setTouchNote] = useState("");
   const [touchChannel, setTouchChannel] = useState("Email");
   const [touchDirection, setTouchDirection] = useState("Outbound");
+  const [statusMessage, setStatusMessage] = useState("");
+  const [statusMessageKind, setStatusMessageKind] = useState<"success" | "error" | "info">("info");
+  const [statusUpdating, setStatusUpdating] = useState(false);
 
   useEffect(() => {
     if (rowNum) {
@@ -37,6 +40,12 @@ export default function JobCard() {
       getEvents(Number(rowNum)).then(setEvents).catch(() => {});
     }
   }, [rowNum]);
+
+  useEffect(() => {
+    if (!statusMessage || statusUpdating) return;
+    const timeoutId = window.setTimeout(() => setStatusMessage(""), 3500);
+    return () => window.clearTimeout(timeoutId);
+  }, [statusMessage, statusMessageKind, statusUpdating]);
 
   const handleScore = async () => {
     if (!job) return;
@@ -86,9 +95,26 @@ export default function JobCard() {
 
   const handleStatusChange = async (newStatus: string) => {
     if (!job) return;
+    if (newStatus === status) return;
+    const prevStatus = status;
     setStatus(newStatus);
-    await updateJob(job.row_num, { status: newStatus });
-    setJob((prev) => (prev ? { ...prev, status: newStatus } : prev));
+    setStatusUpdating(true);
+    setStatusMessageKind("info");
+    setStatusMessage(`Updating status: ${prevStatus} -> ${newStatus}...`);
+    try {
+      await updateJob(job.row_num, { status: newStatus });
+      setJob((prev) => (prev ? { ...prev, status: newStatus } : prev));
+      const updatedEvents = await getEvents(job.row_num);
+      setEvents(updatedEvents);
+      setStatusMessageKind("success");
+      setStatusMessage(`Status updated: ${newStatus}`);
+    } catch {
+      setStatus(prevStatus);
+      setStatusMessageKind("error");
+      setStatusMessage("Failed to update status.");
+    } finally {
+      setStatusUpdating(false);
+    }
   };
 
   const handlePrepare = async () => {
@@ -164,6 +190,7 @@ export default function JobCard() {
             <select
               value={status}
               onChange={(e) => handleStatusChange(e.target.value)}
+              disabled={statusUpdating}
               className="appearance-none bg-surface border border-border rounded-full px-3 py-1 pr-7 text-sm font-semibold cursor-pointer hover:border-muted text-text"
             >
               {JOB_STATUSES.map((s) => (
@@ -196,6 +223,19 @@ export default function JobCard() {
             </span>
           )}
         </div>
+        {statusMessage && (
+          <div
+            className={`mt-2 inline-flex items-center rounded-full border px-3 py-1 text-xs ${
+              statusMessageKind === "success"
+                ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                : statusMessageKind === "error"
+                  ? "border-red-200 bg-red-50 text-red-700"
+                  : "border-border bg-surface text-muted"
+            }`}
+          >
+            {statusMessage}
+          </div>
+        )}
       </div>
 
       {/* Timeline */}

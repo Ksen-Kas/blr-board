@@ -38,6 +38,12 @@ export default function CVScreen() {
     if (rowNum) getJob(Number(rowNum)).then(setJob);
   }, [rowNum]);
 
+  useEffect(() => {
+    if (!actionMessage) return;
+    const timeoutId = window.setTimeout(() => setActionMessage(""), 3500);
+    return () => window.clearTimeout(timeoutId);
+  }, [actionMessage, actionKind]);
+
   const runTailor = async (extraNotes = "") => {
     if (!job) return;
     setTailoring(true);

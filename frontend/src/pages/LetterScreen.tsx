@@ -21,6 +21,12 @@ export default function LetterScreen() {
     if (rowNum) getJob(Number(rowNum)).then(setJob);
   }, [rowNum]);
 
+  useEffect(() => {
+    if (!actionMessage) return;
+    const timeoutId = window.setTimeout(() => setActionMessage(""), 3500);
+    return () => window.clearTimeout(timeoutId);
+  }, [actionMessage, actionKind]);
+
   const handleGenerate = async () => {
     if (!job) return;
     setGenerating(true);

@@ -47,6 +47,7 @@ COLUMNS = [
 ]
 
 FIELD_NAMES = [c[1] for c in COLUMNS]
+FIELD_TO_COL = {field: idx + 1 for idx, (_, field) in enumerate(COLUMNS)}
 
 FOLLOWUP_DAYS = 4  # Applied + N days without response = needs_followup
 
@@ -205,9 +206,30 @@ class SheetsService:
         self.invalidate_cache()
 
     def update_job(self, row_num: int, updates: dict) -> Job | None:
-        for field, value in updates.items():
-            if field in FIELD_NAMES and value is not None:
-                self.update_cell(row_num, field, str(value))
+        valid_updates = {
+            field: str(value)
+            for field, value in updates.items()
+            if field in FIELD_NAMES and value is not None
+        }
+        if not valid_updates:
+            return self.get_job_by_row(row_num)
+
+        ws = _get_worksheet()
+        # Avoid immediate read-after-write from Sheets to prevent caching stale values.
+        for field, value in valid_updates.items():
+            ws.update_cell(row_num, FIELD_TO_COL[field], value)
+
+        if self._cache_valid:
+            for idx, job in enumerate(self._cache):
+                if job.row_num != row_num:
+                    continue
+                updated = job.model_copy(update=valid_updates)
+                updated.needs_followup = _compute_needs_followup(updated)
+                self._cache[idx] = updated
+                _compute_duplicates(self._cache)
+                return updated
+
+        self.invalidate_cache()
         return self.get_job_by_row(row_num)
 
     # ─── Events worksheet ─────────────────────────────────────────────────
