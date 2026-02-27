@@ -24,13 +24,41 @@ SECTION_ORDER = [
 ]
 
 
+def _candidate_client_space_dirs() -> list[Path]:
+    configured = Path(config.CLIENT_SPACE_PATH)
+    service_root = Path(__file__).resolve().parents[3]  # repo root in monorepo deploy
+    backend_root = Path(__file__).resolve().parents[2]
+
+    candidates = [
+        configured,
+        Path.cwd() / configured,
+        backend_root / configured,
+        service_root / configured,
+        service_root / "CLIENT_SPACE",
+        backend_root / "CLIENT_SPACE",
+    ]
+
+    uniq: list[Path] = []
+    seen: set[str] = set()
+    for path in candidates:
+        resolved = str(path.resolve(strict=False))
+        if resolved in seen:
+            continue
+        seen.add(resolved)
+        uniq.append(path)
+    return uniq
+
+
 def _canonical_template_path() -> Path:
-    path = Path(config.CLIENT_SPACE_PATH) / "canonical_resume.docx"
-    if not path.exists():
-        raise FileNotFoundError(
-            f"Missing template: {path}. Put canonical_resume.docx into CLIENT_SPACE."
-        )
-    return path
+    searched: list[str] = []
+    for base in _candidate_client_space_dirs():
+        candidate = base / "canonical_resume.docx"
+        searched.append(str(candidate))
+        if candidate.exists():
+            return candidate
+    raise FileNotFoundError(
+        "Missing canonical_resume.docx. Checked: " + ", ".join(searched)
+    )
 
 
 def _run_libreoffice_convert(input_docx: Path, output_dir: Path) -> Path:
