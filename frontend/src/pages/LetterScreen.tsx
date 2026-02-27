@@ -115,7 +115,7 @@ export default function LetterScreen() {
     <div className="p-6 max-w-3xl mx-auto">
       <button
         onClick={() => navigate(`/job/${rowNum}`)}
-        className="text-accent hover:text-accent-hover text-sm mb-4 inline-block cursor-pointer"
+        className="text-accent hover:text-accent-hover text-sm mb-4 inline-block cursor-pointer font-semibold"
       >
         &larr; {job.company} — {job.role}
       </button>
@@ -123,21 +123,21 @@ export default function LetterScreen() {
       {/* Input: notes */}
       {!result && !generating && (
         <div className="space-y-4">
-          <div className="border border-border rounded-lg p-4 bg-surface">
-            <label className="block text-sm font-medium text-muted mb-2">
+          <div className="surface-card p-4">
+            <label className="block text-sm font-semibold text-muted mb-2">
               Notes for the letter (optional)
             </label>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              className="w-full border border-border bg-input rounded-lg p-3 text-sm text-text resize-none placeholder:text-muted/50 focus:outline-none focus:ring-2 focus:ring-accent/30"
+              className="w-full border border-border bg-input rounded-xl p-3 text-sm text-text resize-none placeholder:text-muted/50 focus:outline-none focus:ring-2 focus:ring-accent/20"
               rows={3}
               placeholder="What to emphasize? Leave empty — Joe generates by canon rules."
             />
           </div>
           <button
             onClick={handleGenerate}
-            className="px-6 py-2.5 bg-accent text-bg rounded-lg hover:bg-accent-hover font-medium cursor-pointer"
+            className="px-6 py-2.5 bg-accent text-white rounded-full hover:bg-accent-hover font-semibold cursor-pointer"
           >
             Generate Letter
           </button>
@@ -146,14 +146,14 @@ export default function LetterScreen() {
 
       {/* Loading */}
       {generating && (
-        <div className="border border-border rounded-lg p-6 text-center bg-surface">
-          <div className="animate-pulse text-muted">Generating cover letter...</div>
+        <div className="surface-card p-6 text-center">
+          <div className="text-muted">Generating cover letter...</div>
         </div>
       )}
 
       {/* Error */}
       {error && (
-        <div className="border border-red-500/30 rounded-lg p-4 bg-red-500/10 text-red-300 text-sm mb-4">
+        <div className="border border-red-200 rounded-xl p-4 bg-red-50 text-red-700 text-sm mb-4">
           {error}
         </div>
       )}
@@ -162,9 +162,9 @@ export default function LetterScreen() {
         <div
           className={`mb-4 border rounded-lg p-3 text-sm ${
             actionKind === "success"
-              ? "border-green-500/30 bg-green-500/10 text-green-300"
+              ? "border-emerald-200 bg-emerald-50 text-emerald-700"
               : actionKind === "error"
-                ? "border-red-500/30 bg-red-500/10 text-red-300"
+                ? "border-red-200 bg-red-50 text-red-700"
                 : "border-border bg-surface text-muted"
           }`}
         >
@@ -176,28 +176,28 @@ export default function LetterScreen() {
       {result && (
         <div className="space-y-4">
           {/* Subject */}
-          <div className="border border-border rounded-lg overflow-hidden">
-            <div className="bg-surface px-4 py-2 text-sm font-medium text-muted">Subject</div>
+          <div className="surface-card overflow-hidden">
+            <div className="bg-surface-alt px-4 py-2 text-sm font-semibold text-muted">Subject</div>
             <div className="px-4 py-3">
               <p className="text-sm font-medium text-text">{result.subject}</p>
             </div>
           </div>
 
           {/* Body */}
-          <div className="border border-border rounded-lg overflow-hidden">
-            <div className="bg-surface px-4 py-2 flex items-center justify-between">
-              <span className="text-sm font-medium text-muted">Letter</span>
+          <div className="surface-card overflow-hidden">
+            <div className="bg-surface-alt px-4 py-2 flex items-center justify-between">
+              <span className="text-sm font-semibold text-muted">Letter</span>
               <div className="flex gap-3">
                 <button
                   onClick={handleDownloadPdf}
-                  className="text-xs text-accent hover:text-accent-hover cursor-pointer"
+                  className="text-xs text-accent hover:text-accent-hover cursor-pointer font-semibold"
                 >
                   Download PDF
                 </button>
-                <button onClick={handleCopyBody} className="text-xs text-accent hover:text-accent-hover cursor-pointer">
+                <button onClick={handleCopyBody} className="text-xs text-accent hover:text-accent-hover cursor-pointer font-semibold">
                   Copy body
                 </button>
-                <button onClick={handleCopyAll} className="text-xs text-accent hover:text-accent-hover cursor-pointer">
+                <button onClick={handleCopyAll} className="text-xs text-accent hover:text-accent-hover cursor-pointer font-semibold">
                   Copy with subject
                 </button>
               </div>
@@ -216,19 +216,19 @@ export default function LetterScreen() {
           <div className="flex gap-3 pt-2">
             <button
               onClick={handleDone}
-              className="px-4 py-2 bg-green-500/20 text-green-300 border border-green-500/30 rounded-lg hover:bg-green-500/30 text-sm font-medium cursor-pointer"
+              className="px-4 py-2 bg-emerald-100 text-emerald-700 border border-emerald-300 rounded-full hover:bg-emerald-200 text-sm font-semibold cursor-pointer"
             >
               Done &rarr; Mark Applied
             </button>
             <button
               onClick={() => navigate(`/job/${rowNum}`)}
-              className="px-4 py-2 bg-surface-alt rounded-lg hover:bg-border text-sm cursor-pointer text-muted"
+              className="px-4 py-2 bg-surface-alt rounded-full hover:bg-border text-sm cursor-pointer text-muted font-medium"
             >
               Done (keep status)
             </button>
             <button
               onClick={handleRegenerate}
-              className="px-4 py-2 border border-border rounded-lg hover:bg-surface-alt text-sm cursor-pointer text-muted hover:text-text"
+              className="px-4 py-2 border border-border rounded-full hover:bg-surface-alt text-sm cursor-pointer text-muted hover:text-text font-medium"
             >
               Regenerate
             </button>

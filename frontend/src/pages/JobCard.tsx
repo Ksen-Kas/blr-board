@@ -127,14 +127,15 @@ export default function JobCard() {
     <div className="p-6 max-w-3xl mx-auto">
       <button
         onClick={() => navigate("/")}
-        className="text-accent hover:text-accent-hover text-sm mb-4 inline-block cursor-pointer"
+        className="text-accent hover:text-accent-hover text-sm mb-4 inline-block cursor-pointer font-semibold"
       >
         &larr; Pipeline
       </button>
 
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-text">
+        <span className="tag-chip mb-2">Job Card</span>
+        <h1 className="text-3xl font-extrabold text-text tracking-tight">
           {fitIcon} {job.company} — {job.role}
         </h1>
         <p className="text-muted">{job.region}</p>
@@ -145,7 +146,7 @@ export default function JobCard() {
             href={job.source}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-accent text-sm hover:text-accent-hover cursor-pointer"
+            className="text-accent text-sm hover:text-accent-hover cursor-pointer font-medium"
             title={job.source}
           >
             {extractDomain(job.source)}
@@ -163,7 +164,7 @@ export default function JobCard() {
             <select
               value={status}
               onChange={(e) => handleStatusChange(e.target.value)}
-              className="appearance-none bg-surface border border-border rounded-lg px-3 py-1 pr-7 text-sm font-medium cursor-pointer hover:border-muted text-text"
+              className="appearance-none bg-surface border border-border rounded-full px-3 py-1 pr-7 text-sm font-semibold cursor-pointer hover:border-muted text-text"
             >
               {JOB_STATUSES.map((s) => (
                 <option key={s}>{s}</option>
@@ -175,14 +176,14 @@ export default function JobCard() {
           </div>
 
           {job.submission_count && Number(job.submission_count) > 1 && (
-            <span className="bg-orange-500/15 text-orange-300 text-xs px-2 py-0.5 rounded">
+            <span className="bg-orange-50 text-orange-700 text-xs px-2 py-0.5 rounded-full border border-orange-200">
               Submission #{job.submission_count}
             </span>
           )}
 
           {job.possible_duplicate && (
             <span
-              className="bg-yellow-500/15 text-yellow-300 text-xs px-2 py-0.5 rounded cursor-help"
+              className="bg-amber-50 text-amber-700 text-xs px-2 py-0.5 rounded-full border border-amber-200 cursor-help"
               title={job.duplicate_of || "Duplicate detected"}
             >
               Duplicate of: {job.duplicate_of || "?"}
@@ -190,7 +191,7 @@ export default function JobCard() {
           )}
 
           {job.needs_followup && (
-            <span className="bg-red-500/15 text-red-300 text-xs px-2 py-0.5 rounded">
+            <span className="bg-red-50 text-red-700 text-xs px-2 py-0.5 rounded-full border border-red-200">
               🔔 Needs follow-up
             </span>
           )}
@@ -199,7 +200,7 @@ export default function JobCard() {
 
       {/* Timeline */}
       {(job.applied_date || job.followup_1 || job.followup_2 || job.response_date) && (
-        <div className="mb-4 p-3 border border-border rounded-lg bg-surface">
+        <div className="mb-4 p-4 surface-card">
           <div className="grid grid-cols-2 gap-2 text-sm">
             {job.applied_date && <div><span className="text-muted">Applied:</span> <span className="text-text">{job.applied_date}</span></div>}
             {job.followup_1 && <div><span className="text-muted">Follow-up 1:</span> <span className="text-text">{job.followup_1}</span></div>}
@@ -212,14 +213,14 @@ export default function JobCard() {
 
       {/* Stop flags banner */}
       {stopFlags && (
-        <div className="mb-4 p-3 border border-red-500/30 rounded-lg bg-red-500/10 text-red-300 text-sm">
+        <div className="mb-4 p-3 border border-red-200 rounded-xl bg-red-50 text-red-700 text-sm">
           <strong>Stop flags:</strong> {stopFlags}
         </div>
       )}
 
       {/* Scoring result */}
       {scoreResult && (
-        <div className="mb-4 p-4 border border-accent/30 rounded-lg bg-accent/10 text-sm">
+        <div className="mb-4 p-4 border border-accent/30 rounded-xl bg-emerald-50 text-sm">
           <div className="font-medium mb-1 text-text">
             {scoreResult.role_fit} | CV: {scoreResult.cv_ready === "YES" ? "Ready" : "Needs work"}
             {scoreResult.cv_note && ` — ${scoreResult.cv_note}`}
@@ -229,7 +230,7 @@ export default function JobCard() {
       )}
 
       {/* Scoring input */}
-      <div className="mb-4 p-4 border border-border rounded-lg bg-surface">
+      <div className="mb-4 p-4 surface-card">
         <div className="text-sm font-medium text-text">Scoring Input</div>
         <p className="text-xs text-muted mt-1">
           If the job is from LinkedIn or the page doesn’t parse, paste JD text here.
@@ -239,10 +240,10 @@ export default function JobCard() {
           onChange={(e) => setJdOverride(e.target.value)}
           placeholder="Paste JD text (optional, but required for LinkedIn)..."
           rows={4}
-          className="mt-3 w-full border border-border rounded-lg px-3 py-2 text-sm resize-none bg-input text-text placeholder:text-muted/50 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent"
+          className="mt-3 w-full border border-border rounded-xl px-3 py-2 text-sm resize-none bg-input text-text placeholder:text-muted/60 focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent"
         />
         {scoreError ? (
-          <div className="mt-3 text-sm text-red-400">{scoreError}</div>
+          <div className="mt-3 text-sm text-red-700">{scoreError}</div>
         ) : null}
       </div>
 
@@ -318,12 +319,12 @@ export default function JobCard() {
               + Touchpoint
             </button>
           ) : (
-            <div className="mt-3 p-3 bg-surface-alt rounded-lg space-y-2">
+            <div className="mt-3 p-3 bg-surface-alt rounded-xl space-y-2 border border-border/70">
               <div className="flex gap-2">
                 <select
                   value={touchChannel}
                   onChange={(e) => setTouchChannel(e.target.value)}
-                  className="border border-border bg-input text-text rounded-lg px-2 py-1 text-sm cursor-pointer"
+                  className="border border-border bg-input text-text rounded-full px-3 py-1 text-sm cursor-pointer"
                 >
                   <option>Email</option>
                   <option>LinkedIn</option>
@@ -334,7 +335,7 @@ export default function JobCard() {
                 <select
                   value={touchDirection}
                   onChange={(e) => setTouchDirection(e.target.value)}
-                  className="border border-border bg-input text-text rounded-lg px-2 py-1 text-sm cursor-pointer"
+                  className="border border-border bg-input text-text rounded-full px-3 py-1 text-sm cursor-pointer"
                 >
                   <option>Outbound</option>
                   <option>Inbound</option>
@@ -345,18 +346,18 @@ export default function JobCard() {
                 onChange={(e) => setTouchNote(e.target.value)}
                 placeholder="Note..."
                 rows={2}
-                className="w-full border border-border bg-input rounded-lg px-2 py-1 text-sm text-text resize-none placeholder:text-muted/50 focus:outline-none focus:ring-2 focus:ring-accent/30"
+                className="w-full border border-border bg-input rounded-xl px-3 py-2 text-sm text-text resize-none placeholder:text-muted/50 focus:outline-none focus:ring-2 focus:ring-accent/20"
               />
               <div className="flex gap-2">
                 <button
                   onClick={handleAddTouchpoint}
-                  className="px-3 py-1 text-sm bg-accent text-bg rounded-lg hover:bg-accent-hover cursor-pointer font-medium"
+                  className="px-3 py-1 text-sm bg-accent text-white rounded-full hover:bg-accent-hover cursor-pointer font-semibold"
                 >
                   Save
                 </button>
                 <button
                   onClick={() => setShowTouchForm(false)}
-                  className="px-3 py-1 text-sm border border-border rounded-lg hover:bg-surface-alt cursor-pointer text-muted"
+                  className="px-3 py-1 text-sm border border-border rounded-full hover:bg-surface-alt cursor-pointer text-muted"
                 >
                   Cancel
                 </button>
@@ -370,7 +371,7 @@ export default function JobCard() {
       <div className="flex flex-wrap gap-3 border-t border-border pt-4">
         <button
           onClick={handlePrepare}
-          className="px-4 py-2 bg-green-500/20 text-green-300 border border-green-500/30 rounded-lg hover:bg-green-500/30 text-sm font-medium cursor-pointer"
+          className="px-4 py-2 bg-emerald-100 text-emerald-700 border border-emerald-300 rounded-full hover:bg-emerald-200 text-sm font-semibold cursor-pointer"
         >
           Prepare Application &rarr;
         </button>
@@ -378,14 +379,14 @@ export default function JobCard() {
           <button
             onClick={handleScore}
             disabled={scoring}
-            className="px-4 py-2 border border-border rounded-lg hover:bg-surface-alt disabled:opacity-40 text-sm cursor-pointer text-muted hover:text-text"
+            className="px-4 py-2 border border-border rounded-full hover:bg-surface-alt disabled:opacity-40 text-sm cursor-pointer text-muted hover:text-text font-medium"
           >
             {scoring ? "Scoring..." : "Evaluate Fit"}
           </button>
         )}
         <button
           onClick={() => navigate(`/job/${job.row_num}/letter`)}
-          className="px-4 py-2 border border-border rounded-lg hover:bg-surface-alt text-sm cursor-pointer text-muted hover:text-text"
+          className="px-4 py-2 border border-border rounded-full hover:bg-surface-alt text-sm cursor-pointer text-muted hover:text-text font-medium"
         >
           Letter Only
         </button>
@@ -396,8 +397,8 @@ export default function JobCard() {
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="border border-border rounded-lg overflow-hidden">
-      <div className="bg-surface px-4 py-2 text-sm font-medium text-muted">{title}</div>
+    <div className="surface-card overflow-hidden">
+      <div className="bg-surface-alt px-4 py-2 text-sm font-semibold text-muted">{title}</div>
       <div className="px-4 py-3">{children}</div>
     </div>
   );

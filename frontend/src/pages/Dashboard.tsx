@@ -51,7 +51,8 @@ export default function Dashboard() {
 
   return (
     <div className="p-6 max-w-5xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6 text-text">Dashboard</h1>
+      <span className="tag-chip mb-2">Insights</span>
+      <h1 className="text-3xl font-extrabold mb-6 text-text tracking-tight">Dashboard</h1>
 
       {/* Summary cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
@@ -80,7 +81,7 @@ export default function Dashboard() {
       </div>
 
       {/* Funnel */}
-      <div className="mb-8">
+      <div className="surface-card mb-8 p-5">
         <h2 className="text-lg font-bold mb-4 text-text">Pipeline Funnel</h2>
         <div className="space-y-2">
           {funnel.map((s) => {
@@ -89,9 +90,9 @@ export default function Dashboard() {
             return (
               <div key={s.key} className="flex items-center gap-3">
                 <div className="w-28 text-sm text-muted text-right">{s.label}</div>
-                <div className="flex-1 bg-surface rounded-full h-6 overflow-hidden">
+                <div className="flex-1 bg-surface-alt rounded-full h-7 overflow-hidden border border-border/80">
                   <div
-                    className={`${s.color} h-full rounded-full flex items-center justify-end pr-2 text-white text-xs font-medium`}
+                    className={`${s.color} h-full rounded-full flex items-center justify-end pr-3 text-white text-xs font-semibold`}
                     style={{ width: `${Math.max(pct, 8)}%` }}
                   >
                     {count}
@@ -107,10 +108,10 @@ export default function Dashboard() {
       {recent.length > 0 && (
         <div>
           <h2 className="text-lg font-bold mb-4 text-text">Recent Activity</h2>
-          <div className="border border-border rounded-lg overflow-hidden">
+          <div className="surface-card overflow-hidden">
             <table className="w-full text-sm">
               <thead>
-                <tr className="bg-surface text-left text-muted">
+                <tr className="bg-surface-alt text-left text-muted">
                   <th className="px-3 py-2 font-medium">Company</th>
                   <th className="px-3 py-2 font-medium">Role</th>
                   <th className="px-3 py-2 font-medium">Status</th>
@@ -139,11 +140,11 @@ export default function Dashboard() {
 
 function StatCard({ label, value, accent }: { label: string; value: number; accent: string }) {
   return (
-    <div className="border border-border rounded-lg overflow-hidden bg-surface">
+    <div className="surface-card overflow-hidden">
       <div className={`${accent} h-1`} />
       <div className="p-4">
-        <div className="text-3xl font-bold text-text">{value}</div>
-        <div className="text-sm text-muted">{label}</div>
+        <div className="text-3xl font-extrabold text-text tracking-tight">{value}</div>
+        <div className="text-sm text-muted font-medium">{label}</div>
       </div>
     </div>
   );

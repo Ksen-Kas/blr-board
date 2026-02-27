@@ -13,10 +13,10 @@ function NavLink({ to, children }: { to: string; children: React.ReactNode }) {
   return (
     <Link
       to={to}
-      className={`text-sm font-medium px-3 py-1.5 rounded-lg ${
+      className={`text-sm font-semibold px-3 py-1.5 rounded-full ${
         active
-          ? "bg-accent/15 text-accent"
-          : "text-muted hover:text-text"
+          ? "bg-accent text-white"
+          : "text-muted hover:text-text hover:bg-surface-alt"
       }`}
     >
       {children}
@@ -60,11 +60,12 @@ function App() {
 
   if (!authed) {
     return (
-      <div className="min-h-screen bg-bg flex items-center justify-center px-6">
-        <div className="w-full max-w-md rounded-2xl border border-border bg-surface p-8">
+      <div className="app-shell min-h-screen flex items-center justify-center px-6">
+        <div className="surface-card w-full max-w-md p-8">
           <div className="mb-6">
-            <h1 className="text-2xl font-semibold text-text">Joe v2</h1>
-            <p className="mt-2 text-sm text-muted">
+            <span className="tag-chip">Secure Workspace</span>
+            <h1 className="text-2xl font-bold text-text mt-3">Joe v2</h1>
+            <p className="mt-2 text-sm text-muted leading-relaxed">
               Private workspace. Enter the backend credentials to continue.
             </p>
           </div>
@@ -76,27 +77,37 @@ function App() {
 
   return (
     <BrowserRouter>
-      <nav className="border-b border-border px-8 py-3 flex items-center justify-between bg-surface">
-        <span className="font-bold text-lg text-text">Joe v2</span>
-        <div className="flex items-center gap-2">
-          <NavLink to="/">Pipeline</NavLink>
-          <NavLink to="/dashboard">Dashboard</NavLink>
+      <div className="app-shell">
+        <nav className="sticky top-0 z-30 border-b border-border/80 px-6 py-4 flex items-center justify-between bg-surface/95 backdrop-blur">
+          <div className="flex items-center gap-3">
+            <span className="h-9 w-9 rounded-xl bg-accent/12 border border-accent/25 text-accent font-bold grid place-items-center">J</span>
+            <div>
+              <p className="font-extrabold text-base tracking-tight text-text">Joe v2</p>
+              <p className="text-xs text-muted">Application assistant</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <NavLink to="/">Pipeline</NavLink>
+            <NavLink to="/dashboard">Dashboard</NavLink>
+          </div>
           <button
             type="button"
             onClick={handleLogout}
-            className="text-sm text-muted hover:text-text ml-4"
+            className="text-sm font-medium text-muted hover:text-text"
           >
             Log out
           </button>
-        </div>
-      </nav>
-      <Routes>
-        <Route path="/" element={<Pipeline />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/job/:rowNum" element={<JobCard />} />
-        <Route path="/job/:rowNum/cv" element={<CVScreen />} />
-        <Route path="/job/:rowNum/letter" element={<LetterScreen />} />
-      </Routes>
+        </nav>
+        <main className="pb-8">
+          <Routes>
+            <Route path="/" element={<Pipeline />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/job/:rowNum" element={<JobCard />} />
+            <Route path="/job/:rowNum/cv" element={<CVScreen />} />
+            <Route path="/job/:rowNum/letter" element={<LetterScreen />} />
+          </Routes>
+        </main>
+      </div>
     </BrowserRouter>
   );
 }
@@ -127,7 +138,7 @@ function LoginForm({ onLogin, loading, error }: LoginFormProps) {
           type="text"
           value={username}
           onChange={(event) => setUsername(event.target.value)}
-          className="mt-2 w-full rounded-lg border border-border bg-input px-3 py-2 text-sm text-text focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/30"
+          className="mt-2 w-full rounded-xl border border-border bg-input px-3 py-2.5 text-sm text-text focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
           placeholder="joe_admin"
           autoComplete="username"
         />
@@ -138,16 +149,16 @@ function LoginForm({ onLogin, loading, error }: LoginFormProps) {
           type="password"
           value={password}
           onChange={(event) => setPassword(event.target.value)}
-          className="mt-2 w-full rounded-lg border border-border bg-input px-3 py-2 text-sm text-text focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/30"
+          className="mt-2 w-full rounded-xl border border-border bg-input px-3 py-2.5 text-sm text-text focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
           placeholder="••••••••"
           autoComplete="current-password"
         />
       </div>
-      {error ? <p className="text-sm text-red-400">{error}</p> : null}
+      {error ? <p className="text-sm text-red-600">{error}</p> : null}
       <button
         type="submit"
         disabled={!canSubmit}
-        className="w-full rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-bg hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-40"
+        className="w-full rounded-xl bg-accent px-4 py-2.5 text-sm font-semibold text-white hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-40"
       >
         {loading ? "Checking..." : "Log in"}
       </button>

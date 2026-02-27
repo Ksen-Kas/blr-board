@@ -1,20 +1,25 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg: #0c0c15;
-  --color-surface: #16162a;
-  --color-surface-alt: #1e1e35;
-  --color-border: #2a2a40;
-  --color-text: #e8e8f0;
-  --color-muted: #8888a0;
-  --color-accent: #ab9ff2;
-  --color-accent-hover: #c4b5fd;
-  --color-input: #12121f;
+  --color-bg: #f6f7f4;
+  --color-surface: #ffffff;
+  --color-surface-alt: #f1f4ee;
+  --color-border: #d6ddd0;
+  --color-text: #102017;
+  --color-muted: #5e6f62;
+  --color-accent: #0f9d58;
+  --color-accent-hover: #0d8a4d;
+  --color-input: #fbfdf9;
+  --color-success: #1f8a46;
+  --color-warning: #bf7a10;
+  --color-danger: #b4342c;
 }
 
 body {
+  font-family: "Avenir Next", "Manrope", "Segoe UI", sans-serif;
   background-color: var(--color-bg);
   color: var(--color-text);
+  background-image: radial-gradient(circle at top left, #ecf5e6 0%, rgba(236, 245, 230, 0) 38%);
 }
 
 /* Scrollbar */
@@ -23,15 +28,40 @@ body {
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--color-bg);
+  background: #eef2ea;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--color-border);
+  background: #c8d3c2;
   border-radius: 3px;
 }
 
-/* Select styling for dark theme */
+/* Select styling for app theme */
 select option {
   background-color: var(--color-surface);
   color: var(--color-text);
+}
+
+.app-shell {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #f9fbf7 0%, #f4f7f2 100%);
+}
+
+.surface-card {
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  border-radius: 16px;
+  box-shadow: 0 12px 30px -24px rgba(16, 32, 23, 0.55);
+}
+
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border: 1px solid #cdd8c8;
+  border-radius: 9999px;
+  padding: 0.2rem 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #345340;
+  background: #edf4ea;
 }

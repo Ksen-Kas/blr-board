@@ -18,11 +18,11 @@ function fitColor(roleFit: string, stopFlags: string) {
   if (hasFlags) {
     const flags = stopFlags.toLowerCase();
     if (flags.includes("visa") || flags.includes("citizenship") || flags.includes("strong_mismatch"))
-      return "text-red-400";
-    return "text-yellow-400";
+      return "text-red-600";
+    return "text-amber-500";
   }
-  if (fit === "strong") return "text-green-400";
-  if (fit === "stretch" || fit === "partial") return "text-emerald-300";
+  if (fit === "strong") return "text-emerald-600";
+  if (fit === "stretch" || fit === "partial") return "text-teal-600";
   return "text-muted";
 }
 
@@ -96,18 +96,21 @@ export default function Pipeline() {
   return (
     <div className="p-6 max-w-[1400px] mx-auto">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-text">Pipeline</h1>
+        <div>
+          <span className="tag-chip mb-2">Jobs Tracker</span>
+          <h1 className="text-3xl font-extrabold text-text tracking-tight">Pipeline</h1>
+        </div>
         <div className="flex gap-2 items-center">
           <button
             onClick={() => {
               refreshCache();
               loadJobs();
             }}
-            className="px-3 py-1.5 text-sm border border-border rounded-lg hover:bg-surface-alt cursor-pointer text-muted hover:text-text"
+            className="px-3 py-2 text-sm border border-border rounded-full hover:bg-surface-alt cursor-pointer text-muted hover:text-text font-semibold"
           >
             Refresh
           </button>
-          <span className="px-3 py-1.5 text-sm text-muted">
+          <span className="tag-chip">
             {filtered.length} jobs
           </span>
         </div>
@@ -118,30 +121,30 @@ export default function Pipeline() {
       {loading ? (
         <div className="text-muted py-8 text-center">Loading...</div>
       ) : (
-        <div className="overflow-x-auto border border-border rounded-lg">
+        <div className="surface-card overflow-x-auto">
           <table className="w-full border-collapse text-sm">
             <thead>
-              <tr className="text-left bg-surface text-muted">
+              <tr className="text-left bg-surface-alt text-muted">
                 <th className="px-3 py-2.5 font-medium w-8">#</th>
                 <th
-                  className="px-3 py-2.5 font-medium cursor-pointer hover:text-text select-none"
+                  className="px-3 py-2.5 font-semibold cursor-pointer hover:text-text select-none"
                   onClick={() => handleSort("company")}
                 >
                   Company{sortIndicator("company")}
                 </th>
-                <th className="px-3 py-2.5 font-medium">Role</th>
+                <th className="px-3 py-2.5 font-semibold">Role</th>
                 <th
-                  className="px-3 py-2.5 font-medium cursor-pointer hover:text-text select-none"
+                  className="px-3 py-2.5 font-semibold cursor-pointer hover:text-text select-none"
                   onClick={() => handleSort("region")}
                 >
                   Region{sortIndicator("region")}
                 </th>
-                <th className="px-3 py-2.5 font-medium w-28">Fit</th>
-                <th className="px-3 py-2.5 font-medium w-32">
+                <th className="px-3 py-2.5 font-semibold w-28">Fit</th>
+                <th className="px-3 py-2.5 font-semibold w-32">
                   <select
                     value={statusFilter}
                     onChange={(e) => setStatusFilter(e.target.value)}
-                    className="font-medium text-muted bg-transparent border-none outline-none cursor-pointer text-sm p-0"
+                    className="font-semibold text-muted bg-transparent border-none outline-none cursor-pointer text-sm p-0"
                   >
                     <option value="All">Status ▼</option>
                     {JOB_STATUSES.map((s) => (
@@ -149,15 +152,15 @@ export default function Pipeline() {
                     ))}
                   </select>
                 </th>
-                <th className="px-3 py-2.5 font-medium w-24">Applied</th>
+                <th className="px-3 py-2.5 font-semibold w-24">Applied</th>
                 <th
-                  className="px-3 py-2.5 font-medium w-16 cursor-pointer hover:text-text select-none"
+                  className="px-3 py-2.5 font-semibold w-16 cursor-pointer hover:text-text select-none"
                   onClick={() => handleSort("days")}
                 >
                   Days{sortIndicator("days")}
                 </th>
-                <th className="px-3 py-2.5 font-medium w-16">DTR</th>
-                <th className="px-3 py-2.5 font-medium w-48">CL</th>
+                <th className="px-3 py-2.5 font-semibold w-16">DTR</th>
+                <th className="px-3 py-2.5 font-semibold w-48">CL</th>
               </tr>
             </thead>
             <tbody>
@@ -167,7 +170,7 @@ export default function Pipeline() {
                 return (
                   <tr
                     key={job.row_num}
-                    className="border-t border-border cursor-pointer hover:bg-surface-alt/50"
+                    className="border-t border-border/80 cursor-pointer hover:bg-surface-alt/70"
                     onClick={() => navigate(`/job/${job.row_num}`)}
                   >
                     <td className="px-3 py-2 text-muted">
@@ -178,7 +181,7 @@ export default function Pipeline() {
                     </td>
                     <td className="px-3 py-2 font-medium text-text">
                       <span className="inline-flex items-center gap-2">
-                        {job.company}
+                        <span className="text-[15px]">{job.company}</span>
                         {job.possible_duplicate && (
                           <span
                             className="inline-flex items-center text-muted cursor-help"
@@ -222,7 +225,7 @@ export default function Pipeline() {
                       <span className={fitColor(job.role_fit, job.stop_flags)}>
                         ●
                       </span>{" "}
-                      <span className="text-muted">{job.role_fit || "—"}</span>
+                      <span className="text-muted font-medium">{job.role_fit || "—"}</span>
                     </td>
                     <td className="px-3 py-2">
                       <StatusBadge status={job.status} />
@@ -341,7 +344,11 @@ function AddJobBar({ onAdded }: { onAdded: () => void }) {
   };
 
   return (
-    <div className="mb-6 border border-border rounded-lg p-4 bg-surface">
+    <div className="mb-6 surface-card p-4">
+      <div className="mb-3 flex items-center justify-between gap-3">
+        <span className="text-sm font-semibold text-text">Quick Evaluate</span>
+        <span className="tag-chip">URL or JD text</span>
+      </div>
       <div className="flex gap-2">
         <div className="flex-1 flex flex-col gap-2">
           <textarea
@@ -350,28 +357,28 @@ function AddJobBar({ onAdded }: { onAdded: () => void }) {
             onChange={(e) => setInput(e.target.value)}
             placeholder="Paste job description text or URL..."
             rows={4}
-            className="w-full border border-border rounded-lg px-3 py-2 text-sm resize-none bg-input text-text placeholder:text-muted/50 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent"
+            className="w-full border border-border rounded-xl px-3 py-2 text-sm resize-none bg-input text-text placeholder:text-muted/60 focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent"
           />
           <textarea
             value={contact}
             onChange={(e) => setContact(e.target.value)}
             placeholder="Recruiter name, email, LinkedIn... (optional)"
             rows={2}
-            className="w-full border border-border rounded-lg px-3 py-2 text-sm resize-none bg-input text-text placeholder:text-muted/50 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent"
+            className="w-full border border-border rounded-xl px-3 py-2 text-sm resize-none bg-input text-text placeholder:text-muted/60 focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent"
           />
         </div>
         <div className="flex flex-col gap-1">
           <button
             onClick={handleEvaluate}
             disabled={evaluating || !input.trim()}
-            className="px-3 py-1.5 text-sm bg-accent text-bg rounded-lg hover:bg-accent-hover disabled:opacity-40 cursor-pointer font-medium"
+            className="px-3 py-1.5 text-sm bg-accent text-white rounded-full hover:bg-accent-hover disabled:opacity-40 cursor-pointer font-semibold"
           >
             {evaluating ? "..." : "Evaluate"}
           </button>
           <button
             onClick={handleAdd}
             disabled={evaluating || !input.trim()}
-            className="px-3 py-1.5 text-sm bg-green-500/20 text-green-300 border border-green-500/30 rounded-lg hover:bg-green-500/30 disabled:opacity-40 cursor-pointer font-medium"
+            className="px-3 py-1.5 text-sm bg-emerald-100 text-emerald-700 border border-emerald-300 rounded-full hover:bg-emerald-200 disabled:opacity-40 cursor-pointer font-semibold"
           >
             + Add
           </button>
@@ -379,13 +386,13 @@ function AddJobBar({ onAdded }: { onAdded: () => void }) {
       </div>
 
       {error && (
-        <div className="mt-3 p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-sm text-red-400">
+        <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700">
           {error}
         </div>
       )}
 
       {result && !("error" in result) && (
-        <div className="mt-3 p-3 bg-surface-alt rounded-lg text-sm">
+        <div className="mt-3 p-3 bg-surface-alt rounded-xl text-sm">
           <div className="font-medium text-text">
             {result.company as string} — {result.role as string} (
             {result.region as string})
@@ -395,7 +402,7 @@ function AddJobBar({ onAdded }: { onAdded: () => void }) {
             {typeof result.stop_flags === "string" &&
               result.stop_flags !== "" &&
               result.stop_flags !== "NONE" && (
-              <span className="ml-2 text-red-400">
+              <span className="ml-2 text-red-600">
                 Flags: {result.stop_flags as string}
               </span>
             )}
@@ -404,7 +411,7 @@ function AddJobBar({ onAdded }: { onAdded: () => void }) {
             <div className="mt-1 text-muted">{result.summary as string}</div>
           )}
           {typeof result.duplicate === "object" && result.duplicate !== null && (
-            <div className="mt-2 p-2 bg-yellow-500/10 border border-yellow-500/20 rounded-lg text-yellow-300">
+            <div className="mt-2 p-2 bg-amber-50 border border-amber-200 rounded-xl text-amber-700">
               Possible duplicate — already in tracker (row{" "}
               {(result.duplicate as { row_num?: number }).row_num ?? "?"})
             </div>
@@ -424,11 +431,11 @@ function LetterPopup({ job, onClose }: { job: Job; onClose: () => void }) {
 
   return (
     <div
-      className="fixed inset-0 bg-black/60 flex items-center justify-center z-50"
+      className="fixed inset-0 bg-slate-900/35 flex items-center justify-center z-50"
       onClick={onClose}
     >
       <div
-        className="bg-surface border border-border rounded-xl shadow-xl max-w-2xl w-full mx-4 max-h-[80vh] flex flex-col"
+        className="bg-surface border border-border rounded-2xl shadow-xl max-w-2xl w-full mx-4 max-h-[80vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between p-4 border-b border-border">
@@ -447,13 +454,13 @@ function LetterPopup({ job, onClose }: { job: Job; onClose: () => void }) {
         <div className="flex gap-2 p-4 border-t border-border">
           <button
             onClick={handleCopy}
-            className="px-3 py-1.5 text-sm bg-accent text-bg rounded-lg hover:bg-accent-hover cursor-pointer font-medium"
+            className="px-3 py-1.5 text-sm bg-accent text-white rounded-full hover:bg-accent-hover cursor-pointer font-semibold"
           >
             Copy
           </button>
           <button
             onClick={onClose}
-            className="px-3 py-1.5 text-sm border border-border rounded-lg hover:bg-surface-alt cursor-pointer text-muted"
+            className="px-3 py-1.5 text-sm border border-border rounded-full hover:bg-surface-alt cursor-pointer text-muted"
           >
             Close
           </button>
@@ -467,20 +474,20 @@ function LetterPopup({ job, onClose }: { job: Job; onClose: () => void }) {
 
 function StatusBadge({ status }: { status: string }) {
   const s = status.toLowerCase();
-  let color = "bg-white/5 text-muted";
-  if (s === "new") color = "bg-blue-500/15 text-blue-300";
-  else if (s === "screening") color = "bg-purple-500/15 text-purple-300";
-  else if (s === "screening req") color = "bg-purple-500/20 text-purple-200";
-  else if (s === "in progress") color = "bg-yellow-500/15 text-yellow-300";
-  else if (s === "applied") color = "bg-green-500/15 text-green-300";
-  else if (s === "waiting") color = "bg-orange-500/15 text-orange-300";
-  else if (s === "response") color = "bg-purple-500/15 text-purple-300";
-  else if (s === "interview") color = "bg-indigo-500/15 text-indigo-300";
-  else if (s === "no response") color = "bg-white/5 text-muted";
-  else if (s === "closed") color = "bg-red-500/15 text-red-300";
+  let color = "bg-surface-alt text-muted border border-border";
+  if (s === "new") color = "bg-blue-50 text-blue-700 border border-blue-200";
+  else if (s === "screening") color = "bg-cyan-50 text-cyan-700 border border-cyan-200";
+  else if (s === "screening req") color = "bg-cyan-100 text-cyan-700 border border-cyan-300";
+  else if (s === "in progress") color = "bg-amber-50 text-amber-700 border border-amber-200";
+  else if (s === "applied") color = "bg-emerald-50 text-emerald-700 border border-emerald-200";
+  else if (s === "waiting") color = "bg-orange-50 text-orange-700 border border-orange-200";
+  else if (s === "response") color = "bg-violet-50 text-violet-700 border border-violet-200";
+  else if (s === "interview") color = "bg-indigo-50 text-indigo-700 border border-indigo-200";
+  else if (s === "no response") color = "bg-slate-100 text-slate-600 border border-slate-200";
+  else if (s === "closed") color = "bg-rose-50 text-rose-700 border border-rose-200";
 
   return (
-    <span className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${color}`}>
+    <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-semibold ${color}`}>
       {status}
     </span>
   );
