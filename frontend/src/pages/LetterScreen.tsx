@@ -3,6 +3,24 @@ import { useParams, useNavigate } from "react-router-dom";
 import { getJob, generateLetter, updateJob, downloadLetterPdf } from "../api/jobs";
 import type { Job } from "../types/job";
 
+function parseStoredLetter(rawLetter: string): { subject: string; body: string } | null {
+  const text = rawLetter.trim();
+  if (!text) return null;
+
+  const match = text.match(/^Subject:\s*(.+)\n\n([\s\S]+)$/i);
+  if (match) {
+    return {
+      subject: match[1].trim(),
+      body: match[2].trim(),
+    };
+  }
+
+  return {
+    subject: "",
+    body: text,
+  };
+}
+
 export default function LetterScreen() {
   const { rowNum } = useParams<{ rowNum: string }>();
   const navigate = useNavigate();
@@ -18,7 +36,12 @@ export default function LetterScreen() {
   } | null>(null);
 
   useEffect(() => {
-    if (rowNum) getJob(Number(rowNum)).then(setJob);
+    if (!rowNum) return;
+    getJob(Number(rowNum)).then((loadedJob) => {
+      setJob(loadedJob);
+      const stored = parseStoredLetter(loadedJob.cl || "");
+      if (stored) setResult(stored);
+    });
   }, [rowNum]);
 
   useEffect(() => {
@@ -29,13 +52,19 @@ export default function LetterScreen() {
 
   const handleGenerate = async () => {
     if (!job) return;
+    const jdText = (job.comment || "").trim();
+    if (!jdText) {
+      setError("To generate a letter, add JD text in the job card first.");
+      return;
+    }
+
     setGenerating(true);
     setError("");
     try {
-      const jdText = job.comment || `${job.role} at ${job.company}, ${job.region}`;
       const res = await generateLetter(jdText, notes);
       setResult(res);
       await updateJob(job.row_num, { cl: `Subject: ${res.subject}\n\n${res.body}` });
+      setJob((prev) => (prev ? { ...prev, cl: `Subject: ${res.subject}\n\n${res.body}` } : prev));
     } catch (e: unknown) {
       const msg =
         e && typeof e === "object" && "response" in e
@@ -116,6 +145,7 @@ export default function LetterScreen() {
   };
 
   if (!job) return <div className="p-6 text-muted">Loading...</div>;
+  const hasJdText = Boolean(job.comment?.trim());
 
   return (
     <div className="p-6 max-w-3xl mx-auto">
@@ -129,6 +159,11 @@ export default function LetterScreen() {
       {/* Input: notes */}
       {!result && !generating && (
         <div className="space-y-4">
+          {!hasJdText && (
+            <div className="border border-amber-200 rounded-xl p-4 bg-amber-50 text-amber-800 text-sm">
+              Letter cannot be generated yet. Add JD text in Job Card first (Summary / Comment or Scoring Input), then come back.
+            </div>
+          )}
           <div className="surface-card p-4">
             <label className="block text-sm font-semibold text-muted mb-2">
               Notes for the letter (optional)
@@ -143,7 +178,8 @@ export default function LetterScreen() {
           </div>
           <button
             onClick={handleGenerate}
-            className="px-6 py-2.5 bg-accent text-white rounded-full hover:bg-accent-hover font-semibold cursor-pointer"
+            disabled={!hasJdText}
+            className="px-6 py-2.5 bg-accent text-white rounded-full hover:bg-accent-hover disabled:opacity-50 disabled:cursor-not-allowed font-semibold cursor-pointer"
           >
             Generate Letter
           </button>
@@ -185,7 +221,7 @@ export default function LetterScreen() {
           <div className="surface-card overflow-hidden">
             <div className="bg-surface-alt px-4 py-2 text-sm font-semibold text-muted">Subject</div>
             <div className="px-4 py-3">
-              <p className="text-sm font-medium text-text">{result.subject}</p>
+              <p className="text-sm font-medium text-text">{result.subject || "No subject saved"}</p>
             </div>
           </div>
 

@@ -473,7 +473,7 @@ export default function JobCard() {
           onClick={() => navigate(`/job/${job.row_num}/letter`)}
           className="px-4 py-2 border border-border rounded-full hover:bg-surface-alt text-sm cursor-pointer text-muted hover:text-text font-medium"
         >
-          Letter Only
+          {job.cl?.trim() ? "Open Saved Letter" : "Letter Only"}
         </button>
       </div>
     </div>
