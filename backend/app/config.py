@@ -11,6 +11,19 @@ def _get(key: str, default: str = "") -> str:
     return os.getenv(key, default).strip()
 
 
+def _get_int(key: str, default: int = 0) -> int:
+    raw = os.getenv(key)
+    if raw is None:
+        return default
+    raw = raw.strip()
+    if not raw:
+        return default
+    try:
+        return int(raw)
+    except ValueError:
+        return default
+
+
 # Claude API
 ANTHROPIC_API_KEY = _get("ANTHROPIC_API_KEY")
 
@@ -31,7 +44,10 @@ CANON_LETTER_RULES_CONTENT = _get("CANON_LETTER_RULES_CONTENT")
 
 # Telegram (for reference / future webhook integration)
 TELEGRAM_BOT_TOKEN = _get("TELEGRAM_BOT_TOKEN")
-TELEGRAM_CHAT_ID = int(_get("TELEGRAM_CHAT_ID", "0"))
+TELEGRAM_CHAT_ID = _get_int("TELEGRAM_CHAT_ID", 0)
+TIMEZONE = _get("TIMEZONE", "Asia/Dubai")
+REMINDER_HOUR = _get_int("REMINDER_HOUR", 10)
+REMINDER_MINUTE = _get_int("REMINDER_MINUTE", 0)
 
 # Runtime environment
 APP_ENV = _get("APP_ENV", "development").lower()

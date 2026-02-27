@@ -7,6 +7,7 @@ from fastapi.responses import JSONResponse
 from app import config
 from app.routers import jobs, cv, letter, scoring, pipeline
 from app.security import require_basic_auth
+from app.services.reminder import build_reminder_scheduler
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
 
@@ -27,6 +28,27 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+_reminder_scheduler = build_reminder_scheduler()
+
+
+@app.on_event("startup")
+async def _startup_scheduler() -> None:
+    if _reminder_scheduler and not _reminder_scheduler.running:
+        _reminder_scheduler.start()
+        logging.getLogger(__name__).info(
+            "Reminder scheduler started (%02d:%02d %s)",
+            config.REMINDER_HOUR,
+            config.REMINDER_MINUTE,
+            config.TIMEZONE,
+        )
+
+
+@app.on_event("shutdown")
+async def _shutdown_scheduler() -> None:
+    if _reminder_scheduler and _reminder_scheduler.running:
+        _reminder_scheduler.shutdown(wait=False)
+        logging.getLogger(__name__).info("Reminder scheduler stopped")
 
 
 @app.middleware("http")

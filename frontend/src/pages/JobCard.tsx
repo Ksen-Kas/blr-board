@@ -13,6 +13,19 @@ function extractDomain(url: string): string {
   }
 }
 
+type TouchpointRow = {
+  timestamp: string;
+  eventType: string;
+  detail: string;
+  sortMs: number;
+};
+
+function parseDateToMs(value: string): number {
+  const normalized = value.includes(" ") ? value.replace(" ", "T") : `${value}T00:00:00`;
+  const ms = Date.parse(normalized);
+  return Number.isNaN(ms) ? 0 : ms;
+}
+
 export default function JobCard() {
   const { rowNum } = useParams<{ rowNum: string }>();
   const navigate = useNavigate();
@@ -140,14 +153,48 @@ export default function JobCard() {
 
   const stopFlags = job.stop_flags || "";
   const roleFit = job.role_fit || "";
-  let fitIcon = "";
-  if (roleFit) {
-    const fit = roleFit.toLowerCase();
-    if (stopFlags) fitIcon = "🔴";
-    else if (fit === "strong") fitIcon = "🟢";
-    else if (fit === "stretch" || fit === "partial") fitIcon = "🟡";
-    else fitIcon = "⚪";
-  }
+  const fitBadgeClass = stopFlags
+    ? "border-red-200 bg-red-50 text-red-700"
+    : roleFit.toLowerCase() === "strong"
+      ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+      : roleFit.toLowerCase() === "stretch" || roleFit.toLowerCase() === "partial"
+        ? "border-amber-200 bg-amber-50 text-amber-700"
+        : "border-border bg-surface text-muted";
+  const eventRows: TouchpointRow[] = events.map((ev) => {
+    let detail = "";
+    try {
+      const d = JSON.parse(ev.data);
+      if (ev.event_type === "status_change") {
+        detail = `${d.from} → ${d.to}`;
+      } else if (ev.event_type === "touchpoint") {
+        detail = `${d.direction || ""} ${d.channel || ""}: ${d.note || ""}`;
+      } else {
+        detail = ev.data;
+      }
+    } catch {
+      detail = ev.data;
+    }
+    return {
+      timestamp: ev.timestamp,
+      eventType: ev.event_type,
+      detail,
+      sortMs: parseDateToMs(ev.timestamp),
+    };
+  });
+
+  const timelineRows: TouchpointRow[] = [
+    ...(job.followup_1
+      ? [{ timestamp: job.followup_1, eventType: "followup_1", detail: "Follow-up 1 sent", sortMs: parseDateToMs(job.followup_1) }]
+      : []),
+    ...(job.followup_2
+      ? [{ timestamp: job.followup_2, eventType: "followup_2", detail: "Follow-up 2 sent", sortMs: parseDateToMs(job.followup_2) }]
+      : []),
+    ...(job.response_date
+      ? [{ timestamp: job.response_date, eventType: "response", detail: "Response received", sortMs: parseDateToMs(job.response_date) }]
+      : []),
+  ];
+
+  const touchpointRows = [...eventRows, ...timelineRows].sort((a, b) => b.sortMs - a.sortMs);
 
   return (
     <div className="p-6 max-w-3xl mx-auto">
@@ -162,7 +209,7 @@ export default function JobCard() {
       <div className="mb-6">
         <span className="tag-chip mb-2">Job Card</span>
         <h1 className="text-3xl font-extrabold text-text tracking-tight">
-          {fitIcon} {job.company} — {job.role}
+          {job.company} — {job.role}
         </h1>
         <p className="text-muted">{job.region}</p>
 
@@ -181,7 +228,10 @@ export default function JobCard() {
 
         <div className="flex items-center gap-3 mt-2 text-sm">
           <span className="text-muted">
-            {roleFit || "Not scored"} | {job.operator_vs_contractor || "—"} | {job.seniority || "—"}
+            Fit: {roleFit || "Not scored"} | Type: {job.operator_vs_contractor || "—"} | Level: {job.seniority || "—"}
+          </span>
+          <span className={`rounded-full border px-2 py-0.5 text-xs font-semibold ${fitBadgeClass}`}>
+            FIT: {roleFit || "N/A"}
           </span>
           <span className="text-border">|</span>
 
@@ -321,27 +371,14 @@ export default function JobCard() {
 
         {/* Touchpoints / Events history */}
         <Section title="Touchpoints">
-          {events.length > 0 ? (
+          {touchpointRows.length > 0 ? (
             <div className="space-y-2">
-              {events.map((ev, i) => {
-                let detail = "";
-                try {
-                  const d = JSON.parse(ev.data);
-                  if (ev.event_type === "status_change") {
-                    detail = `${d.from} → ${d.to}`;
-                  } else if (ev.event_type === "touchpoint") {
-                    detail = `${d.direction || ""} ${d.channel || ""}: ${d.note || ""}`;
-                  } else {
-                    detail = ev.data;
-                  }
-                } catch {
-                  detail = ev.data;
-                }
+              {touchpointRows.map((row, i) => {
                 return (
                   <div key={i} className="flex gap-2 text-sm">
-                    <span className="text-muted shrink-0 w-36">{ev.timestamp}</span>
-                    <span className="text-muted shrink-0 w-28">{ev.event_type}</span>
-                    <span className="text-text">{detail}</span>
+                    <span className="text-muted shrink-0 w-36">{row.timestamp}</span>
+                    <span className="text-muted shrink-0 w-28">{row.eventType}</span>
+                    <span className="text-text">{row.detail}</span>
                   </div>
                 );
               })}

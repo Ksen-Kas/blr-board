@@ -66,6 +66,8 @@ def _compute_needs_followup(job: Job) -> bool:
         return False
     if job.response_date:
         return False
+    if job.followup_1 or job.followup_2:
+        return False
     if not job.applied_date:
         return False
     try:
