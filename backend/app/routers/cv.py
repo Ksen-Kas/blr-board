@@ -8,7 +8,7 @@ from fastapi.responses import Response
 
 from app.security import require_internal_api_key
 from modules.cv.tailor import tailor_cv
-from app.services.pdf import render_cv_pdf
+from app.services.cv_docx import render_tailored_cv_pdf, render_canonical_cv_pdf
 
 logger = logging.getLogger(__name__)
 
@@ -25,6 +25,11 @@ class CvPdfRequest(BaseModel):
     role: str
 
 
+class CanonicalCvPdfRequest(BaseModel):
+    company: str
+    role: str
+
+
 @router.post("/tailor")
 def tailor(req: TailorRequest, _: None = Depends(require_internal_api_key)) -> dict:
     try:
@@ -37,11 +42,26 @@ def tailor(req: TailorRequest, _: None = Depends(require_internal_api_key)) -> d
 @router.post("/pdf")
 def cv_pdf(req: CvPdfRequest, _: None = Depends(require_internal_api_key)):
     try:
-        pdf_bytes = render_cv_pdf(req.tailored_cv, req.company, req.role)
+        pdf_bytes = render_tailored_cv_pdf(req.tailored_cv)
     except Exception as e:
         logger.error("CV PDF generation failed: %s", e)
         raise HTTPException(500, f"PDF generation failed: {e}")
     filename = f"CV_{req.company}_{req.role}.pdf".replace(" ", "_")
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
+
+
+@router.post("/pdf/canonical")
+def cv_pdf_canonical(req: CanonicalCvPdfRequest, _: None = Depends(require_internal_api_key)):
+    try:
+        pdf_bytes = render_canonical_cv_pdf()
+    except Exception as e:
+        logger.error("Canonical CV PDF generation failed: %s", e)
+        raise HTTPException(500, f"PDF generation failed: {e}")
+    filename = f"CV_CANON_{req.company}_{req.role}.pdf".replace(" ", "_")
     return Response(
         content=pdf_bytes,
         media_type="application/pdf",

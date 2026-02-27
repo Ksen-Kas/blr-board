@@ -37,7 +37,15 @@ export const evaluateJD = (data: {
 
 export const tailorCV = (jd_text: string) =>
   api
-    .post<{ tailored_cv: string; changes_summary: string; canon_check: string }>(
+    .post<{
+      tailored_cv: string;
+      changes_summary: string;
+      canon_check: string;
+      track_changes?: Array<{
+        section: string;
+        lines: Array<{ type: "same" | "added" | "removed"; text: string }>;
+      }>;
+    }>(
       "/cv/tailor",
       { jd_text }
     )
@@ -63,6 +71,21 @@ export const downloadCvPdf = async (data: {
   const a = document.createElement("a");
   a.href = url;
   a.download = `CV_${data.company}_${data.role}.pdf`.replace(/ /g, "_");
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+};
+
+export const downloadCanonicalCvPdf = async (data: {
+  company: string;
+  role: string;
+}) => {
+  const res = await api.post("/cv/pdf/canonical", data, { responseType: "blob" });
+  const url = URL.createObjectURL(res.data);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `CV_CANON_${data.company}_${data.role}.pdf`.replace(/ /g, "_");
   document.body.appendChild(a);
   a.click();
   a.remove();

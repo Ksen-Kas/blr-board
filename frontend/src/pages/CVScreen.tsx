@@ -1,7 +1,23 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getJob, tailorCV, updateJob, downloadCvPdf } from "../api/jobs";
+import {
+  getJob,
+  tailorCV,
+  updateJob,
+  downloadCvPdf,
+  downloadCanonicalCvPdf,
+} from "../api/jobs";
 import type { Job } from "../types/job";
+
+type TrackLine = { type: "same" | "added" | "removed"; text: string };
+type TrackSection = { section: string; lines: TrackLine[] };
+
+type TailorResult = {
+  tailored_cv: string;
+  changes_summary: string;
+  canon_check: string;
+  track_changes?: TrackSection[];
+};
 
 export default function CVScreen() {
   const { rowNum } = useParams<{ rowNum: string }>();
@@ -11,11 +27,7 @@ export default function CVScreen() {
   const [error, setError] = useState("");
   const [actionMessage, setActionMessage] = useState("");
   const [actionKind, setActionKind] = useState<"success" | "error" | "info">("info");
-  const [result, setResult] = useState<{
-    tailored_cv: string;
-    changes_summary: string;
-    canon_check: string;
-  } | null>(null);
+  const [result, setResult] = useState<TailorResult | null>(null);
   const [showRetailorInput, setShowRetailorInput] = useState(false);
   const [retailorNotes, setRetailorNotes] = useState("");
 
@@ -23,125 +35,75 @@ export default function CVScreen() {
     if (rowNum) getJob(Number(rowNum)).then(setJob);
   }, [rowNum]);
 
-  const handleTailor = async () => {
+  const runTailor = async (extraNotes = "") => {
     if (!job) return;
     setTailoring(true);
     setError("");
     try {
       const jdText = job.comment || `${job.role} at ${job.company}, ${job.region}`;
-      const res = await tailorCV(jdText);
+      const fullText = extraNotes
+        ? `${jdText}\n\n[Adjustments requested]: ${extraNotes}`
+        : jdText;
+      const res = await tailorCV(fullText);
       setResult(res);
       await updateJob(job.row_num, { cv: res.changes_summary });
     } catch (e: unknown) {
       const msg =
         e && typeof e === "object" && "response" in e
           ? String((e as { response?: { data?: { detail?: string } } }).response?.data?.detail || "CV tailoring failed")
-          : "CV tailoring failed. Check that the backend is running and Claude API key is configured.";
+          : "CV tailoring failed. Check backend and template settings.";
       setError(msg);
     } finally {
       setTailoring(false);
     }
+  };
+
+  const handleTailor = async () => {
+    await runTailor();
   };
 
   const handleRetailor = async () => {
-    if (!job) return;
-    setTailoring(true);
-    setError("");
     setShowRetailorInput(false);
+    const notes = retailorNotes.trim();
+    setRetailorNotes("");
+    await runTailor(notes);
+  };
+
+  const handleUseCanon = async () => {
+    if (!job) return;
     try {
-      const jdText = job.comment || `${job.role} at ${job.company}, ${job.region}`;
-      const fullText = retailorNotes
-        ? `${jdText}\n\n[Adjustments requested]: ${retailorNotes}`
-        : jdText;
-      const res = await tailorCV(fullText);
-      setResult(res);
-      await updateJob(job.row_num, { cv: res.changes_summary });
-      setRetailorNotes("");
-    } catch (e: unknown) {
-      const msg =
-        e && typeof e === "object" && "response" in e
-          ? String((e as { response?: { data?: { detail?: string } } }).response?.data?.detail || "Re-tailoring failed")
-          : "Re-tailoring failed.";
-      setError(msg);
-    } finally {
-      setTailoring(false);
-    }
-  };
-
-  const handleCopyCV = () => {
-    if (!result) return;
-    if (!navigator.clipboard) {
+      setActionKind("info");
+      setActionMessage("Preparing canonical PDF...");
+      await downloadCanonicalCvPdf({ company: job.company, role: job.role });
+      setActionKind("success");
+      setActionMessage("Canonical PDF download started.");
+    } catch {
       setActionKind("error");
-      setActionMessage("Clipboard not available in this browser.");
-      return;
+      setActionMessage("Failed to download canonical PDF.");
     }
-    navigator.clipboard
-      .writeText(result.tailored_cv)
-      .then(() => {
-        setActionKind("success");
-        setActionMessage("Full CV copied.");
-      })
-      .catch(() => {
-        setActionKind("error");
-        setActionMessage("Copy failed.");
-      });
   };
 
-  const handleCopyChanges = () => {
-    if (!result) return;
-    if (!navigator.clipboard) {
-      setActionKind("error");
-      setActionMessage("Clipboard not available in this browser.");
-      return;
-    }
-    navigator.clipboard
-      .writeText(result.changes_summary)
-      .then(() => {
-        setActionKind("success");
-        setActionMessage("Changes copied.");
-      })
-      .catch(() => {
-        setActionKind("error");
-        setActionMessage("Copy failed.");
-      });
-  };
-
-  const handleDownloadPdf = async () => {
+  const handleDownloadTailored = async () => {
     if (!result || !job) return;
     try {
       setActionKind("info");
-      setActionMessage("Preparing PDF...");
+      setActionMessage("Preparing tailored PDF...");
       await downloadCvPdf({
         tailored_cv: result.tailored_cv,
         company: job.company,
         role: job.role,
       });
       setActionKind("success");
-      setActionMessage("PDF download started.");
+      setActionMessage("Tailored PDF download started.");
     } catch {
       setActionKind("error");
-      setActionMessage("PDF generation failed. Try again or use Copy.");
+      setActionMessage("PDF generation failed.");
     }
   };
 
   if (!job) return <div className="p-6 text-muted">Loading...</div>;
 
-  // Canon check color
-  const canonColor = result
-    ? result.canon_check.startsWith("OK")
-      ? "bg-emerald-50 border-emerald-200 text-emerald-700"
-      : result.canon_check.startsWith("WARN")
-        ? "bg-amber-50 border-amber-200 text-amber-700"
-        : "bg-red-50 border-red-200 text-red-700"
-    : "";
-
-  // Joe recommendation based on scoring
-  const fitLower = job.role_fit?.toLowerCase() || "";
-  const recommendation = fitLower === "strong"
-    ? "Canon CV is likely a good match. Tailoring is optional."
-    : fitLower === "stretch" || fitLower === "partial"
-      ? "Tailoring recommended — highlight relevant experience for this role."
-      : "";
+  const trackSections = result?.track_changes || [];
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
@@ -152,30 +114,24 @@ export default function CVScreen() {
         &larr; {job.company} — {job.role}
       </button>
 
-      {/* Recommendation */}
-      {recommendation && !result && !tailoring && (
-        <div className="mb-4 p-3 border border-accent/30 rounded-xl bg-emerald-50 text-accent text-sm">
-          {recommendation}
-        </div>
-      )}
-
-      {/* Before tailoring — two buttons */}
       {!result && !tailoring && (
-        <div className="surface-card p-6 text-center space-y-4">
-          <span className="tag-chip">CV Tailoring</span>
-          <p className="text-muted">
-            Joe will make minimal adjustments to your canonical resume for this role.
+        <div className="surface-card p-6">
+          <h1 className="text-2xl font-extrabold tracking-tight text-text">
+            Резюме для {job.company} — {job.role}
+          </h1>
+          <p className="text-sm text-muted mt-2">
+            Выберите действие: скачать каноничную версию или сделать tailoring под вакансию.
           </p>
-          <div className="flex gap-3 justify-center">
+          <div className="flex flex-wrap gap-3 mt-6">
             <button
-              onClick={() => navigate(`/job/${rowNum}/letter`)}
-              className="px-5 py-2.5 border border-border rounded-full hover:bg-surface-alt text-sm cursor-pointer text-muted hover:text-text font-medium"
+              onClick={handleUseCanon}
+              className="px-5 py-2.5 border border-border rounded-full hover:bg-surface-alt text-sm cursor-pointer text-muted hover:text-text font-semibold"
             >
-              Use Canon CV
+              Использовать канон
             </button>
             <button
               onClick={handleTailor}
-              className="px-6 py-2.5 bg-accent text-white rounded-full hover:bg-accent-hover font-semibold cursor-pointer"
+              className="px-5 py-2.5 bg-accent text-white rounded-full hover:bg-accent-hover text-sm font-semibold cursor-pointer"
             >
               Tailor CV &rarr;
             </button>
@@ -183,23 +139,21 @@ export default function CVScreen() {
         </div>
       )}
 
-      {/* Loading */}
       {tailoring && (
         <div className="surface-card p-6 text-center">
           <div className="text-muted">Tailoring CV against JD...</div>
         </div>
       )}
 
-      {/* Error */}
       {error && (
-        <div className="border border-red-200 rounded-xl p-4 bg-red-50 text-red-700 text-sm mb-4">
+        <div className="mt-4 border border-red-200 rounded-xl p-4 bg-red-50 text-red-700 text-sm">
           {error}
         </div>
       )}
 
       {actionMessage && (
         <div
-          className={`mb-4 border rounded-lg p-3 text-sm ${
+          className={`mt-4 border rounded-xl p-3 text-sm ${
             actionKind === "success"
               ? "border-emerald-200 bg-emerald-50 text-emerald-700"
               : actionKind === "error"
@@ -211,65 +165,43 @@ export default function CVScreen() {
         </div>
       )}
 
-      {/* Results */}
       {result && (
-        <div className="space-y-4">
-          {/* Canon check */}
-          <div className={`p-3 border rounded-lg text-sm ${canonColor}`}>
-            <strong>CANON CHECK:</strong> {result.canon_check}
-          </div>
-
-          {/* Changes */}
-          <div className="surface-card overflow-hidden">
-            <div className="bg-surface-alt px-4 py-2 flex items-center justify-between">
-              <span className="text-sm font-semibold text-muted">Changes</span>
-              <button
-                onClick={handleCopyChanges}
-                className="text-xs text-accent hover:text-accent-hover cursor-pointer font-semibold"
-              >
-                Copy changes
-              </button>
-            </div>
-            <div className="px-4 py-3">
-              <pre className="whitespace-pre-wrap text-sm leading-relaxed text-text">
-                {result.changes_summary}
-              </pre>
-            </div>
-          </div>
-
-          {/* Full tailored CV */}
-          <div className="surface-card overflow-hidden">
-            <div className="bg-surface-alt px-4 py-2 flex items-center justify-between">
-              <span className="text-sm font-semibold text-muted">Tailored CV</span>
-              <div className="flex gap-3">
-                <button
-                  onClick={handleDownloadPdf}
-                  className="text-xs text-accent hover:text-accent-hover cursor-pointer font-semibold"
-                >
-                  Download PDF
-                </button>
-                <button
-                  onClick={handleCopyCV}
-                  className="text-xs text-accent hover:text-accent-hover cursor-pointer font-semibold"
-                >
-                  Copy full CV
-                </button>
+        <div className="mt-5 space-y-4">
+          {(trackSections.length > 0 ? trackSections : [{ section: "Changes", lines: [] }]).map((section) => (
+            <div key={section.section} className="surface-card overflow-hidden">
+              <div className="bg-surface-alt border-b border-border px-4 py-3 text-sm font-bold text-text uppercase tracking-wide">
+                {section.section}
+              </div>
+              <div className="p-4 space-y-2">
+                {section.lines.length > 0 ? (
+                  section.lines.map((line, idx) => (
+                    <div
+                      key={`${section.section}-${idx}`}
+                      className={`px-2 py-1 rounded text-sm ${
+                        line.type === "added"
+                          ? "bg-emerald-100 text-emerald-800"
+                          : line.type === "removed"
+                            ? "bg-red-100 text-red-700 line-through"
+                            : "text-text"
+                      }`}
+                    >
+                      <span className="mr-2 text-muted">●</span>
+                      {line.text}
+                    </div>
+                  ))
+                ) : (
+                  <pre className="whitespace-pre-wrap text-sm text-text">{result.changes_summary}</pre>
+                )}
               </div>
             </div>
-            <div className="px-4 py-3 max-h-[500px] overflow-y-auto">
-              <pre className="whitespace-pre-wrap text-sm leading-relaxed text-text">
-                {result.tailored_cv}
-              </pre>
-            </div>
-          </div>
+          ))}
 
-          {/* Actions */}
-          <div className="flex gap-3 pt-2">
+          <div className="flex flex-wrap gap-3 pt-2">
             <button
-              onClick={() => navigate(`/job/${rowNum}/letter`)}
-              className="px-4 py-2 bg-emerald-100 text-emerald-700 border border-emerald-300 rounded-full hover:bg-emerald-200 text-sm font-semibold cursor-pointer"
+              onClick={handleDownloadTailored}
+              className="px-4 py-2 bg-accent text-white rounded-full hover:bg-accent-hover text-sm font-semibold cursor-pointer"
             >
-              Next: Letter &rarr;
+              Скачать PDF
             </button>
             <button
               onClick={() => setShowRetailorInput(true)}
@@ -277,19 +209,22 @@ export default function CVScreen() {
             >
               Re-tailor
             </button>
+            <button
+              onClick={() => navigate(`/job/${rowNum}/letter`)}
+              className="px-4 py-2 bg-emerald-100 text-emerald-700 border border-emerald-300 rounded-full hover:bg-emerald-200 text-sm font-semibold cursor-pointer"
+            >
+              Next: Letter &rarr;
+            </button>
           </div>
 
-          {/* Re-tailor input */}
           {showRetailorInput && (
             <div className="surface-card p-4 space-y-3">
-              <label className="block text-sm font-semibold text-muted">
-                What to change?
-              </label>
+              <label className="block text-sm font-semibold text-muted">Что поправить?</label>
               <textarea
                 value={retailorNotes}
                 onChange={(e) => setRetailorNotes(e.target.value)}
                 rows={3}
-                placeholder="e.g., emphasize data analytics more, remove mention of X..."
+                placeholder="Например: усилить блок по reservoir simulation governance."
                 className="w-full border border-border bg-input rounded-xl px-3 py-2 text-sm text-text resize-none placeholder:text-muted/50 focus:outline-none focus:ring-2 focus:ring-accent/20"
               />
               <div className="flex gap-2">
@@ -300,7 +235,10 @@ export default function CVScreen() {
                   Apply
                 </button>
                 <button
-                  onClick={() => { setShowRetailorInput(false); setRetailorNotes(""); }}
+                  onClick={() => {
+                    setShowRetailorInput(false);
+                    setRetailorNotes("");
+                  }}
                   className="px-4 py-2 border border-border rounded-full hover:bg-surface-alt text-sm cursor-pointer text-muted"
                 >
                   Cancel

@@ -7,6 +7,7 @@ from pathlib import Path
 
 from app.services.claude import call_claude_json
 from app.services.canon import get_canonical_resume
+from app.services.cv_docx import build_track_changes_preview
 
 logger = logging.getLogger(__name__)
 
@@ -48,6 +49,9 @@ Tailor the resume. Return JSON."""
 
     try:
         result = call_claude_json(SYSTEM_PROMPT, user_msg)
+        tailored = str(result.get("tailored_cv", "")).strip()
+        if tailored:
+            result["track_changes"] = build_track_changes_preview(canon_resume, tailored)
         logger.info("CV tailored: canon_check=%s", result.get("canon_check", "?"))
         return result
     except Exception as e:
