@@ -59,10 +59,12 @@ export default function CVScreen() {
   };
 
   const handleTailor = async () => {
+    setActionMessage("");
     await runTailor();
   };
 
   const handleRetailor = async () => {
+    setActionMessage("");
     setShowRetailorInput(false);
     const notes = retailorNotes.trim();
     setRetailorNotes("");
@@ -104,6 +106,12 @@ export default function CVScreen() {
   if (!job) return <div className="p-6 text-muted">Loading...</div>;
 
   const trackSections = result?.track_changes || [];
+  const actionStatusClass =
+    actionKind === "success"
+      ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+      : actionKind === "error"
+        ? "border-red-200 bg-red-50 text-red-700"
+        : "border-border bg-surface text-muted";
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
@@ -117,17 +125,17 @@ export default function CVScreen() {
       {!result && !tailoring && (
         <div className="surface-card p-6">
           <h1 className="text-2xl font-extrabold tracking-tight text-text">
-            Резюме для {job.company} — {job.role}
+            Resume for {job.company} — {job.role}
           </h1>
           <p className="text-sm text-muted mt-2">
-            Выберите действие: скачать каноничную версию или сделать tailoring под вакансию.
+            Choose an action: download canonical PDF or tailor the resume for this role.
           </p>
           <div className="flex flex-wrap gap-3 mt-6">
             <button
               onClick={handleUseCanon}
               className="px-5 py-2.5 border border-border rounded-full hover:bg-surface-alt text-sm cursor-pointer text-muted hover:text-text font-semibold"
             >
-              Использовать канон
+              Use Canon CV
             </button>
             <button
               onClick={handleTailor}
@@ -136,6 +144,11 @@ export default function CVScreen() {
               Tailor CV &rarr;
             </button>
           </div>
+          {actionMessage && (
+            <div className={`mt-4 inline-flex items-center rounded-full border px-3 py-1 text-sm ${actionStatusClass}`}>
+              Status: {actionMessage}
+            </div>
+          )}
         </div>
       )}
 
@@ -148,20 +161,6 @@ export default function CVScreen() {
       {error && (
         <div className="mt-4 border border-red-200 rounded-xl p-4 bg-red-50 text-red-700 text-sm">
           {error}
-        </div>
-      )}
-
-      {actionMessage && (
-        <div
-          className={`mt-4 border rounded-xl p-3 text-sm ${
-            actionKind === "success"
-              ? "border-emerald-200 bg-emerald-50 text-emerald-700"
-              : actionKind === "error"
-                ? "border-red-200 bg-red-50 text-red-700"
-                : "border-border bg-surface text-muted"
-          }`}
-        >
-          {actionMessage}
         </div>
       )}
 
@@ -196,12 +195,12 @@ export default function CVScreen() {
             </div>
           ))}
 
-          <div className="flex flex-wrap gap-3 pt-2">
+          <div className="flex flex-wrap items-center gap-3 pt-2">
             <button
               onClick={handleDownloadTailored}
               className="px-4 py-2 bg-accent text-white rounded-full hover:bg-accent-hover text-sm font-semibold cursor-pointer"
             >
-              Скачать PDF
+              Download PDF
             </button>
             <button
               onClick={() => setShowRetailorInput(true)}
@@ -215,16 +214,21 @@ export default function CVScreen() {
             >
               Next: Letter &rarr;
             </button>
+            {actionMessage && (
+              <span className={`inline-flex items-center rounded-full border px-3 py-1 text-sm ${actionStatusClass}`}>
+                PDF status: {actionMessage}
+              </span>
+            )}
           </div>
 
           {showRetailorInput && (
             <div className="surface-card p-4 space-y-3">
-              <label className="block text-sm font-semibold text-muted">Что поправить?</label>
+              <label className="block text-sm font-semibold text-muted">What should be changed?</label>
               <textarea
                 value={retailorNotes}
                 onChange={(e) => setRetailorNotes(e.target.value)}
                 rows={3}
-                placeholder="Например: усилить блок по reservoir simulation governance."
+                placeholder="For example: emphasize the reservoir simulation governance block."
                 className="w-full border border-border bg-input rounded-xl px-3 py-2 text-sm text-text resize-none placeholder:text-muted/50 focus:outline-none focus:ring-2 focus:ring-accent/20"
               />
               <div className="flex gap-2">
