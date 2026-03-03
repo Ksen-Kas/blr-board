@@ -150,7 +150,9 @@ async def daily_followup_check() -> None:
         if status_low in {"new", "in progress"}:
             last_activity = last_event_date_by_job.get(row_idx) or created_date
             if last_activity and today >= last_activity + dt.timedelta(days=5):
-                stale_work.append(f"• {company} — {role} ({status}, last change {last_activity.isoformat()})")
+                stale_work.append(
+                    f"• #{row_idx} {company} — {role} ({status}, last change {last_activity.isoformat()})"
+                )
 
         if not applied_date:
             continue
@@ -162,7 +164,7 @@ async def daily_followup_check() -> None:
             and today >= applied_date + dt.timedelta(days=4)
             and status_low in {"applied", "waiting"}
         ):
-            followup_1.append(f"• {company} — {role}")
+            followup_1.append(f"• #{row_idx} {company} — {role}")
 
         # Rule: Follow-up 2 = Follow-up 1 + 7 days.
         if (
@@ -172,7 +174,7 @@ async def daily_followup_check() -> None:
             and today >= fu1_date + dt.timedelta(days=7)
             and status_low in {"applied", "waiting"}
         ):
-            followup_2.append(f"• {company} — {role}")
+            followup_2.append(f"• #{row_idx} {company} — {role}")
 
     sheets_service.invalidate_cache()
 
