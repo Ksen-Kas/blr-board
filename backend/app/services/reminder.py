@@ -36,8 +36,38 @@ async def _send_telegram_message(text: str) -> None:
         return
     url = f"https://api.telegram.org/bot{token}/sendMessage"
     async with httpx.AsyncClient(timeout=15.0) as client:
-        res = await client.post(url, json={"chat_id": chat_id, "text": text})
-        res.raise_for_status()
+        for chunk in _split_telegram_text(text):
+            res = await client.post(url, json={"chat_id": chat_id, "text": chunk})
+            if res.status_code >= 400:
+                raise RuntimeError(f"Telegram send failed ({res.status_code}): {res.text}")
+
+
+def _split_telegram_text(text: str, limit: int = 4000) -> list[str]:
+    """Split long messages to stay under Telegram sendMessage limits."""
+    if len(text) <= limit:
+        return [text]
+
+    chunks: list[str] = []
+    current = ""
+    for line in text.splitlines():
+        candidate = f"{current}\n{line}".strip() if current else line
+        if len(candidate) <= limit:
+            current = candidate
+            continue
+        if current:
+            chunks.append(current)
+            current = line
+            if len(current) <= limit:
+                continue
+        # Hard split extra-long lines.
+        while len(line) > limit:
+            chunks.append(line[:limit])
+            line = line[limit:]
+        current = line
+
+    if current:
+        chunks.append(current)
+    return chunks
 
 
 async def daily_followup_check() -> None:
