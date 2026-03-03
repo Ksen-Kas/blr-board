@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import datetime as dt
-import json
 import logging
 from zoneinfo import ZoneInfo
 
@@ -22,6 +21,18 @@ def _parse_date(value: str) -> dt.date | None:
     if not value:
         return None
     for fmt in ("%d.%m.%y", "%Y-%m-%d", "%d.%m.%Y"):
+        try:
+            return dt.datetime.strptime(value, fmt).date()
+        except ValueError:
+            continue
+    return None
+
+
+def _parse_event_ts(value: str) -> dt.date | None:
+    value = value.strip()
+    if not value:
+        return None
+    for fmt in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%d"):
         try:
             return dt.datetime.strptime(value, fmt).date()
         except ValueError:
@@ -71,7 +82,7 @@ def _split_telegram_text(text: str, limit: int = 4000) -> list[str]:
 
 
 async def daily_followup_check() -> None:
-    """Send daily reminders by product timing rules and auto-update system statuses."""
+    """Send daily reminders: FU and stale New/In Progress without activity."""
     try:
         ws = _get_worksheet("Pipeline")
         all_values = ws.get_all_values()
@@ -93,15 +104,33 @@ async def daily_followup_check() -> None:
             return ""
         return str(row[idx]).strip()
 
-    status_col = col.get("Status")
+    # Optional activity history from Events sheet.
+    last_event_date_by_job: dict[int, dt.date] = {}
+    try:
+        events_ws = _get_worksheet("Events")
+        events_values = events_ws.get_all_values()
+        for event_row in events_values[1:]:
+            if len(event_row) < 2:
+                continue
+            try:
+                job_id = int(str(event_row[0]).strip())
+            except ValueError:
+                continue
+            event_date = _parse_event_ts(event_row[1])
+            if not event_date:
+                continue
+            prev = last_event_date_by_job.get(job_id)
+            if not prev or event_date > prev:
+                last_event_date_by_job[job_id] = event_date
+    except Exception:
+        # Missing worksheet is acceptable; fallback to pipeline date columns.
+        pass
 
     now = dt.datetime.now(ZoneInfo(config.TIMEZONE))
     today = now.date()
-    stale_new: list[str] = []
     followup_1: list[str] = []
     followup_2: list[str] = []
-    no_response: list[str] = []
-    auto_updates: list[str] = []
+    stale_work: list[str] = []
 
     for row_idx, row in enumerate(rows, start=2):
         company = _val(row, "Company") or "?"
@@ -118,28 +147,12 @@ async def daily_followup_check() -> None:
             or _parse_date(_val(row, "Date Added"))
         )
 
-        # Rule: Stale New = New + 3 days (requires created/added date column).
-        if status_low == "new" and created_date and today >= created_date + dt.timedelta(days=3):
-            stale_new.append(f"• {company} — {role}")
+        if status_low in {"new", "in progress"}:
+            last_activity = last_event_date_by_job.get(row_idx) or created_date
+            if last_activity and today >= last_activity + dt.timedelta(days=5):
+                stale_work.append(f"• {company} — {role} ({status}, last change {last_activity.isoformat()})")
 
         if not applied_date:
-            continue
-
-        # Rule: No Response = Applied + 30 days (priority over FU reminders).
-        if not response_date and today >= applied_date + dt.timedelta(days=30):
-            no_response.append(f"• {company} — {role}")
-            if status_low in {"applied", "waiting"} and status_col is not None:
-                try:
-                    ws.update_cell(row_idx, status_col + 1, "No Response")
-                    sheets_service.log_event(
-                        row_idx,
-                        "status_change",
-                        json.dumps({"from": status, "to": "No Response"}),
-                    )
-                    auto_updates.append(f"• {company} — {role}: {status} → No Response")
-                    status_low = "no response"
-                except Exception as exc:
-                    logger.warning("Reminder scheduler: failed to set No Response for row %d: %s", row_idx, exc)
             continue
 
         # Rule: Follow-up 1 = Applied + 4 days.
@@ -150,17 +163,6 @@ async def daily_followup_check() -> None:
             and status_low in {"applied", "waiting"}
         ):
             followup_1.append(f"• {company} — {role}")
-            if status_low == "applied" and status_col is not None:
-                try:
-                    ws.update_cell(row_idx, status_col + 1, "Waiting")
-                    sheets_service.log_event(
-                        row_idx,
-                        "status_change",
-                        json.dumps({"from": status, "to": "Waiting"}),
-                    )
-                    auto_updates.append(f"• {company} — {role}: {status} → Waiting")
-                except Exception as exc:
-                    logger.warning("Reminder scheduler: failed to set Waiting for row %d: %s", row_idx, exc)
 
         # Rule: Follow-up 2 = Follow-up 1 + 7 days.
         if (
@@ -175,28 +177,22 @@ async def daily_followup_check() -> None:
     sheets_service.invalidate_cache()
 
     sections: list[str] = []
-    if stale_new:
-        sections.append("🆕 Stale New (New + 3 days):\n" + "\n".join(stale_new))
     if followup_1:
         sections.append("📅 Follow-up 1 (Applied + 4 days):\n" + "\n".join(followup_1))
     if followup_2:
         sections.append("📌 Follow-up 2 (FU1 + 7 days):\n" + "\n".join(followup_2))
-    if no_response:
-        sections.append("⏳ No Response (Applied + 30 days):\n" + "\n".join(no_response))
-    if auto_updates:
-        sections.append("⚙️ Auto status updates:\n" + "\n".join(auto_updates))
+    if stale_work:
+        sections.append("🧭 New/In Progress > 5 days without changes:\n" + "\n".join(stale_work))
 
     msg = "✅ Напоминаний на сегодня нет" if not sections else "\n\n".join(sections)
 
     try:
         await _send_telegram_message(msg)
         logger.info(
-            "Reminder scheduler: sent daily message (stale=%d fu1=%d fu2=%d no_response=%d updates=%d)",
-            len(stale_new),
+            "Reminder scheduler: sent daily message (fu1=%d fu2=%d stale_work=%d)",
             len(followup_1),
             len(followup_2),
-            len(no_response),
-            len(auto_updates),
+            len(stale_work),
         )
     except Exception as exc:
         logger.error("Reminder scheduler: failed to send Telegram message: %s", exc)
