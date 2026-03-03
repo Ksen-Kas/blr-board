@@ -158,9 +158,11 @@ export default function JobCard() {
   if (!job) return <div className="p-6 text-muted">Loading...</div>;
 
   const stopFlags = job.stop_flags || "";
+  const hasEligibilityAlert =
+    stopFlags.includes("visa_required") || stopFlags.includes("citizenship");
   const roleFit = job.role_fit || "";
-  const fitBadgeClass = stopFlags
-    ? "border-red-200 bg-red-50 text-red-700"
+  const fitBadgeClass = hasEligibilityAlert
+    ? "border-amber-200 bg-amber-50 text-amber-700"
     : roleFit.toLowerCase() === "strong"
       ? "border-emerald-200 bg-emerald-50 text-emerald-700"
       : roleFit.toLowerCase() === "stretch" || roleFit.toLowerCase() === "partial"
@@ -320,10 +322,10 @@ export default function JobCard() {
         </div>
       )}
 
-      {/* Stop flags banner */}
-      {stopFlags && (
-        <div className="mb-4 p-3 border border-red-200 rounded-xl bg-red-50 text-red-700 text-sm">
-          <strong>Stop flags:</strong> {stopFlags}
+      {/* Eligibility alert banner */}
+      {hasEligibilityAlert && (
+        <div className="mb-4 p-3 border border-amber-300 rounded-xl bg-amber-50 text-amber-800 text-sm">
+          <strong>Eligibility alert:</strong> explicit citizenship/visa requirement in JD.
         </div>
       )}
 

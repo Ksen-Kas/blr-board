@@ -7,6 +7,7 @@ Output is parsed line-by-line just like the bot does.
 from __future__ import annotations
 
 import logging
+import re
 from pathlib import Path
 
 from app.services.claude import call_claude
@@ -40,7 +41,7 @@ SENIORITY: [Senior / Principal / Other]
 OPERATOR: [Operator / Contractor]
 CHANNEL: [LinkedIn / Portal / Recruiter / Other]
 
-STOP_FLAGS: [visa_required, citizenship, exp_gap, junior_role, strong_mismatch через запятую — или NONE. ONLY these 5 flags are valid.]
+STOP_FLAGS: [visa_required, citizenship через запятую — или NONE. ONLY these 2 flags are valid.]
 ROLE_FIT: [Strong / Partial / Stretch]
 CV_READY: [YES / NEEDS_WORK]
 CV_NOTE: [одна строка — почему нужна доработка, или пусто]
@@ -125,13 +126,32 @@ def evaluate_fit(jd_text: str, source_url: str | None = None) -> dict:
 
 
 def _validate_stop_flags(jd_text: str, stop_flags: str) -> str:
-    """Drop visa/citizenship flags unless JD has explicit wording."""
-    if not stop_flags or stop_flags == "NONE":
-        return "NONE"
-
+    """Keep only explicit hard-stop eligibility flags for non-RU citizenship / visa."""
     text = jd_text.lower()
 
-    citizenship_markers = [
+    has_non_ru_citizenship_req = _has_explicit_non_ru_citizenship_requirement(text)
+    has_visa_req = _has_explicit_visa_requirement(text)
+
+    flags = [f.strip() for f in (stop_flags or "").split(",") if f.strip()]
+    kept = set()
+    for f in flags:
+        if f == "citizenship" and has_non_ru_citizenship_req:
+            kept.add("citizenship")
+        elif f == "visa_required" and has_visa_req:
+            kept.add("visa_required")
+
+    # Enforce explicit constraints even if model forgot to return a flag.
+    if has_non_ru_citizenship_req:
+        kept.add("citizenship")
+    if has_visa_req:
+        kept.add("visa_required")
+
+    ordered = [f for f in ("citizenship", "visa_required") if f in kept]
+    return ", ".join(ordered) if ordered else "NONE"
+
+
+def _has_explicit_non_ru_citizenship_requirement(text: str) -> bool:
+    base_markers = [
         "citizenship",
         "citizen",
         "nationals only",
@@ -139,6 +159,21 @@ def _validate_stop_flags(jd_text: str, stop_flags: str) -> str:
         "only nationals",
         "only citizens",
         "must be a citizen",
+        "must be citizen",
+        "citizens only",
+        "nationality",
+    ]
+    if not any(m in text for m in base_markers):
+        return False
+
+    non_ru_markers = [
+        "us citizen",
+        "u.s. citizen",
+        "american citizen",
+        "eu citizen",
+        "eu citizenship",
+        "uk citizen",
+        "british citizen",
         "saudi national",
         "saudi nationals",
         "uae national",
@@ -152,7 +187,39 @@ def _validate_stop_flags(jd_text: str, stop_flags: str) -> str:
         "local nationals",
         "local national",
     ]
+    if any(m in text for m in non_ru_markers):
+        return True
 
+    russian_markers = [
+        "russian citizen",
+        "russian citizenship",
+        "citizenship of russia",
+        "citizen of russia",
+        "russian federation",
+    ]
+
+    country_citizen = re.findall(r"\b([a-z][a-z-]{2,30})\s+citizen(?:s)?\b", text)
+    for country in country_citizen:
+        if country not in {"russian"}:
+            return True
+
+    citizen_of_country = re.findall(
+        r"\bcitizen(?:s)?\s+of\s+([a-z][a-z\s-]{2,30})\b",
+        text,
+    )
+    for country_phrase in citizen_of_country:
+        country = country_phrase.strip().split()[0]
+        if country not in {"russia", "russian"}:
+            return True
+
+    # If only RU markers are present, no stop flag.
+    if any(m in text for m in russian_markers):
+        return False
+
+    return False
+
+
+def _has_explicit_visa_requirement(text: str) -> bool:
     visa_markers = [
         "no visa sponsorship",
         "visa sponsorship not",
@@ -164,21 +231,12 @@ def _validate_stop_flags(jd_text: str, stop_flags: str) -> str:
         "must be authorized to work",
         "requires work authorization",
         "no sponsorship",
+        "work visa required",
+        "visa required",
+        "requires visa",
+        "must hold a valid visa",
+        "valid visa required",
+        "residence visa required",
+        "residence permit required",
     ]
-
-    has_citizenship = any(m in text for m in citizenship_markers)
-    has_visa = any(m in text for m in visa_markers)
-
-    flags = [f.strip() for f in stop_flags.split(",") if f.strip()]
-    kept = []
-    for f in flags:
-        if f == "citizenship":
-            if has_citizenship:
-                kept.append(f)
-        elif f == "visa_required":
-            if has_visa:
-                kept.append(f)
-        else:
-            kept.append(f)
-
-    return ", ".join(kept) if kept else "NONE"
+    return any(m in text for m in visa_markers)

@@ -16,11 +16,9 @@ class JobStatus(str, Enum):
     CLOSED = "Closed"
 
 
-# Only these flags are valid — see CLAUDE.md Scoring Module
+# Only hard-stop eligibility flags are valid in scoring output.
 VALID_STOP_FLAGS = {"visa_required", "citizenship"}
-VALID_WARNING_FLAGS = {"exp_gap", "junior_role"}
-VALID_REVIEW_FLAGS = {"strong_mismatch"}
-ALL_VALID_FLAGS = VALID_STOP_FLAGS | VALID_WARNING_FLAGS | VALID_REVIEW_FLAGS
+ALL_VALID_FLAGS = VALID_STOP_FLAGS
 
 
 def sanitize_flags(raw: str) -> str:

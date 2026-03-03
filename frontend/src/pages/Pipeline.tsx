@@ -11,16 +11,14 @@ function statusIndex(s: string) {
   return idx >= 0 ? idx : JOB_STATUSES.length;
 }
 
-/** Fit badge color per spec: Strong=green, Stretch=light-green, flags=yellow/red */
-function fitColor(roleFit: string, stopFlags: string) {
-  const hasFlags = !!stopFlags;
+function hasEligibilityAlert(stopFlags: string) {
+  const flags = stopFlags.toLowerCase();
+  return flags.includes("visa_required") || flags.includes("citizenship");
+}
+
+/** Fit color for non-alert states */
+function fitColor(roleFit: string) {
   const fit = roleFit.toLowerCase();
-  if (hasFlags) {
-    const flags = stopFlags.toLowerCase();
-    if (flags.includes("visa") || flags.includes("citizenship") || flags.includes("strong_mismatch"))
-      return "text-red-600";
-    return "text-amber-500";
-  }
   if (fit === "strong") return "text-emerald-600";
   if (fit === "stretch" || fit === "partial") return "text-teal-600";
   return "text-muted";
@@ -222,9 +220,13 @@ export default function Pipeline() {
                     <td className="px-3 py-2 text-text">{job.role}</td>
                     <td className="px-3 py-2 text-muted">{job.region}</td>
                     <td className="px-3 py-2">
-                      <span className={fitColor(job.role_fit, job.stop_flags)}>
-                        ●
-                      </span>{" "}
+                      {hasEligibilityAlert(job.stop_flags || "") ? (
+                        <span className="inline-flex h-4 w-4 items-center justify-center rounded-full border border-amber-300 bg-amber-50 text-[11px] font-bold text-amber-700 leading-none">
+                          !
+                        </span>
+                      ) : (
+                        <span className={fitColor(job.role_fit)}>●</span>
+                      )}{" "}
                       <span className="text-muted font-medium">{job.role_fit || "—"}</span>
                     </td>
                     <td className="px-3 py-2">
@@ -399,14 +401,16 @@ function AddJobBar({ onAdded }: { onAdded: () => void }) {
           </div>
           <div className="mt-1 text-muted">
             Role Fit: <strong className="text-text">{result.role_fit as string}</strong>
-            {typeof result.stop_flags === "string" &&
-              result.stop_flags !== "" &&
-              result.stop_flags !== "NONE" && (
-              <span className="ml-2 text-red-600">
-                Flags: {result.stop_flags as string}
-              </span>
-            )}
           </div>
+          {typeof result.stop_flags === "string" &&
+            result.stop_flags !== "" &&
+            result.stop_flags !== "NONE" &&
+            hasEligibilityAlert(result.stop_flags as string) && (
+            <div className="mt-2 inline-flex items-center gap-2 rounded-full border border-amber-300 bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-800">
+              <span className="inline-flex h-4 w-4 items-center justify-center rounded-full border border-amber-400 bg-amber-100 text-[11px] leading-none">!</span>
+              Eligibility restriction in JD (citizenship/visa).
+            </div>
+          )}
           {typeof result.summary === "string" && result.summary && (
             <div className="mt-1 text-muted">{result.summary as string}</div>
           )}
