@@ -14,22 +14,6 @@ function extractDomain(url: string): string {
   }
 }
 
-function extractVacancyId(url: string): string {
-  const value = (url || "").trim();
-  if (!value) return "";
-  const patterns = [
-    /\/jobs\/view\/(\d{6,})/i,
-    /[?&](?:currentJobId|jobId|jk|vjk)=([A-Za-z0-9_-]{5,})/i,
-    /\/vacanc(?:y|ies)\/(\d{4,})/i,
-    /\/jobs?\/(\d{4,})/i,
-  ];
-  for (const pattern of patterns) {
-    const match = value.match(pattern);
-    if (match?.[1]) return match[1];
-  }
-  return "";
-}
-
 type TouchpointRow = {
   eventId?: number;
   timestamp: string;
@@ -238,7 +222,6 @@ export default function JobCard() {
   const stopFlags = job.stop_flags || "";
   const hasEligibilityAlert =
     stopFlags.includes("visa_required") || stopFlags.includes("citizenship");
-  const vacancyId = extractVacancyId(job.source || "");
   const roleFit = job.role_fit || "";
   const fitBadgeClass = hasEligibilityAlert
     ? "border-amber-200 bg-amber-50 text-amber-700"
@@ -296,16 +279,10 @@ export default function JobCard() {
       const key = `${row.timestamp}|${row.eventType}|${row.detail}`;
       return index === all.findIndex((candidate) => `${candidate.timestamp}|${candidate.eventType}|${candidate.detail}` === key);
     });
+  const lastTouchpoint = touchpointRows[0]?.timestamp || "";
 
   return (
     <div className="p-6 max-w-3xl mx-auto">
-      <button
-        onClick={() => navigate("/")}
-        className="text-accent hover:text-accent-hover text-sm mb-4 inline-block cursor-pointer font-semibold"
-      >
-        &larr; Pipeline
-      </button>
-
       {/* Header */}
       <div className="mb-6">
         <span className="tag-chip mb-2">Job Card</span>
@@ -313,14 +290,15 @@ export default function JobCard() {
           {job.company} — {job.role}
         </h1>
         <p className="text-muted">{job.region}</p>
-        <p className="text-xs text-muted mt-1">
-          Pipeline ID: #{job.row_num}
-          {vacancyId ? ` | Vacancy ID: ${vacancyId}` : ""}
-        </p>
+        <div className="mt-1">
+          <span className="text-[11px] rounded-full border border-border px-2 py-0.5 text-muted">
+            Pipeline ID #{job.row_num}
+          </span>
+        </div>
 
         {/* Source link — domain only, full URL on hover */}
         {job.source && (
-          <div className="mt-1 flex items-center gap-2">
+          <div className="mt-2 flex items-center gap-2">
             <a
               href={job.source}
               target="_blank"
@@ -330,11 +308,6 @@ export default function JobCard() {
             >
               {extractDomain(job.source)}
             </a>
-            {vacancyId && (
-              <span className="text-[11px] rounded-full border border-border px-2 py-0.5 text-muted">
-                ID {vacancyId}
-              </span>
-            )}
           </div>
         )}
 
@@ -409,11 +382,11 @@ export default function JobCard() {
       </div>
 
       {/* Timeline */}
-      {(job.applied_date || job.followup_1 || job.followup_2 || job.response_date) && (
+      {(job.applied_date || job.followup_2 || job.response_date || lastTouchpoint) && (
         <div className="mb-4 p-4 surface-card">
           <div className="grid grid-cols-2 gap-2 text-sm">
             {job.applied_date && <div><span className="text-muted">Applied:</span> <span className="text-text">{job.applied_date}</span></div>}
-            {job.followup_1 && <div><span className="text-muted">Follow-up 1:</span> <span className="text-text">{job.followup_1}</span></div>}
+            {lastTouchpoint && <div><span className="text-muted">Last touchpoint:</span> <span className="text-text">{lastTouchpoint}</span></div>}
             {job.followup_2 && <div><span className="text-muted">Follow-up 2:</span> <span className="text-text">{job.followup_2}</span></div>}
             {job.response_date && <div><span className="text-muted">Response:</span> <span className="text-text">{job.response_date}</span></div>}
             {job.days_to_response && <div><span className="text-muted">Days to response:</span> <span className="text-text">{job.days_to_response}</span></div>}
