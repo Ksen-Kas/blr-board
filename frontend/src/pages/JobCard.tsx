@@ -14,6 +14,22 @@ function extractDomain(url: string): string {
   }
 }
 
+function extractVacancyId(url: string): string {
+  const value = (url || "").trim();
+  if (!value) return "";
+  const patterns = [
+    /\/jobs\/view\/(\d{6,})/i,
+    /[?&](?:currentJobId|jobId|jk|vjk)=([A-Za-z0-9_-]{5,})/i,
+    /\/vacanc(?:y|ies)\/(\d{4,})/i,
+    /\/jobs?\/(\d{4,})/i,
+  ];
+  for (const pattern of patterns) {
+    const match = value.match(pattern);
+    if (match?.[1]) return match[1];
+  }
+  return "";
+}
+
 type TouchpointRow = {
   eventId?: number;
   timestamp: string;
@@ -222,6 +238,7 @@ export default function JobCard() {
   const stopFlags = job.stop_flags || "";
   const hasEligibilityAlert =
     stopFlags.includes("visa_required") || stopFlags.includes("citizenship");
+  const vacancyId = extractVacancyId(job.source || "");
   const roleFit = job.role_fit || "";
   const fitBadgeClass = hasEligibilityAlert
     ? "border-amber-200 bg-amber-50 text-amber-700"
@@ -290,15 +307,10 @@ export default function JobCard() {
           {job.company} — {job.role}
         </h1>
         <p className="text-muted">{job.region}</p>
-        <div className="mt-1">
-          <span className="text-[11px] rounded-full border border-border px-2 py-0.5 text-muted">
-            Pipeline ID #{job.row_num}
-          </span>
-        </div>
 
         {/* Source link — domain only, full URL on hover */}
         {job.source && (
-          <div className="mt-2 flex items-center gap-2">
+          <div className="mt-2 flex items-center gap-2 flex-wrap">
             <a
               href={job.source}
               target="_blank"
@@ -308,6 +320,14 @@ export default function JobCard() {
             >
               {extractDomain(job.source)}
             </a>
+            {vacancyId && (
+              <span className="text-[11px] rounded-full border border-border px-2 py-0.5 text-muted">
+                Vacancy ID {vacancyId}
+              </span>
+            )}
+            <span className="text-[11px] rounded-full border border-border px-2 py-0.5 text-muted">
+              Pipeline ID #{job.row_num}
+            </span>
           </div>
         )}
 
