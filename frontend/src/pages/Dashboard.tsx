@@ -5,19 +5,22 @@ import type { PipelineStats, Job } from "../types/job";
 const STATUS_CARDS = [
   { key: "New", label: "New", color: "bg-blue-500" },
   { key: "Screening", label: "Screening", color: "bg-cyan-500" },
-  { key: "Screening req", label: "Screening req", color: "bg-cyan-400" },
+  { key: "Screening Req", label: "Screening Req", color: "bg-cyan-400" },
   { key: "In Progress", label: "In Progress", color: "bg-yellow-500" },
   { key: "Applied", label: "Applied", color: "bg-green-500" },
   { key: "Waiting", label: "Waiting", color: "bg-orange-500" },
   { key: "Response", label: "Response", color: "bg-purple-500" },
-  { key: "HR Screen", label: "HR Screen", color: "bg-purple-400" },
   { key: "Interview", label: "Interview", color: "bg-indigo-500" },
   { key: "No Response", label: "No Response", color: "bg-gray-400" },
-  { key: "[No response]", label: "No Response", color: "bg-gray-400" },
-  { key: "Rejected", label: "Rejected", color: "bg-red-400" },
-  { key: "[Rejected]", label: "Rejected", color: "bg-red-400" },
   { key: "Closed", label: "Closed", color: "bg-red-500" },
 ];
+
+function lastTouchpointDate(job: Job): string {
+  const candidates = [job.response_date, job.followup_2, job.followup_1, job.applied_date]
+    .map((v) => (v || "").trim())
+    .filter(Boolean);
+  return candidates[0] || "—";
+}
 
 export default function Dashboard() {
   const [stats, setStats] = useState<PipelineStats | null>(null);
@@ -34,12 +37,12 @@ export default function Dashboard() {
   const funnel = STATUS_CARDS.filter((s) => (stats.by_status[s.key] || 0) > 0);
   const maxCount = Math.max(...funnel.map((s) => stats.by_status[s.key] || 0), 1);
 
-  // Recent activity: jobs with response_date or applied_date, sorted by most recent
+  // Recent activity: jobs with at least one timeline date, sorted by latest touchpoint
   const recent = [...jobs]
-    .filter((j) => j.applied_date || j.response_date)
+    .filter((j) => lastTouchpointDate(j) !== "—")
     .sort((a, b) => {
-      const da = a.response_date || a.applied_date || "";
-      const db = b.response_date || b.applied_date || "";
+      const da = lastTouchpointDate(a);
+      const db = lastTouchpointDate(b);
       return db.localeCompare(da);
     })
     .slice(0, 10);
@@ -63,7 +66,7 @@ export default function Dashboard() {
             (stats.by_status["Applied"] || 0) +
             (stats.by_status["Waiting"] || 0) +
             (stats.by_status["Screening"] || 0) +
-            (stats.by_status["Screening req"] || 0) +
+            (stats.by_status["Screening Req"] || 0) +
             (stats.by_status["In Progress"] || 0)
           }
           accent="bg-green-500"
@@ -72,7 +75,6 @@ export default function Dashboard() {
           label="Responses"
           value={
             (stats.by_status["Response"] || 0) +
-            (stats.by_status["HR Screen"] || 0) +
             (stats.by_status["Interview"] || 0)
           }
           accent="bg-purple-500"
@@ -116,7 +118,7 @@ export default function Dashboard() {
                   <th className="px-3 py-2 font-medium">Role</th>
                   <th className="px-3 py-2 font-medium">Status</th>
                   <th className="px-3 py-2 font-medium">Applied</th>
-                  <th className="px-3 py-2 font-medium">Response</th>
+                  <th className="px-3 py-2 font-medium">Last TP</th>
                 </tr>
               </thead>
               <tbody>
@@ -126,7 +128,7 @@ export default function Dashboard() {
                     <td className="px-3 py-2 text-text">{j.role}</td>
                     <td className="px-3 py-2 text-muted">{j.status}</td>
                     <td className="px-3 py-2 text-muted">{j.applied_date || "—"}</td>
-                    <td className="px-3 py-2 text-muted">{j.response_date || "—"}</td>
+                    <td className="px-3 py-2 text-muted">{lastTouchpointDate(j)}</td>
                   </tr>
                 ))}
               </tbody>

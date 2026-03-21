@@ -109,10 +109,9 @@ export default function Pipeline() {
     <div className="p-6 max-w-[1400px] mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <span className="tag-chip mb-2">Jobs Tracker</span>
           <h1 className="text-3xl font-extrabold text-text tracking-tight">Pipeline</h1>
         </div>
-        <div className="flex gap-2 items-center">
+        <div className="flex items-center">
           <button
             onClick={() => {
               refreshCache();
@@ -122,9 +121,6 @@ export default function Pipeline() {
           >
             Refresh
           </button>
-          <span className="tag-chip">
-            {filtered.length} jobs
-          </span>
         </div>
       </div>
 
@@ -381,9 +377,8 @@ function AddJobBar({ onAdded }: { onAdded: () => void }) {
 
   return (
     <div className="mb-6 surface-card p-4">
-      <div className="mb-3 flex items-center justify-between gap-3">
+      <div className="mb-3">
         <span className="text-sm font-semibold text-text">Quick Evaluate</span>
-        <span className="tag-chip">URL or JD text</span>
       </div>
       <div className="flex gap-2">
         <div className="flex-1 flex flex-col gap-2">
