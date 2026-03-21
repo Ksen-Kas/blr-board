@@ -330,15 +330,34 @@ class SheetsService:
         if len(all_rows) < 2:
             return []
         events = []
-        for row in all_rows[1:]:
+        for offset, row in enumerate(all_rows[1:], start=2):
             if len(row) >= 4 and str(row[0]).strip() == str(job_id):
                 events.append({
+                    "event_id": offset,  # Sheet row number in Events worksheet
                     "job_id": int(row[0]),
                     "timestamp": row[1],
                     "event_type": row[2],
                     "data": row[3],
                 })
         return events
+
+    def update_event(self, job_id: int, event_id: int, event_type: str | None = None, data: str | None = None) -> bool:
+        """Update an event row by worksheet row number (event_id)."""
+        ws = self.get_events_ws()
+        try:
+            row_values = ws.row_values(event_id)
+        except Exception:
+            return False
+        if len(row_values) < 4:
+            return False
+        if str(row_values[0]).strip() != str(job_id):
+            return False
+
+        if event_type is not None:
+            ws.update_cell(event_id, 3, _safe_sheet_value(str(event_type), "event_type"))
+        if data is not None:
+            ws.update_cell(event_id, 4, _safe_sheet_value(str(data), "data"))
+        return True
 
 
 sheets_service = SheetsService()

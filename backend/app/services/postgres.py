@@ -327,7 +327,7 @@ class PostgresService:
         with self._connect() as conn, conn.cursor() as cur:
             cur.execute(
                 """
-                SELECT job_id, timestamp, event_type, data
+                SELECT id, job_id, timestamp, event_type, data
                 FROM job_events
                 WHERE job_id = %s
                 ORDER BY id DESC;
@@ -339,6 +339,7 @@ class PostgresService:
         for row in rows:
             result.append(
                 {
+                    "event_id": _safe_int(row.get("id"), 0),
                     "job_id": _safe_int(row.get("job_id"), 0),
                     "timestamp": row.get("timestamp", "") or "",
                     "event_type": row.get("event_type", "") or "",
@@ -346,6 +347,28 @@ class PostgresService:
                 }
             )
         return result
+
+    def update_event(self, job_id: int, event_id: int, event_type: str | None = None, data: str | None = None) -> bool:
+        self._ensure_schema()
+        updates: dict[str, str | int] = {"job_id": job_id, "event_id": event_id}
+        assigns: list[str] = []
+        if event_type is not None:
+            updates["event_type"] = str(event_type)
+            assigns.append("event_type = %(event_type)s")
+        if data is not None:
+            updates["data"] = str(data)
+            assigns.append("data = %(data)s")
+        if not assigns:
+            return False
+
+        query = f"""
+            UPDATE job_events
+            SET {", ".join(assigns)}
+            WHERE id = %(event_id)s AND job_id = %(job_id)s;
+        """
+        with self._connect() as conn, conn.cursor() as cur:
+            cur.execute(query, updates)
+            return (cur.rowcount or 0) > 0
 
     def health(self) -> dict[str, Any]:
         if not self._enabled:

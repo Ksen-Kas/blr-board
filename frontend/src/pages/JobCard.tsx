@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getJob, evaluateJD, updateJob, getEvents, addEvent } from "../api/jobs";
+import { getJob, evaluateJD, updateJob, getEvents, addEvent, updateEvent } from "../api/jobs";
 import { JOB_STATUSES } from "../constants/statuses";
 import type { Job, JobEvent } from "../types/job";
+import { canonicalStatusLabel } from "../utils/status";
 
 /** Extract domain from URL for display */
 function extractDomain(url: string): string {
@@ -30,16 +31,40 @@ function extractVacancyId(url: string): string {
 }
 
 type TouchpointRow = {
+  eventId?: number;
   timestamp: string;
   eventType: string;
   detail: string;
   sortMs: number;
+  editable: boolean;
+  touchpoint?: {
+    channel: string;
+    direction: string;
+    note: string;
+  };
 };
 
 function parseDateToMs(value: string): number {
   const normalized = value.includes(" ") ? value.replace(" ", "T") : `${value}T00:00:00`;
   const ms = Date.parse(normalized);
   return Number.isNaN(ms) ? 0 : ms;
+}
+
+function parseTouchpointData(data: string): { channel: string; direction: string; note: string } {
+  try {
+    const parsed = JSON.parse(data || "{}");
+    return {
+      channel: String(parsed.channel || "Other"),
+      direction: String(parsed.direction || "Outbound"),
+      note: String(parsed.note || ""),
+    };
+  } catch {
+    return {
+      channel: "Other",
+      direction: "Outbound",
+      note: data || "",
+    };
+  }
 }
 
 export default function JobCard() {
@@ -57,6 +82,11 @@ export default function JobCard() {
   const [touchChannel, setTouchChannel] = useState("Email");
   const [touchDirection, setTouchDirection] = useState("Outbound");
   const [touchSaving, setTouchSaving] = useState(false);
+  const [editingTouchEventId, setEditingTouchEventId] = useState<number | null>(null);
+  const [editTouchNote, setEditTouchNote] = useState("");
+  const [editTouchChannel, setEditTouchChannel] = useState("Email");
+  const [editTouchDirection, setEditTouchDirection] = useState("Outbound");
+  const [editTouchSaving, setEditTouchSaving] = useState(false);
   const [statusMessage, setStatusMessage] = useState("");
   const [statusMessageKind, setStatusMessageKind] = useState<"success" | "error" | "info">("info");
   const [statusUpdating, setStatusUpdating] = useState(false);
@@ -65,7 +95,7 @@ export default function JobCard() {
     if (rowNum) {
       getJob(Number(rowNum)).then((j) => {
         setJob(j);
-        setStatus(j.status);
+        setStatus(canonicalStatusLabel(j.status) || j.status);
       });
       getEvents(Number(rowNum)).then(setEvents).catch(() => {});
     }
@@ -171,6 +201,38 @@ export default function JobCard() {
     }
   };
 
+  const handleStartTouchpointEdit = (row: TouchpointRow) => {
+    if (!row.eventId || !row.touchpoint) return;
+    setEditingTouchEventId(row.eventId);
+    setEditTouchChannel(row.touchpoint.channel || "Other");
+    setEditTouchDirection(row.touchpoint.direction || "Outbound");
+    setEditTouchNote(row.touchpoint.note || "");
+  };
+
+  const handleCancelTouchpointEdit = () => {
+    setEditingTouchEventId(null);
+    setEditTouchNote("");
+    setEditTouchChannel("Email");
+    setEditTouchDirection("Outbound");
+  };
+
+  const handleSaveTouchpointEdit = async () => {
+    if (!job || !editingTouchEventId || !editTouchNote.trim() || editTouchSaving) return;
+    setEditTouchSaving(true);
+    try {
+      const data = JSON.stringify({
+        channel: editTouchChannel,
+        direction: editTouchDirection,
+        note: editTouchNote.trim(),
+      });
+      await updateEvent(job.row_num, editingTouchEventId, { event_type: "touchpoint", data });
+      setEvents(await getEvents(job.row_num));
+      handleCancelTouchpointEdit();
+    } finally {
+      setEditTouchSaving(false);
+    }
+  };
+
   if (!job) return <div className="p-6 text-muted">Loading...</div>;
 
   const stopFlags = job.stop_flags || "";
@@ -187,23 +249,32 @@ export default function JobCard() {
         : "border-border bg-surface text-muted";
   const eventRows: TouchpointRow[] = events.map((ev) => {
     let detail = "";
+    let touchpoint: TouchpointRow["touchpoint"] =
+      ev.event_type === "touchpoint" ? parseTouchpointData(ev.data) : undefined;
     try {
       const d = JSON.parse(ev.data);
       if (ev.event_type === "status_change") {
         detail = `${d.from} → ${d.to}`;
       } else if (ev.event_type === "touchpoint") {
-        detail = `${d.direction || ""} ${d.channel || ""}: ${d.note || ""}`;
+        detail = `${touchpoint?.direction || ""} ${touchpoint?.channel || ""}: ${touchpoint?.note || ""}`;
       } else {
         detail = ev.data;
       }
     } catch {
-      detail = ev.data;
+      if (ev.event_type === "touchpoint") {
+        detail = `${touchpoint?.direction || ""} ${touchpoint?.channel || ""}: ${touchpoint?.note || ""}`;
+      } else {
+        detail = ev.data;
+      }
     }
     return {
+      eventId: ev.event_id,
       timestamp: ev.timestamp,
       eventType: ev.event_type,
       detail,
       sortMs: parseDateToMs(ev.timestamp),
+      editable: ev.event_type === "touchpoint" && typeof ev.event_id === "number",
+      touchpoint,
     };
   });
 
@@ -217,7 +288,7 @@ export default function JobCard() {
     ...(job.response_date
       ? [{ timestamp: job.response_date, eventType: "response", detail: "Response received", sortMs: parseDateToMs(job.response_date) }]
       : []),
-  ];
+  ].map((item) => ({ ...item, editable: false }));
 
   const touchpointRows = [...eventRows, ...timelineRows]
     .sort((a, b) => b.sortMs - a.sortMs)
@@ -423,11 +494,70 @@ export default function JobCard() {
           {touchpointRows.length > 0 ? (
             <div className="space-y-2">
               {touchpointRows.map((row, i) => {
+                const isEditing = row.eventId === editingTouchEventId;
                 return (
-                  <div key={i} className="flex gap-2 text-sm">
-                    <span className="text-muted shrink-0 w-36">{row.timestamp}</span>
-                    <span className="text-muted shrink-0 w-28">{row.eventType}</span>
-                    <span className="text-text">{row.detail}</span>
+                  <div key={`${row.eventId || "row"}-${i}`} className="text-sm border-b border-border/70 pb-2 last:border-b-0">
+                    <div className="flex gap-2">
+                      <span className="text-muted shrink-0 w-36">{row.timestamp}</span>
+                      <span className="text-muted shrink-0 w-28">{row.eventType}</span>
+                      <span className="text-text flex-1">{row.detail}</span>
+                      {row.editable && (
+                        <button
+                          onClick={() => handleStartTouchpointEdit(row)}
+                          className="text-xs text-accent hover:text-accent-hover font-semibold cursor-pointer"
+                        >
+                          Edit
+                        </button>
+                      )}
+                    </div>
+                    {isEditing && (
+                      <div className="mt-2 ml-[18rem] p-3 bg-surface-alt rounded-xl space-y-2 border border-border/70">
+                        <div className="flex gap-2">
+                          <select
+                            value={editTouchChannel}
+                            onChange={(e) => setEditTouchChannel(e.target.value)}
+                            className="border border-border bg-input text-text rounded-full px-3 py-1 text-sm cursor-pointer"
+                          >
+                            <option>Email</option>
+                            <option>LinkedIn</option>
+                            <option>Phone</option>
+                            <option>Portal</option>
+                            <option>Other</option>
+                          </select>
+                          <select
+                            value={editTouchDirection}
+                            onChange={(e) => setEditTouchDirection(e.target.value)}
+                            className="border border-border bg-input text-text rounded-full px-3 py-1 text-sm cursor-pointer"
+                          >
+                            <option>Outbound</option>
+                            <option>Inbound</option>
+                          </select>
+                        </div>
+                        <textarea
+                          value={editTouchNote}
+                          onChange={(e) => setEditTouchNote(e.target.value)}
+                          placeholder="Note..."
+                          rows={2}
+                          className="w-full border border-border bg-input rounded-xl px-3 py-2 text-sm text-text resize-none placeholder:text-muted/50 focus:outline-none focus:ring-2 focus:ring-accent/20"
+                        />
+                        <div className="flex gap-2">
+                          <button
+                            onClick={handleSaveTouchpointEdit}
+                            disabled={editTouchSaving || !editTouchNote.trim()}
+                            className="px-3 py-1 text-sm bg-accent text-white rounded-full hover:bg-accent-hover disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer font-semibold"
+                          >
+                            {editTouchSaving ? "Saving..." : "Save"}
+                          </button>
+                          <button
+                            onClick={handleCancelTouchpointEdit}
+                            disabled={editTouchSaving}
+                            className="px-3 py-1 text-sm border border-border rounded-full hover:bg-surface-alt disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer text-muted"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 );
               })}

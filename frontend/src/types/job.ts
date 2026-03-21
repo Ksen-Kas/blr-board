@@ -33,6 +33,7 @@ export interface PipelineStats {
 }
 
 export interface JobEvent {
+  event_id?: number;
   job_id: number;
   timestamp: string;
   event_type: string;

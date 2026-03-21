@@ -28,6 +28,12 @@ export const getEvents = (rowNum: number) =>
 export const addEvent = (rowNum: number, event_type: string, data: string = "{}") =>
   api.post(`/jobs/${rowNum}/events`, { event_type, data }).then((r) => r.data);
 
+export const updateEvent = (
+  rowNum: number,
+  eventId: number,
+  data: { event_type?: string; data?: string },
+) => api.patch(`/jobs/${rowNum}/events/${eventId}`, data).then((r) => r.data);
+
 // Scoring — same output as Telegram bot's joe.evaluate()
 export const evaluateJD = (data: {
   jd_text?: string;

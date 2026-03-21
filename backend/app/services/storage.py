@@ -158,6 +158,44 @@ class StorageService:
                 logger.error("Postgres get_events failed, fallback to Sheets: %s", exc)
         return sheets_service.get_events(job_id)
 
+    def update_event(self, job_id: int, event_id: int, event_type: str | None = None, data: str | None = None) -> bool:
+        mode = _write_mode()
+        source = _read_source()
+        targets: list[str] = []
+        if mode == "sheets":
+            targets = ["sheets"]
+        elif mode == "postgres":
+            targets = ["postgres"]
+        else:  # both
+            targets = ["postgres", "sheets"] if source == "postgres" else ["sheets", "postgres"]
+
+        success = False
+        errors: list[str] = []
+
+        for target in targets:
+            try:
+                if target == "postgres":
+                    if not postgres_service.enabled:
+                        errors.append("postgres: DATABASE_URL missing")
+                        continue
+                    ok = postgres_service.update_event(job_id, event_id, event_type, data)
+                    success = success or ok
+                    if not ok:
+                        errors.append("postgres: event not found")
+                else:
+                    ok = sheets_service.update_event(job_id, event_id, event_type, data)
+                    success = success or ok
+                    if not ok:
+                        errors.append("sheets: event not found")
+            except Exception as exc:
+                errors.append(f"{target}: {exc}")
+
+        if not success and errors:
+            raise RuntimeError("; ".join(errors))
+        if errors and mode == "both":
+            logger.warning("Dual-write event update had partial errors: %s", "; ".join(errors))
+        return success
+
     def runtime_status(self) -> dict[str, Any]:
         return {
             "read_source": _read_source(),

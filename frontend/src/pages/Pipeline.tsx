@@ -3,10 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { getJobs, evaluateJD, refreshCache } from "../api/jobs";
 import { JOB_STATUSES } from "../constants/statuses";
 import type { Job } from "../types/job";
+import { canonicalStatusKey, canonicalStatusLabel } from "../utils/status";
 
 function statusIndex(s: string) {
+  const key = canonicalStatusKey(s);
   const idx = JOB_STATUSES.findIndex(
-    (v) => v.toLowerCase() === s.toLowerCase()
+    (v) => v.toLowerCase() === key
   );
   return idx >= 0 ? idx : JOB_STATUSES.length;
 }
@@ -36,8 +38,14 @@ function daysSince(dateStr: string): number | null {
   }
 }
 
-type SortKey = "id" | "status" | "company" | "region" | "days";
+type SortKey = "id" | "status" | "company" | "region" | "applied_date";
 type SortDir = "asc" | "desc";
+
+function parseAppliedDateMs(value: string): number {
+  if (!value) return 0;
+  const ms = Date.parse(value);
+  return Number.isNaN(ms) ? 0 : ms;
+}
 
 export default function Pipeline() {
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -75,7 +83,7 @@ export default function Pipeline() {
   const filtered =
     statusFilter === "All"
       ? jobs
-      : jobs.filter((j) => j.status.toLowerCase() === statusFilter.toLowerCase());
+      : jobs.filter((j) => canonicalStatusKey(j.status) === canonicalStatusKey(statusFilter));
 
   // Sort
   const sorted = [...filtered].sort((a, b) => {
@@ -84,10 +92,8 @@ export default function Pipeline() {
     if (sortKey === "status") return (statusIndex(a.status) - statusIndex(b.status)) * dir;
     if (sortKey === "company") return a.company.localeCompare(b.company) * dir;
     if (sortKey === "region") return a.region.localeCompare(b.region) * dir;
-    if (sortKey === "days") {
-      const da = daysSince(a.applied_date) ?? 9999;
-      const db = daysSince(b.applied_date) ?? 9999;
-      return (da - db) * dir;
+    if (sortKey === "applied_date") {
+      return (parseAppliedDateMs(a.applied_date) - parseAppliedDateMs(b.applied_date)) * dir;
     }
     return 0;
   });
@@ -168,13 +174,13 @@ export default function Pipeline() {
                     ))}
                   </select>
                 </th>
-                <th className="px-3 py-2.5 font-semibold w-24">Applied</th>
                 <th
-                  className="px-3 py-2.5 font-semibold w-16 cursor-pointer hover:text-text select-none"
-                  onClick={() => handleSort("days")}
+                  className="px-3 py-2.5 font-semibold w-24 cursor-pointer hover:text-text select-none"
+                  onClick={() => handleSort("applied_date")}
                 >
-                  Days{sortIndicator("days")}
+                  Applied{sortIndicator("applied_date")}
                 </th>
+                <th className="px-3 py-2.5 font-semibold w-16">Days</th>
                 <th className="px-3 py-2.5 font-semibold w-16">DTR</th>
                 <th className="px-3 py-2.5 font-semibold w-48">CL</th>
               </tr>
@@ -505,7 +511,8 @@ function LetterPopup({ job, onClose }: { job: Job; onClose: () => void }) {
 // ─── Status Badge ────────────────────────────────────────────────────────────
 
 function StatusBadge({ status }: { status: string }) {
-  const s = status.toLowerCase();
+  const s = canonicalStatusKey(status);
+  const label = canonicalStatusLabel(status) || status;
   let color = "bg-surface-alt text-muted border border-border";
   if (s === "new") color = "bg-blue-50 text-blue-700 border border-blue-200";
   else if (s === "screening") color = "bg-cyan-50 text-cyan-700 border border-cyan-200";
@@ -520,7 +527,7 @@ function StatusBadge({ status }: { status: string }) {
 
   return (
     <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-semibold ${color}`}>
-      {status}
+      {label}
     </span>
   );
 }

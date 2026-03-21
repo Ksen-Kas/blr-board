@@ -116,6 +116,11 @@ class EventCreate(BaseModel):
     data: str = "{}"
 
 
+class EventUpdate(BaseModel):
+    event_type: str | None = None
+    data: str | None = None
+
+
 @router.get("/{row_num}/events")
 def get_events(row_num: int) -> list[dict]:
     return storage_service.get_events(row_num)
@@ -127,4 +132,30 @@ def add_event(row_num: int, event: EventCreate, _: None = Depends(require_intern
     if not job:
         raise HTTPException(404, "Job not found")
     storage_service.log_event(row_num, event.event_type, event.data)
+    return {"status": "ok"}
+
+
+@router.patch("/{row_num}/events/{event_id}")
+def patch_event(
+    row_num: int,
+    event_id: int,
+    event: EventUpdate,
+    _: None = Depends(require_internal_api_key),
+):
+    job = storage_service.get_job_by_row(row_num)
+    if not job:
+        raise HTTPException(404, "Job not found")
+    if event.event_type is None and event.data is None:
+        raise HTTPException(400, "Nothing to update")
+    try:
+        ok = storage_service.update_event(
+            job_id=row_num,
+            event_id=event_id,
+            event_type=event.event_type,
+            data=event.data,
+        )
+    except RuntimeError as exc:
+        raise HTTPException(400, str(exc)) from exc
+    if not ok:
+        raise HTTPException(404, "Event not found")
     return {"status": "ok"}
