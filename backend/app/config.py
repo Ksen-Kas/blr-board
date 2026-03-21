@@ -31,6 +31,11 @@ ANTHROPIC_API_KEY = _get("ANTHROPIC_API_KEY")
 GOOGLE_SHEET_ID = _get("GOOGLE_SHEET_ID")
 GOOGLE_CREDENTIALS_JSON_CONTENT = _get("GOOGLE_CREDENTIALS_JSON_CONTENT")
 
+# Postgres storage (optional migration target)
+DATABASE_URL = _get("DATABASE_URL")
+DATA_READ_SOURCE = _get("DATA_READ_SOURCE", "sheets")  # sheets | postgres
+DATA_WRITE_MODE = _get("DATA_WRITE_MODE", "sheets")  # sheets | postgres | both
+
 # Paths
 CLIENT_SPACE_PATH = _get(
     "CLIENT_SPACE_PATH",

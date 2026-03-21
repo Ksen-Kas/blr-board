@@ -5,19 +5,24 @@ from fastapi import APIRouter, Depends
 
 from app.security import require_internal_api_key
 from app.services.reminder import daily_followup_check, get_reminder_runtime_status
-from app.services.sheets import sheets_service
+from app.services.storage import storage_service
 
 router = APIRouter()
 
 
 @router.get("/stats")
 def get_stats():
-    jobs = sheets_service.get_all_jobs()
+    jobs = storage_service.get_all_jobs()
     status_counts = Counter(j.status for j in jobs)
     return {
         "total": len(jobs),
         "by_status": dict(status_counts),
     }
+
+
+@router.get("/storage/status")
+def storage_status(_: None = Depends(require_internal_api_key)):
+    return storage_service.runtime_status()
 
 
 @router.get("/reminders/status")

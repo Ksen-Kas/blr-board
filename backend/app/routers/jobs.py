@@ -1,5 +1,6 @@
 """Jobs router — CRUD for pipeline, reads/writes the same Google Sheet as the bot."""
 
+from datetime import date
 import json
 import logging
 
@@ -8,7 +9,7 @@ from pydantic import BaseModel
 
 from app.models.job import Job, JobCreate, JobUpdate, JobStatus
 from app.security import require_internal_api_key
-from app.services.sheets import sheets_service
+from app.services.storage import storage_service
 
 logger = logging.getLogger(__name__)
 
@@ -23,12 +24,12 @@ def list_statuses() -> list[str]:
 
 @router.get("/")
 def list_jobs() -> list[Job]:
-    return sheets_service.get_all_jobs()
+    return storage_service.get_all_jobs()
 
 
 @router.get("/{row_num}")
 def get_job(row_num: int) -> Job:
-    job = sheets_service.get_job_by_row(row_num)
+    job = storage_service.get_job_by_row(row_num)
     if not job:
         raise HTTPException(404, "Job not found")
     return job
@@ -38,7 +39,7 @@ def get_job(row_num: int) -> Job:
 def create_job(data: JobCreate, _: None = Depends(require_internal_api_key)) -> dict:
     """Add a job to the tracker — same format as the bot's sheets.add_row."""
     # Duplicate check (same logic as bot)
-    existing = sheets_service.find_job(data.company, data.role)
+    existing = storage_service.find_job(data.company, data.role)
     if existing:
         return {
             "duplicate": True,
@@ -48,7 +49,7 @@ def create_job(data: JobCreate, _: None = Depends(require_internal_api_key)) -> 
             "message": f"Already in tracker: row {existing.row_num}",
         }
 
-    sheets_service.add_row({
+    row_num = storage_service.add_row({
         "company": data.company,
         "role": data.role,
         "region": data.region,
@@ -61,14 +62,16 @@ def create_job(data: JobCreate, _: None = Depends(require_internal_api_key)) -> 
         "summary": data.comment,
         "submission_num": 1,
     })
-    sheets_service.invalidate_cache()
-    jobs = sheets_service.get_all_jobs()
+    storage_service.invalidate_cache()
+    if row_num:
+        return {"added": True, "row_num": row_num}
+    jobs = storage_service.get_all_jobs()
     return {"added": True, "row_num": jobs[-1].row_num if jobs else 0}
 
 
 @router.patch("/{row_num}")
 def update_job(row_num: int, data: JobUpdate, _: None = Depends(require_internal_api_key)) -> Job:
-    job = sheets_service.get_job_by_row(row_num)
+    job = storage_service.get_job_by_row(row_num)
     if not job:
         raise HTTPException(404, "Job not found")
     updates = data.model_dump(exclude_none=True)
@@ -76,7 +79,7 @@ def update_job(row_num: int, data: JobUpdate, _: None = Depends(require_internal
     # Auto-log status change
     if "status" in updates and updates["status"] != job.status:
         try:
-            sheets_service.log_event(
+            storage_service.log_event(
                 row_num,
                 "status_change",
                 json.dumps({"from": job.status, "to": updates["status"]}),
@@ -84,7 +87,15 @@ def update_job(row_num: int, data: JobUpdate, _: None = Depends(require_internal
         except Exception as e:
             logger.warning("Failed to log status_change event: %s", e)
 
-    updated = sheets_service.update_job(row_num, updates)
+    # Auto-fill Applied Date when status is moved to Applied and date is still empty.
+    if (
+        updates.get("status") == JobStatus.APPLIED.value
+        and "applied_date" not in updates
+        and not (job.applied_date or "").strip()
+    ):
+        updates["applied_date"] = date.today().isoformat()
+
+    updated = storage_service.update_job(row_num, updates)
     if not updated:
         raise HTTPException(500, "Update failed")
     return updated
@@ -93,7 +104,7 @@ def update_job(row_num: int, data: JobUpdate, _: None = Depends(require_internal
 @router.post("/refresh")
 def refresh_cache(_: None = Depends(require_internal_api_key)):
     """Force cache invalidation — call after bot writes new rows."""
-    sheets_service.invalidate_cache()
+    storage_service.invalidate_cache()
     return {"status": "cache invalidated"}
 
 
@@ -107,13 +118,13 @@ class EventCreate(BaseModel):
 
 @router.get("/{row_num}/events")
 def get_events(row_num: int) -> list[dict]:
-    return sheets_service.get_events(row_num)
+    return storage_service.get_events(row_num)
 
 
 @router.post("/{row_num}/events")
 def add_event(row_num: int, event: EventCreate, _: None = Depends(require_internal_api_key)):
-    job = sheets_service.get_job_by_row(row_num)
+    job = storage_service.get_job_by_row(row_num)
     if not job:
         raise HTTPException(404, "Job not found")
-    sheets_service.log_event(row_num, event.event_type, event.data)
+    storage_service.log_event(row_num, event.event_type, event.data)
     return {"status": "ok"}
