@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import ipaddress
+import json
 import logging
 from urllib.parse import urlparse
 
@@ -66,6 +67,93 @@ def is_safe_public_url(url: str) -> bool:
 def is_linkedin_url(url: str) -> bool:
     host = (urlparse(url.strip()).hostname or "").lower()
     return "linkedin.com" in host
+
+
+def is_hh_url(url: str) -> bool:
+    host = (urlparse(url.strip()).hostname or "").lower()
+    return host.endswith("hh.ru") or ".hh.ru" in host
+
+
+def _compact_lines(text: str) -> str:
+    lines = [line.strip() for line in text.splitlines() if line.strip()]
+    cleaned: list[str] = []
+    seen: set[str] = set()
+    for line in lines:
+        key = line.lower()
+        if key in seen:
+            continue
+        seen.add(key)
+        cleaned.append(line)
+    return "\n".join(cleaned).strip()
+
+
+def _extract_hh_description_from_jsonld(soup: BeautifulSoup) -> str:
+    for script in soup.find_all("script", attrs={"type": "application/ld+json"}):
+        raw = script.get_text(strip=True)
+        if not raw:
+            continue
+        try:
+            data = json.loads(raw)
+        except Exception:
+            continue
+        candidates = data if isinstance(data, list) else [data]
+        for item in candidates:
+            if not isinstance(item, dict):
+                continue
+            typ = str(item.get("@type", "")).lower()
+            if typ != "jobposting":
+                continue
+            description_html = str(item.get("description", "")).strip()
+            if not description_html:
+                continue
+            description_text = BeautifulSoup(description_html, "html.parser").get_text("\n", strip=True)
+            description_text = _compact_lines(description_text)
+            if len(description_text) >= 120:
+                return description_text
+    return ""
+
+
+def parse_url_hh(url: str) -> str | None:
+    """Targeted parser for hh.ru pages: vacancy title + clean JobPosting description."""
+    try:
+        resp = httpx.get(url, headers=HEADERS, follow_redirects=True, timeout=12)
+        resp.raise_for_status()
+    except Exception as e:
+        logger.warning("HH fetch failed for %s: %s", url, e)
+        return None
+
+    soup = BeautifulSoup(resp.text, "html.parser")
+
+    title_el = soup.select_one('[data-qa="vacancy-title"]') or soup.find("h1")
+    company_el = soup.select_one('[data-qa="vacancy-company-name"]')
+    location_el = soup.select_one('[data-qa="vacancy-view-raw-address"]')
+
+    title = (title_el.get_text(" ", strip=True) if title_el else "").strip()
+    company = (company_el.get_text(" ", strip=True) if company_el else "").strip()
+    location = (location_el.get_text(" ", strip=True) if location_el else "").strip()
+
+    desc_el = soup.select_one('[data-qa="vacancy-description"]')
+    if desc_el:
+        description = _compact_lines(desc_el.get_text("\n", strip=True))
+    else:
+        description = _extract_hh_description_from_jsonld(soup)
+
+    if len(description) < 120:
+        return None
+
+    parts: list[str] = []
+    if title:
+        parts.append(f"# {title}")
+    if company:
+        parts.append(f"Компания: {company}")
+    if location:
+        parts.append(f"Локация: {location}")
+    parts.append("")
+    parts.append("Описание вакансии:")
+    parts.append(description)
+
+    result = "\n".join(parts).strip()
+    return result if len(result) >= 200 else None
 
 
 def parse_url_jina(url: str) -> str | None:
@@ -133,6 +221,12 @@ def parse_url(url: str) -> str | None:
         return None
     if is_linkedin_url(url):
         logger.info("LinkedIn URL blocked: %s", url)
+        return None
+    if is_hh_url(url):
+        hh_result = parse_url_hh(url)
+        if hh_result:
+            return hh_result
+        logger.info("HH parser could not extract clean JD for %s", url)
         return None
     result = parse_url_jina(url)
     if result:
