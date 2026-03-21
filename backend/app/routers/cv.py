@@ -93,8 +93,12 @@ def canonical_pdf(
     try:
         pdf_bytes = generate_canonical_cv_pdf()
     except Exception as e:
-        logger.error("Canonical template PDF generation failed: %s", e)
-        raise HTTPException(500, f"PDF generation failed: {e}")
+        logger.warning("Canonical markdown PDF failed, trying docx fallback: %s", e)
+        try:
+            pdf_bytes = render_canonical_cv_pdf()
+        except Exception as docx_err:
+            logger.error("Canonical PDF generation failed (all fallbacks): %s", docx_err)
+            raise HTTPException(500, f"PDF generation failed: {docx_err}")
     suffix = "_".join(part for part in [company, role] if part).replace(" ", "_")
     filename = f"CV_CANON_{suffix}.pdf" if suffix else "CV_CANON.pdf"
     return Response(

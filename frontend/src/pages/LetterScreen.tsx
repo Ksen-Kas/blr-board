@@ -21,6 +21,13 @@ function parseStoredLetter(rawLetter: string): { subject: string; body: string }
   };
 }
 
+function extractJdText(comment: string): string {
+  const raw = (comment || "").trim();
+  if (!raw) return "";
+  if (raw.toLowerCase().startsWith("jd unavailable")) return "";
+  return raw;
+}
+
 export default function LetterScreen() {
   const { rowNum } = useParams<{ rowNum: string }>();
   const navigate = useNavigate();
@@ -52,8 +59,8 @@ export default function LetterScreen() {
 
   const handleGenerate = async () => {
     if (!job) return;
-    const jdText = (job.comment || "").trim();
-    if (!jdText) {
+    const jdText = extractJdText(job.comment || "");
+    if (!jdText && !job.source?.trim()) {
       setError("To generate a letter, add JD text in the job card first.");
       return;
     }
@@ -61,10 +68,20 @@ export default function LetterScreen() {
     setGenerating(true);
     setError("");
     try {
-      const res = await generateLetter(jdText, notes);
-      setResult(res);
-      await updateJob(job.row_num, { cl: `Subject: ${res.subject}\n\n${res.body}` });
-      setJob((prev) => (prev ? { ...prev, cl: `Subject: ${res.subject}\n\n${res.body}` } : prev));
+      const res = await generateLetter({
+        jd_text: jdText,
+        source_url: jdText ? "" : (job.source || ""),
+        notes,
+      });
+      setResult({ subject: res.subject, body: res.body });
+      const updates: Partial<Job> = {
+        cl: `Subject: ${res.subject}\n\n${res.body}`,
+      };
+      if (!jdText && (res.jd_text_used || "").trim()) {
+        updates.comment = (res.jd_text_used || "").trim();
+      }
+      await updateJob(job.row_num, updates);
+      setJob((prev) => (prev ? { ...prev, ...updates } : prev));
     } catch (e: unknown) {
       const msg =
         e && typeof e === "object" && "response" in e
@@ -145,7 +162,8 @@ export default function LetterScreen() {
   };
 
   if (!job) return <div className="p-6 text-muted">Loading...</div>;
-  const hasJdText = Boolean(job.comment?.trim());
+  const hasJdText = Boolean(extractJdText(job.comment || ""));
+  const canGenerate = hasJdText || Boolean(job.source?.trim());
 
   return (
     <div className="p-6 max-w-3xl mx-auto">
@@ -159,9 +177,14 @@ export default function LetterScreen() {
       {/* Input: notes */}
       {!result && !generating && (
         <div className="space-y-4">
-          {!hasJdText && (
+          {!canGenerate && (
             <div className="border border-amber-200 rounded-xl p-4 bg-amber-50 text-amber-800 text-sm">
               Letter cannot be generated yet. Add JD text in Job Card first (Summary / Comment or Scoring Input), then come back.
+            </div>
+          )}
+          {!hasJdText && Boolean(job.source?.trim()) && (
+            <div className="border border-blue-200 rounded-xl p-4 bg-blue-50 text-blue-800 text-sm">
+              JD text is missing in card comment. The backend will try to parse the source URL for generation.
             </div>
           )}
           <div className="surface-card p-4">
@@ -178,7 +201,7 @@ export default function LetterScreen() {
           </div>
           <button
             onClick={handleGenerate}
-            disabled={!hasJdText}
+            disabled={!canGenerate}
             className="px-6 py-2.5 bg-accent text-white rounded-full hover:bg-accent-hover disabled:opacity-50 disabled:cursor-not-allowed font-semibold cursor-pointer"
           >
             Generate Letter

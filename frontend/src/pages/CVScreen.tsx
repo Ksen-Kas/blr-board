@@ -64,7 +64,7 @@ export default function CVScreen() {
       } finally {
         setPreviewLoading(false);
       }
-      await updateJob(job.row_num, { cv: res.changes_summary });
+      await updateJob(job.row_num, { cv: res.tailored_cv });
     } catch (e: unknown) {
       const msg =
         e && typeof e === "object" && "response" in e

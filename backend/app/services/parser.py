@@ -74,7 +74,7 @@ def parse_url_jina(url: str) -> str | None:
         resp = httpx.get(
             f"https://r.jina.ai/{url}",
             headers={"Accept": "text/plain"},
-            timeout=20,
+            timeout=10,
         )
         resp.raise_for_status()
         text = resp.text.strip()
@@ -94,7 +94,7 @@ def parse_url_jina(url: str) -> str | None:
 def parse_url_bs4(url: str) -> str | None:
     """Fallback: fetch URL and extract main text via BeautifulSoup."""
     try:
-        resp = httpx.get(url, headers=HEADERS, follow_redirects=True, timeout=15)
+        resp = httpx.get(url, headers=HEADERS, follow_redirects=True, timeout=8)
         resp.raise_for_status()
     except Exception as e:
         logger.warning("BS4 fetch failed for %s: %s", url, e)

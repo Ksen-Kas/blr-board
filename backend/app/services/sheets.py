@@ -50,6 +50,39 @@ FIELD_NAMES = [c[1] for c in COLUMNS]
 FIELD_TO_COL = {field: idx + 1 for idx, (_, field) in enumerate(COLUMNS)}
 
 FOLLOWUP_DAYS = 4  # Applied + N days without response = needs_followup
+MAX_SHEET_CELL_CHARS = 49000
+
+HEADER_ALIASES: dict[str, list[str]] = {
+    "role": ["Title", "Job Title"],
+    "region": ["Location", "Country"],
+    "source": ["Source URL", "source_url", "URL", "Link"],
+    "comment": ["Description", "JD", "JD Text", "Job Description", "Raw JD"],
+}
+
+
+def _header_index(headers: list[str], names: list[str]) -> int | None:
+    index = {h.strip().lower(): i for i, h in enumerate(headers)}
+    for name in names:
+        idx = index.get(name.strip().lower())
+        if idx is not None:
+            return idx
+    return None
+
+
+def _cell(row: list[str], idx: int | None) -> str:
+    if idx is None or idx < 0 or idx >= len(row):
+        return ""
+    return str(row[idx]).strip()
+
+
+def _safe_sheet_value(value: str, field: str = "") -> str:
+    text = str(value)
+    if len(text) <= MAX_SHEET_CELL_CHARS:
+        return text
+    suffix = "\n\n[truncated to fit Google Sheets cell limit]"
+    keep = max(0, MAX_SHEET_CELL_CHARS - len(suffix))
+    logger.warning("Truncating oversized field '%s' from %d to %d chars", field or "unknown", len(text), MAX_SHEET_CELL_CHARS)
+    return text[:keep] + suffix
 
 
 def _get_worksheet(name: str = "Pipeline") -> gspread.Worksheet:
@@ -110,6 +143,16 @@ class SheetsService:
         self._cache: list[Job] = []
         self._cache_valid = False
 
+    @staticmethod
+    def _resolve_field_columns(headers: list[str]) -> dict[str, int]:
+        """Resolve 1-based sheet column numbers by canonical and alias names."""
+        resolved: dict[str, int] = {}
+        for fallback_idx, (header_name, field) in enumerate(COLUMNS, start=1):
+            names = [header_name] + HEADER_ALIASES.get(field, [])
+            idx0 = _header_index(headers, names)
+            resolved[field] = (idx0 + 1) if idx0 is not None else fallback_idx
+        return resolved
+
     def invalidate_cache(self):
         self._cache_valid = False
 
@@ -122,14 +165,34 @@ class SheetsService:
         if len(all_values) < 2:
             return []
 
+        headers = [h.strip() for h in all_values[0]]
+        field_cols = self._resolve_field_columns(headers)
         data_rows = all_values[1:]  # skip header
 
         jobs = []
         for row_idx, row in enumerate(data_rows):
             job_data: dict = {"row_num": row_idx + 2}  # 1-indexed + header
-            for col_idx, (_, field) in enumerate(COLUMNS):
-                val = row[col_idx] if col_idx < len(row) else ""
-                job_data[field] = str(val).strip()
+            for _, field in COLUMNS:
+                col_idx_1 = field_cols.get(field, FIELD_TO_COL[field])
+                job_data[field] = _cell(row, col_idx_1 - 1)
+            if not job_data.get("role"):
+                for alias in HEADER_ALIASES.get("role", []):
+                    value = _cell(row, _header_index(headers, [alias]))
+                    if value:
+                        job_data["role"] = value
+                        break
+            if not job_data.get("region"):
+                for alias in HEADER_ALIASES.get("region", []):
+                    value = _cell(row, _header_index(headers, [alias]))
+                    if value:
+                        job_data["region"] = value
+                        break
+            if not job_data.get("comment"):
+                for alias in HEADER_ALIASES.get("comment", []):
+                    value = _cell(row, _header_index(headers, [alias]))
+                    if value:
+                        job_data["comment"] = value
+                        break
             if not job_data.get("company") and not job_data.get("role"):
                 continue
             job = Job(**job_data)
@@ -196,20 +259,22 @@ class SheetsService:
             "Comment": data.get("summary", ""),
         }
 
-        row = [row_map[col[0]] for col in COLUMNS]
+        row = [_safe_sheet_value(row_map[col[0]], col[1]) for col in COLUMNS]
         ws = _get_worksheet()
         ws.append_row(row, value_input_option="USER_ENTERED")
         self.invalidate_cache()
 
     def update_cell(self, row_num: int, field: str, value: str):
         ws = _get_worksheet()
-        col_idx = FIELD_NAMES.index(field) + 1
-        ws.update_cell(row_num, col_idx, value)
+        headers = [h.strip() for h in ws.row_values(1)]
+        field_cols = self._resolve_field_columns(headers)
+        col_idx = field_cols.get(field, FIELD_TO_COL[field])
+        ws.update_cell(row_num, col_idx, _safe_sheet_value(value, field))
         self.invalidate_cache()
 
     def update_job(self, row_num: int, updates: dict) -> Job | None:
         valid_updates = {
-            field: str(value)
+            field: _safe_sheet_value(str(value), field)
             for field, value in updates.items()
             if field in FIELD_NAMES and value is not None
         }
@@ -217,9 +282,11 @@ class SheetsService:
             return self.get_job_by_row(row_num)
 
         ws = _get_worksheet()
+        headers = [h.strip() for h in ws.row_values(1)]
+        field_cols = self._resolve_field_columns(headers)
         # Avoid immediate read-after-write from Sheets to prevent caching stale values.
         for field, value in valid_updates.items():
-            ws.update_cell(row_num, FIELD_TO_COL[field], value)
+            ws.update_cell(row_num, field_cols.get(field, FIELD_TO_COL[field]), value)
 
         if self._cache_valid:
             for idx, job in enumerate(self._cache):

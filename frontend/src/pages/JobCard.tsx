@@ -13,6 +13,22 @@ function extractDomain(url: string): string {
   }
 }
 
+function extractVacancyId(url: string): string {
+  const value = (url || "").trim();
+  if (!value) return "";
+  const patterns = [
+    /\/jobs\/view\/(\d{6,})/i,
+    /[?&](?:currentJobId|jobId|jk|vjk)=([A-Za-z0-9_-]{5,})/i,
+    /\/vacanc(?:y|ies)\/(\d{4,})/i,
+    /\/jobs?\/(\d{4,})/i,
+  ];
+  for (const pattern of patterns) {
+    const match = value.match(pattern);
+    if (match?.[1]) return match[1];
+  }
+  return "";
+}
+
 type TouchpointRow = {
   timestamp: string;
   eventType: string;
@@ -160,6 +176,7 @@ export default function JobCard() {
   const stopFlags = job.stop_flags || "";
   const hasEligibilityAlert =
     stopFlags.includes("visa_required") || stopFlags.includes("citizenship");
+  const vacancyId = extractVacancyId(job.source || "");
   const roleFit = job.role_fit || "";
   const fitBadgeClass = hasEligibilityAlert
     ? "border-amber-200 bg-amber-50 text-amber-700"
@@ -225,18 +242,29 @@ export default function JobCard() {
           {job.company} — {job.role}
         </h1>
         <p className="text-muted">{job.region}</p>
+        <p className="text-xs text-muted mt-1">
+          Pipeline ID: #{job.row_num}
+          {vacancyId ? ` | Vacancy ID: ${vacancyId}` : ""}
+        </p>
 
         {/* Source link — domain only, full URL on hover */}
         {job.source && (
-          <a
-            href={job.source}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-accent text-sm hover:text-accent-hover cursor-pointer font-medium"
-            title={job.source}
-          >
-            {extractDomain(job.source)}
-          </a>
+          <div className="mt-1 flex items-center gap-2">
+            <a
+              href={job.source}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-accent text-sm hover:text-accent-hover cursor-pointer font-medium"
+              title={job.source}
+            >
+              {extractDomain(job.source)}
+            </a>
+            {vacancyId && (
+              <span className="text-[11px] rounded-full border border-border px-2 py-0.5 text-muted">
+                ID {vacancyId}
+              </span>
+            )}
+          </div>
         )}
 
         <div className="flex items-center gap-3 mt-2 text-sm">

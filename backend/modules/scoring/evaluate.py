@@ -116,7 +116,7 @@ def evaluate_fit(jd_text: str, source_url: str | None = None) -> dict:
     raw = call_claude(
         SYSTEM_PROMPT + "\n" + OUTPUT_FORMAT,
         user_content,
-        max_tokens=1024,
+        max_tokens=700,
     )
 
     result = _parse_response(raw)

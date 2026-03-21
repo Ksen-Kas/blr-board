@@ -36,7 +36,7 @@ function daysSince(dateStr: string): number | null {
   }
 }
 
-type SortKey = "status" | "company" | "region" | "days";
+type SortKey = "id" | "status" | "company" | "region" | "days";
 type SortDir = "asc" | "desc";
 
 export default function Pipeline() {
@@ -44,8 +44,8 @@ export default function Pipeline() {
   const [loading, setLoading] = useState(true);
   const [letterPopup, setLetterPopup] = useState<Job | null>(null);
   const [statusFilter, setStatusFilter] = useState("All");
-  const [sortKey, setSortKey] = useState<SortKey>("status");
-  const [sortDir, setSortDir] = useState<SortDir>("asc");
+  const [sortKey, setSortKey] = useState<SortKey>("id");
+  const [sortDir, setSortDir] = useState<SortDir>("desc");
   const navigate = useNavigate();
 
   const loadJobs = () => {
@@ -80,6 +80,7 @@ export default function Pipeline() {
   // Sort
   const sorted = [...filtered].sort((a, b) => {
     const dir = sortDir === "asc" ? 1 : -1;
+    if (sortKey === "id") return (a.row_num - b.row_num) * dir;
     if (sortKey === "status") return (statusIndex(a.status) - statusIndex(b.status)) * dir;
     if (sortKey === "company") return a.company.localeCompare(b.company) * dir;
     if (sortKey === "region") return a.region.localeCompare(b.region) * dir;
@@ -90,6 +91,13 @@ export default function Pipeline() {
     }
     return 0;
   });
+  const newestRowNums = new Set(
+    [...jobs]
+      .filter((j) => j.status.toLowerCase() === "new")
+      .sort((a, b) => b.row_num - a.row_num)
+      .slice(0, 6)
+      .map((j) => j.row_num)
+  );
 
   return (
     <div className="p-6 max-w-[1400px] mx-auto">
@@ -117,13 +125,23 @@ export default function Pipeline() {
       <AddJobBar onAdded={loadJobs} />
 
       {loading ? (
-        <div className="text-muted py-8 text-center">Loading...</div>
+        <div className="surface-card py-10 text-center">
+          <div className="inline-flex items-center gap-2 text-muted text-sm">
+            <span className="inline-block h-4 w-4 border-2 border-border border-t-accent rounded-full animate-spin" />
+            Loading pipeline...
+          </div>
+        </div>
       ) : (
         <div className="surface-card overflow-x-auto">
           <table className="w-full border-collapse text-sm">
             <thead>
               <tr className="text-left bg-surface-alt text-muted">
-                <th className="px-3 py-2.5 font-medium w-8">#</th>
+                <th
+                  className="px-3 py-2.5 font-semibold w-8 cursor-pointer hover:text-text select-none"
+                  onClick={() => handleSort("id")}
+                >
+                  #{sortIndicator("id")}
+                </th>
                 <th
                   className="px-3 py-2.5 font-semibold cursor-pointer hover:text-text select-none"
                   onClick={() => handleSort("company")}
@@ -164,15 +182,25 @@ export default function Pipeline() {
             <tbody>
               {sorted.map((job) => {
                 const days = daysSince(job.applied_date);
+                const isFresh = newestRowNums.has(job.row_num);
 
                 return (
                   <tr
                     key={job.row_num}
-                    className="border-t border-border/80 cursor-pointer hover:bg-surface-alt/70"
+                    className={`border-t border-border/80 cursor-pointer hover:bg-surface-alt/70 ${
+                      isFresh ? "bg-blue-50/30" : ""
+                    }`}
                     onClick={() => navigate(`/job/${job.row_num}`)}
                   >
                     <td className="px-3 py-2 text-muted">
-                      {job.row_num}
+                      <span className="inline-flex items-center gap-1">
+                        <span>{job.row_num}</span>
+                        {isFresh && (
+                          <span className="text-[10px] px-1.5 py-0.5 rounded-full border border-blue-300 text-blue-700 bg-blue-100 animate-pulse">
+                            NEW
+                          </span>
+                        )}
+                      </span>
                       {job.needs_followup && (
                         <span className="ml-1" title="Needs follow-up">🔔</span>
                       )}

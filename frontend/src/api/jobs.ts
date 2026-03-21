@@ -51,11 +51,12 @@ export const tailorCV = (jd_text: string) =>
     )
     .then((r) => r.data);
 
-export const generateLetter = (jd_text: string, notes = "") =>
+export const generateLetter = (data: { jd_text?: string; source_url?: string; notes?: string }) =>
   api
-    .post<{ subject: string; body: string }>("/letter/generate", {
-      jd_text,
-      notes,
+    .post<{ subject: string; body: string; jd_text_used?: string }>("/letter/generate", {
+      jd_text: data.jd_text || "",
+      source_url: data.source_url || "",
+      notes: data.notes || "",
     })
     .then((r) => r.data);
 

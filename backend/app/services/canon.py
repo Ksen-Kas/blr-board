@@ -13,9 +13,28 @@ def _read_file(path: Path) -> str:
     return ""
 
 
+def _read_docx_text(path: Path) -> str:
+    if not path.exists():
+        return ""
+    try:
+        from docx import Document
+
+        doc = Document(str(path))
+        lines = [p.text.strip() for p in doc.paragraphs if p.text and p.text.strip()]
+        return "\n".join(lines).strip()
+    except Exception:
+        return ""
+
+
 def get_canonical_resume() -> str:
-    file_val = _read_file(Path(config.CLIENT_SPACE_PATH) / "canonical_resume.md")
-    return file_val or config.CANONICAL_RESUME_CONTENT
+    client_space = Path(config.CLIENT_SPACE_PATH)
+    file_val = _read_file(client_space / "canonical_resume.md")
+    if file_val:
+        return file_val
+    docx_val = _read_docx_text(client_space / "canonical_resume.docx")
+    if docx_val:
+        return docx_val
+    return config.CANONICAL_RESUME_CONTENT
 
 
 def get_strategy() -> str:

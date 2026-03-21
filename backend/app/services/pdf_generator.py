@@ -269,6 +269,20 @@ def _fallback_pdf(text: str, title: str = "") -> bytes:
     except Exception:
         return _minimal_pdf(text, title=title)
 
+    def _break_long_tokens(value: str, max_len: int = 40) -> str:
+        parts: list[str] = []
+        for token in value.split(" "):
+            if len(token) <= max_len:
+                parts.append(token)
+                continue
+            chunks = [token[i : i + max_len] for i in range(0, len(token), max_len)]
+            parts.extend(chunks)
+        return " ".join(parts)
+
+    def _mc(pdf_obj: FPDF, h: int, txt: str) -> None:
+        pdf_obj.set_x(pdf_obj.l_margin)
+        pdf_obj.multi_cell(0, h, txt)
+
     pdf = FPDF()
     pdf.set_auto_page_break(True, margin=15)
     pdf.add_page()
@@ -276,7 +290,7 @@ def _fallback_pdf(text: str, title: str = "") -> bytes:
 
     if title:
         pdf.set_font("Helvetica", style="B", size=12)
-        pdf.multi_cell(0, 6, _safe_pdf_text(title))
+        _mc(pdf, 6, _safe_pdf_text(title))
         pdf.ln(2)
         pdf.set_font("Helvetica", size=11)
 
@@ -284,7 +298,18 @@ def _fallback_pdf(text: str, title: str = "") -> bytes:
         if not line.strip():
             pdf.ln(3)
             continue
-        pdf.multi_cell(0, 5, _safe_pdf_text(line))
+        cleaned = _break_long_tokens(_safe_pdf_text(line))
+        if not cleaned:
+            pdf.ln(3)
+            continue
+        try:
+            _mc(pdf, 5, cleaned)
+        except Exception:
+            for word in cleaned.split(" "):
+                try:
+                    _mc(pdf, 5, word if word else " ")
+                except Exception:
+                    pass
 
     return bytes(pdf.output())
 
