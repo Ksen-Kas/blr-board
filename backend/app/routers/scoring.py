@@ -120,7 +120,22 @@ def _guess_channel_from_url(source_url: str) -> str:
     return "Other"
 
 
+def _is_linkedin_post_url(source_url: str) -> bool:
+    parsed = urlparse(source_url.strip())
+    host = (parsed.hostname or "").lower()
+    if "linkedin.com" not in host:
+        return False
+    path = (parsed.path or "").lower()
+    return "/posts/" in path or "/feed/update/" in path
+
+
 def _guess_company_from_url(source_url: str) -> str:
+    if _is_linkedin_post_url(source_url):
+        return "LinkedIn post"
+    if is_linkedin_url(source_url):
+        # For regular LinkedIn job links company should come from parsed content.
+        # If it isn't available, keep explicit Unknown.
+        return "Unknown"
     host = (urlparse(source_url).hostname or "").lower()
     if not host:
         return "Unknown"
@@ -208,6 +223,9 @@ def score_jd(req: ScoreRequest, _: None = Depends(require_internal_api_key)) -> 
         result["match_score"] = None
         result["match_reason"] = ""
         result["vacancy_id"] = _extract_vacancy_id(source_url) if source_url else ""
+        company_val = (result.get("company") or "").strip()
+        if source_url and (not company_val or company_val.lower() == "unknown"):
+            result["company"] = _guess_company_from_url(source_url)
     elif source_url:
         result = _build_no_jd_result(source_url)
     else:
