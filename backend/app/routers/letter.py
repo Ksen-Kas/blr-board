@@ -7,6 +7,7 @@ from fastapi.responses import Response
 from pydantic import BaseModel
 
 from app.security import require_internal_api_key
+from app.services.http_headers import content_disposition_attachment
 from app.services.parser import is_safe_public_url, parse_url
 from modules.letter.generate import generate_letter
 from app.services.pdf import render_letter_pdf
@@ -66,5 +67,5 @@ def letter_pdf(req: LetterPdfRequest, _: None = Depends(require_internal_api_key
     return Response(
         content=pdf_bytes,
         media_type="application/pdf",
-        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+        headers={"Content-Disposition": content_disposition_attachment(filename, fallback="CL.pdf")},
     )

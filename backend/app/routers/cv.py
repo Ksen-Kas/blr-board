@@ -9,6 +9,7 @@ from fastapi.responses import Response, HTMLResponse
 from app.security import require_internal_api_key
 from modules.cv.tailor import tailor_cv
 from app.services.cv_docx import render_tailored_cv_pdf, render_canonical_cv_pdf
+from app.services.http_headers import content_disposition_attachment
 from app.services.pdf_generator import (
     build_tailored_preview_html,
     generate_canonical_cv_pdf,
@@ -90,7 +91,7 @@ def cv_pdf(req: CvPdfRequest, _: None = Depends(require_internal_api_key)):
     return Response(
         content=pdf_bytes,
         media_type="application/pdf",
-        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+        headers={"Content-Disposition": content_disposition_attachment(filename, fallback="CV.pdf")},
     )
 
 
@@ -109,7 +110,7 @@ def cv_pdf_canonical(req: CanonicalCvPdfRequest, _: None = Depends(require_inter
     return Response(
         content=pdf_bytes,
         media_type="application/pdf",
-        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+        headers={"Content-Disposition": content_disposition_attachment(filename, fallback="CV_CANON.pdf")},
     )
 
 
@@ -140,7 +141,7 @@ def canonical_pdf(
     return Response(
         content=pdf_bytes,
         media_type="application/pdf",
-        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+        headers={"Content-Disposition": content_disposition_attachment(filename, fallback="CV_CANON.pdf")},
     )
 
 
@@ -156,7 +157,7 @@ def tailored_pdf(req: TailoredCvPdfRequest, _: None = Depends(require_internal_a
     return Response(
         content=pdf_bytes,
         media_type="application/pdf",
-        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+        headers={"Content-Disposition": content_disposition_attachment(filename, fallback="CV_tailored.pdf")},
     )
 
 
