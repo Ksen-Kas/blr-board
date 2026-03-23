@@ -5,6 +5,7 @@ from __future__ import annotations
 import ipaddress
 import json
 import logging
+import re
 from urllib.parse import urlparse
 
 import httpx
@@ -32,6 +33,58 @@ JINA_JUNK_MARKERS = [
 ]
 
 LOCAL_HOSTNAMES = {"localhost", "127.0.0.1", "::1", "0.0.0.0"}
+
+_LINKEDIN_PROFILE_RE = re.compile(
+    r"https?://(?:[a-z]{2,3}\.)?linkedin\.com/in/[A-Za-z0-9\-_%]+/?",
+    re.IGNORECASE,
+)
+_LINKEDIN_MARKDOWN_PROFILE_RE = re.compile(
+    r"\[([^\]\n]{2,120})\]\((https?://(?:[a-z]{2,3}\.)?linkedin\.com/in/[A-Za-z0-9\-_%]+/?(?:\?[^)]*)?)\)",
+    re.IGNORECASE,
+)
+
+_LINKEDIN_BODY_START_MARKERS = (
+    "**about us**",
+    "**position overview**",
+    "**responsibilities**",
+    "**qualifications",
+    "about the job",
+    "job description",
+)
+
+_LINKEDIN_BODY_END_MARKERS = (
+    "show more",
+    "show less",
+    "### seniority level",
+    "### employment type",
+    "### job function",
+    "### industries",
+    "sign in to set job alerts",
+    "similar jobs",
+    "people also viewed",
+    "referrals increase your chances",
+    "set alert",
+)
+
+_LINKEDIN_NOISE_MARKERS = (
+    "skip to main content",
+    "linkedin",
+    "sign in",
+    "join now",
+    "forgot password",
+    "email or phone",
+    "password",
+    "clear text",
+    "expand search",
+    "user agreement",
+    "privacy policy",
+    "by clicking continue",
+    "report this job",
+    "save",
+    "image",
+    "trk=",
+    "public_jobs_",
+)
 
 
 def is_safe_public_url(url: str) -> bool:
@@ -85,6 +138,180 @@ def _compact_lines(text: str) -> str:
         seen.add(key)
         cleaned.append(line)
     return "\n".join(cleaned).strip()
+
+
+def _strip_markdown_links_keep_text(line: str) -> str:
+    return re.sub(r"\[([^\]]+)\]\((https?://[^)]+)\)", r"\1", line)
+
+
+def _is_linkedin_noise_line(line: str) -> bool:
+    line = line.strip()
+    if not line:
+        return True
+    low = line.lower()
+    if low.startswith("title:") or low.startswith("url source:") or low.startswith("markdown content:"):
+        return True
+    if low.startswith("![image"):
+        return True
+    if low in {"jobs", "people", "learning", "apply", "show", "or"}:
+        return True
+    if line.startswith("[") and "linkedin.com/jobs/view" in low:
+        return True
+    for marker in _LINKEDIN_NOISE_MARKERS:
+        if marker in low:
+            return True
+    return False
+
+
+def _find_linkedin_profile(lines: list[str]) -> tuple[str, str]:
+    for line in lines:
+        m = _LINKEDIN_MARKDOWN_PROFILE_RE.search(line)
+        if not m:
+            continue
+        name = m.group(1).strip()
+        url = m.group(2).strip().split("?", 1)[0]
+        if not name or name.lower() in {"linkedin", "join now", "sign in"}:
+            continue
+        return name, url
+
+    for idx, line in enumerate(lines):
+        u = _LINKEDIN_PROFILE_RE.search(line)
+        if not u:
+            continue
+        url = u.group(0).strip().split("?", 1)[0]
+        name = ""
+        for look_back in range(max(0, idx - 3), idx + 1):
+            prev = lines[look_back].strip()
+            if prev.startswith("### "):
+                maybe = prev.replace("###", "").strip()
+                if maybe and "linkedin" not in maybe.lower():
+                    name = maybe
+        return name, url
+    return "", ""
+
+
+def _extract_linkedin_title(lines: list[str]) -> str:
+    for line in lines:
+        if not line.startswith("#"):
+            continue
+        title = re.sub(r"^#+\s*", "", line).strip()
+        low = title.lower()
+        if not title or "linkedin" in low:
+            continue
+        if " hiring " in low and " in " in low:
+            continue
+        return title
+    for line in lines:
+        if not line.startswith("###"):
+            continue
+        title = re.sub(r"^#+\s*", "", line).strip()
+        low = title.lower()
+        if title and "linkedin" not in low and "join or sign in" not in low:
+            return title
+    return ""
+
+
+def _extract_linkedin_company_location(lines: list[str]) -> tuple[str, str]:
+    company = ""
+    location = ""
+    for line in lines:
+        if "linkedin.com/company/" not in line.lower():
+            continue
+        m = re.search(r"\[([^\]]+)\]\((https?://[^)]+linkedin\.com/company/[^)]+)\)\s*(.*)", line, re.IGNORECASE)
+        if not m:
+            continue
+        company = m.group(1).strip()
+        tail = m.group(3).strip()
+        tail = _strip_markdown_links_keep_text(tail)
+        tail = re.sub(r"\s{2,}", " ", tail).strip()
+        if tail:
+            location = tail
+        if company:
+            break
+    return company, location
+
+
+def _extract_linkedin_body(lines: list[str]) -> list[str]:
+    start_idx = -1
+    for idx, line in enumerate(lines):
+        low = line.strip().lower()
+        if any(marker in low for marker in _LINKEDIN_BODY_START_MARKERS):
+            start_idx = idx
+            break
+    if start_idx < 0:
+        return []
+
+    end_idx = len(lines)
+    for idx in range(start_idx + 1, len(lines)):
+        low = lines[idx].strip().lower()
+        if any(marker in low for marker in _LINKEDIN_BODY_END_MARKERS):
+            end_idx = idx
+            break
+
+    collected: list[str] = []
+    seen: set[str] = set()
+    for line in lines[start_idx:end_idx]:
+        raw = line.strip()
+        low = raw.lower()
+        if _is_linkedin_noise_line(raw):
+            continue
+        if raw.startswith("**") and raw.endswith("**") and len(raw) > 4:
+            raw = raw.strip("*").strip()
+        if raw.startswith("*"):
+            raw = "- " + re.sub(r"^\*\s*", "", raw)
+        raw = _strip_markdown_links_keep_text(raw)
+        raw = re.sub(r"\s{2,}", " ", raw).strip()
+        if not raw:
+            continue
+        key = raw.lower()
+        if key in seen:
+            continue
+        seen.add(key)
+        collected.append(raw)
+    return collected
+
+
+def _clean_linkedin_jina_text(raw_text: str) -> str | None:
+    lines = [ln.strip() for ln in raw_text.splitlines() if ln.strip()]
+    if not lines:
+        return None
+
+    title = _extract_linkedin_title(lines)
+    company, location = _extract_linkedin_company_location(lines)
+    poster_name, poster_url = _find_linkedin_profile(lines)
+    body_lines = _extract_linkedin_body(lines)
+
+    if not body_lines:
+        fallback: list[str] = []
+        for ln in lines:
+            if _is_linkedin_noise_line(ln):
+                continue
+            value = _strip_markdown_links_keep_text(ln)
+            value = re.sub(r"\s{2,}", " ", value).strip()
+            if value:
+                fallback.append(value)
+            if len(fallback) >= 120:
+                break
+        body_lines = fallback
+
+    result_lines: list[str] = []
+    if title:
+        result_lines.append(f"# {title}")
+    if company:
+        result_lines.append(f"Company: {company}")
+    if location:
+        result_lines.append(f"Location: {location}")
+    if poster_name or poster_url:
+        if poster_name:
+            result_lines.append(f"Posted by: {poster_name}")
+        if poster_url:
+            result_lines.append(poster_url)
+    result_lines.append("")
+    result_lines.append("Job Description:")
+    result_lines.extend(body_lines)
+
+    cleaned = _compact_lines("\n".join(result_lines))
+    return cleaned if len(cleaned) >= 200 else None
 
 
 def _extract_hh_description_from_jsonld(soup: BeautifulSoup) -> str:
@@ -222,6 +449,9 @@ def parse_url(url: str) -> str | None:
         # Use Jina-only path to avoid pulling noisy BS4 login pages.
         linkedin_result = parse_url_jina(url)
         if linkedin_result:
+            cleaned = _clean_linkedin_jina_text(linkedin_result)
+            if cleaned:
+                return cleaned
             return linkedin_result
         logger.info("LinkedIn parser could not extract JD for %s", url)
         return None

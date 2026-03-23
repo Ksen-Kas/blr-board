@@ -10,6 +10,10 @@ _LINKEDIN_PROFILE_SHORT_RE = re.compile(
     r"(?:[a-z]{2,3}\.)?linkedin\.com/in/[A-Za-z0-9\-_%]+/?",
     re.IGNORECASE,
 )
+_LINKEDIN_MARKDOWN_PROFILE_RE = re.compile(
+    r"\[([^\]\n]{2,120})\]\((https?://(?:[a-z]{2,3}\.)?linkedin\.com/in/[A-Za-z0-9\-_%]+/?(?:\?[^)]*)?)\)",
+    re.IGNORECASE,
+)
 
 
 def _normalize_profile_url(value: str) -> str:
@@ -24,7 +28,7 @@ def _normalize_profile_url(value: str) -> str:
 def _extract_name_from_text(text: str) -> str:
     patterns = [
         r"View\s+([A-Z][A-Za-z'`.-]+(?:\s+[A-Z][A-Za-z'`.-]+){0,3})['’]s profile",
-        r"Posted by\s+([A-Z][A-Za-z'`.-]+(?:\s+[A-Z][A-Za-z'`.-]+){0,3})",
+        r"Posted by[:\s]+([A-Z][A-Za-z'`.-]+(?:\s+[A-Z][A-Za-z'`.-]+){0,3})",
         r"Hiring team[:\s]+([A-Z][A-Za-z'`.-]+(?:\s+[A-Z][A-Za-z'`.-]+){0,3})",
     ]
     for pattern in patterns:
@@ -41,6 +45,13 @@ def extract_linkedin_poster_contact(text: str) -> str:
     """
     if not text or not text.strip():
         return ""
+
+    markdown_match = _LINKEDIN_MARKDOWN_PROFILE_RE.search(text)
+    if markdown_match:
+        name = markdown_match.group(1).strip()
+        profile_url = _normalize_profile_url(markdown_match.group(2).split("?", 1)[0])
+        if name and profile_url:
+            return f"{name} | {profile_url}"
 
     # Prefer full profile URLs; fallback to short form without scheme.
     match = _LINKEDIN_PROFILE_RE.search(text) or _LINKEDIN_PROFILE_SHORT_RE.search(text)

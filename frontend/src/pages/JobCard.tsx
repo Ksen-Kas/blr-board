@@ -30,6 +30,30 @@ function extractVacancyId(url: string): string {
   return "";
 }
 
+function parseContactDisplay(contact: string): { label: string; href: string } {
+  const value = (contact || "").trim();
+  if (!value) return { label: "", href: "" };
+
+  const fullUrlMatch = value.match(/https?:\/\/[^\s|]+/i);
+  const shortLinkedinMatch = value.match(
+    /(?:[a-z]{2,3}\.)?linkedin\.com\/in\/[A-Za-z0-9\-_%]+\/?/i
+  );
+  const href = fullUrlMatch
+    ? fullUrlMatch[0]
+    : shortLinkedinMatch
+      ? `https://${shortLinkedinMatch[0].replace(/^https?:\/\//i, "")}`
+      : "";
+
+  if (!href) return { label: value, href: "" };
+
+  const parts = value.split("|").map((part) => part.trim()).filter(Boolean);
+  const labelFromParts = parts.find(
+    (part) => !/^https?:\/\//i.test(part) && !/linkedin\.com\/in\//i.test(part)
+  );
+  const label = labelFromParts || href.replace(/^https?:\/\//i, "");
+  return { label, href };
+}
+
 type TouchpointRow = {
   eventId?: number;
   rawTimestamp: string;
@@ -242,6 +266,7 @@ export default function JobCard() {
   const hasEligibilityAlert =
     stopFlags.includes("visa_required") || stopFlags.includes("citizenship");
   const vacancyId = extractVacancyId(job.source || "");
+  const contactBadge = parseContactDisplay(job.contact || "");
   const roleFit = job.role_fit || "";
   const fitBadgeClass = hasEligibilityAlert
     ? "border-amber-200 bg-amber-50 text-amber-700"
@@ -336,17 +361,19 @@ export default function JobCard() {
         <p className="text-muted">{job.region}</p>
 
         {/* Source link — domain only, full URL on hover */}
-        {job.source && (
+        {(job.source || contactBadge.label) && (
           <div className="mt-2 flex items-center gap-2 flex-wrap">
-            <a
-              href={job.source}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-accent text-sm hover:text-accent-hover cursor-pointer font-medium"
-              title={job.source}
-            >
-              {extractDomain(job.source)}
-            </a>
+            {job.source && (
+              <a
+                href={job.source}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-accent text-sm hover:text-accent-hover cursor-pointer font-medium"
+                title={job.source}
+              >
+                {extractDomain(job.source)}
+              </a>
+            )}
             {vacancyId && (
               <span className="text-[11px] rounded-full border border-border px-2 py-0.5 text-muted">
                 Vacancy ID {vacancyId}
@@ -355,6 +382,22 @@ export default function JobCard() {
             <span className="text-[11px] rounded-full border border-border px-2 py-0.5 text-muted">
               Pipeline ID #{job.row_num}
             </span>
+            {contactBadge.label &&
+              (contactBadge.href ? (
+                <a
+                  href={contactBadge.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[11px] rounded-full border border-sky-200 bg-sky-50 px-2 py-0.5 text-sky-700 hover:bg-sky-100"
+                  title={contactBadge.href}
+                >
+                  Contact: {contactBadge.label}
+                </a>
+              ) : (
+                <span className="text-[11px] rounded-full border border-sky-200 bg-sky-50 px-2 py-0.5 text-sky-700">
+                  Contact: {contactBadge.label}
+                </span>
+              ))}
           </div>
         )}
 
@@ -487,7 +530,18 @@ export default function JobCard() {
 
         {job.contact && (
           <Section title="Contact">
-            <p className="text-sm text-text">{job.contact}</p>
+            {contactBadge.href ? (
+              <a
+                href={contactBadge.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-accent hover:text-accent-hover"
+              >
+                {job.contact}
+              </a>
+            ) : (
+              <p className="text-sm text-text">{job.contact}</p>
+            )}
           </Section>
         )}
 
