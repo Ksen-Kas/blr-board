@@ -6,6 +6,7 @@ import re
 import shutil
 import subprocess
 import tempfile
+import logging
 from collections import defaultdict
 from pathlib import Path
 
@@ -13,6 +14,8 @@ from docx import Document
 
 from app import config
 from app.services.canon import get_canonical_resume
+
+logger = logging.getLogger(__name__)
 
 SECTION_ORDER = [
     "Header",
@@ -65,7 +68,9 @@ def _canonical_pdf_template_path() -> Path | None:
     for base in _candidate_client_space_dirs():
         candidate = base / "canonical_resume.pdf"
         if candidate.exists():
+            logger.info("Using canonical PDF template: %s", candidate)
             return candidate
+    logger.info("No canonical PDF template found; checked client space candidates.")
     return None
 
 
