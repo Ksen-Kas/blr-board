@@ -71,6 +71,31 @@ def _safe_cv_pdf(markdown_text: str, company: str = "", role: str = "") -> bytes
     return generate_text_fallback_pdf(markdown_text, title=title)
 
 
+def _safe_tailored_template_pdf(tailored_markdown: str, company: str = "", role: str = "") -> bytes:
+    # Prefer DOCX template path to preserve canonical visual style.
+    try:
+        return render_tailored_cv_pdf(tailored_markdown)
+    except Exception as template_err:
+        logger.warning("Template tailored PDF failed, fallback to markdown renderers: %s", template_err)
+    return _safe_cv_pdf(tailored_markdown, company=company, role=role)
+
+
+def _safe_canonical_template_pdf(company: str = "", role: str = "") -> bytes:
+    # Prefer canonical DOCX template for layout parity with reference resume.
+    try:
+        return render_canonical_cv_pdf()
+    except Exception as template_err:
+        logger.warning("Template canonical PDF failed, fallback to markdown renderers: %s", template_err)
+
+    canonical_md = get_canonical_resume()
+    if canonical_md and canonical_md.strip():
+        return _safe_cv_pdf(canonical_md, company=company, role=role)
+    return generate_text_fallback_pdf(
+        "Canonical resume is temporarily unavailable. Please try again.",
+        title="CV Canonical",
+    )
+
+
 @router.post("/tailor")
 def tailor(req: TailorRequest, _: None = Depends(require_internal_api_key)) -> dict:
     try:
@@ -83,7 +108,7 @@ def tailor(req: TailorRequest, _: None = Depends(require_internal_api_key)) -> d
 @router.post("/pdf")
 def cv_pdf(req: CvPdfRequest, _: None = Depends(require_internal_api_key)):
     try:
-        pdf_bytes = _safe_cv_pdf(req.tailored_cv, company=req.company, role=req.role)
+        pdf_bytes = _safe_tailored_template_pdf(req.tailored_cv, company=req.company, role=req.role)
     except Exception as e:
         logger.error("CV PDF generation failed: %s", e)
         raise HTTPException(500, f"PDF generation failed: {e}")
@@ -98,11 +123,7 @@ def cv_pdf(req: CvPdfRequest, _: None = Depends(require_internal_api_key)):
 @router.post("/pdf/canonical")
 def cv_pdf_canonical(req: CanonicalCvPdfRequest, _: None = Depends(require_internal_api_key)):
     try:
-        canonical_md = get_canonical_resume()
-        if canonical_md and canonical_md.strip():
-            pdf_bytes = _safe_cv_pdf(canonical_md, company=req.company, role=req.role)
-        else:
-            pdf_bytes = render_canonical_cv_pdf()
+        pdf_bytes = _safe_canonical_template_pdf(company=req.company, role=req.role)
     except Exception as e:
         logger.error("Canonical CV PDF generation failed: %s", e)
         raise HTTPException(500, f"PDF generation failed: {e}")
@@ -121,11 +142,7 @@ def canonical_pdf(
     _: None = Depends(require_internal_api_key),
 ):
     try:
-        canonical_md = get_canonical_resume()
-        if canonical_md and canonical_md.strip():
-            pdf_bytes = _safe_cv_pdf(canonical_md, company=company, role=role)
-        else:
-            pdf_bytes = render_canonical_cv_pdf()
+        pdf_bytes = _safe_canonical_template_pdf(company=company, role=role)
     except Exception as e:
         logger.warning("Canonical markdown/docx PDF failed, trying resilient fallback: %s", e)
         try:
@@ -148,7 +165,7 @@ def canonical_pdf(
 @router.post("/tailored-pdf")
 def tailored_pdf(req: TailoredCvPdfRequest, _: None = Depends(require_internal_api_key)):
     try:
-        pdf_bytes = _safe_cv_pdf(req.tailored_cv, company=req.company, role=req.role)
+        pdf_bytes = _safe_tailored_template_pdf(req.tailored_cv, company=req.company, role=req.role)
     except Exception as e:
         logger.error("Tailored template PDF generation failed: %s", e)
         raise HTTPException(500, f"PDF generation failed: {e}")
