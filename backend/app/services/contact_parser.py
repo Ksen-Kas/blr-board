@@ -2,6 +2,60 @@
 
 import re
 
+_LINKEDIN_PROFILE_RE = re.compile(
+    r"https?://(?:[a-z]{2,3}\.)?linkedin\.com/in/[A-Za-z0-9\-_%]+/?",
+    re.IGNORECASE,
+)
+_LINKEDIN_PROFILE_SHORT_RE = re.compile(
+    r"(?:[a-z]{2,3}\.)?linkedin\.com/in/[A-Za-z0-9\-_%]+/?",
+    re.IGNORECASE,
+)
+
+
+def _normalize_profile_url(value: str) -> str:
+    url = (value or "").strip()
+    if not url:
+        return ""
+    if not url.lower().startswith("http"):
+        url = f"https://{url}"
+    return url
+
+
+def _extract_name_from_text(text: str) -> str:
+    patterns = [
+        r"View\s+([A-Z][A-Za-z'`.-]+(?:\s+[A-Z][A-Za-z'`.-]+){0,3})['’]s profile",
+        r"Posted by\s+([A-Z][A-Za-z'`.-]+(?:\s+[A-Z][A-Za-z'`.-]+){0,3})",
+        r"Hiring team[:\s]+([A-Z][A-Za-z'`.-]+(?:\s+[A-Z][A-Za-z'`.-]+){0,3})",
+    ]
+    for pattern in patterns:
+        m = re.search(pattern, text)
+        if m:
+            return m.group(1).strip()
+    return ""
+
+
+def extract_linkedin_poster_contact(text: str) -> str:
+    """Extract LinkedIn poster/recruiter from parsed JD text.
+
+    Returns "Name | https://linkedin.com/in/..." or profile URL only.
+    """
+    if not text or not text.strip():
+        return ""
+
+    # Prefer full profile URLs; fallback to short form without scheme.
+    match = _LINKEDIN_PROFILE_RE.search(text) or _LINKEDIN_PROFILE_SHORT_RE.search(text)
+    if not match:
+        return ""
+
+    profile_url = _normalize_profile_url(match.group(0))
+    if not profile_url:
+        return ""
+
+    name = _extract_name_from_text(text)
+    if name:
+        return f"{name} | {profile_url}"
+    return profile_url
+
 
 def parse_contact(text: str) -> str:
     """Extract contact details from free-form text.
@@ -15,7 +69,7 @@ def parse_contact(text: str) -> str:
     lines = [ln.strip() for ln in text.strip().splitlines() if ln.strip()]
 
     email = re.search(r"\b[\w.-]+@[\w.-]+\.\w+\b", text)
-    linkedin = re.search(r"linkedin\.com/in/[\w-]+", text)
+    linkedin = _LINKEDIN_PROFILE_SHORT_RE.search(text)
     phone = re.search(r"\+?[\d\s()\-]{7,}", text)
 
     parts: list[str] = []

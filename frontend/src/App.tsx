@@ -5,7 +5,14 @@ import JobCard from "./pages/JobCard";
 import CVScreen from "./pages/CVScreen";
 import LetterScreen from "./pages/LetterScreen";
 import Dashboard from "./pages/Dashboard";
-import api, { clearAuth, setBasicAuth, setUnauthorizedHandler } from "./api/client";
+import api, {
+  clearAuth,
+  getNetworkActivitySnapshot,
+  setBasicAuth,
+  setUnauthorizedHandler,
+  subscribeNetworkActivity,
+  type NetworkActivitySnapshot,
+} from "./api/client";
 
 function NavLink({ to, children }: { to: string; children: React.ReactNode }) {
   const location = useLocation();
@@ -28,6 +35,9 @@ function App() {
   const [authed, setAuthed] = useState(false);
   const [authError, setAuthError] = useState("");
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [networkActivity, setNetworkActivity] = useState<NetworkActivitySnapshot>(
+    getNetworkActivitySnapshot()
+  );
 
   useEffect(() => {
     setUnauthorizedHandler(() => {
@@ -36,6 +46,19 @@ function App() {
     });
     return () => setUnauthorizedHandler(null);
   }, []);
+
+  useEffect(() => {
+    const unsubscribe = subscribeNetworkActivity(setNetworkActivity);
+    return unsubscribe;
+  }, []);
+
+  useEffect(() => {
+    if (!authed || networkActivity.pendingCount === 0) return;
+    const t = window.setInterval(() => {
+      setNetworkActivity(getNetworkActivitySnapshot());
+    }, 250);
+    return () => window.clearInterval(t);
+  }, [authed, networkActivity.pendingCount]);
 
   const handleLogin = async (username: string, password: string) => {
     setIsLoggingIn(true);
@@ -98,6 +121,7 @@ function App() {
             Log out
           </button>
         </nav>
+        <GlobalProgressBar snapshot={networkActivity} />
         <main className="pb-8">
           <Routes>
             <Route path="/" element={<Pipeline />} />
@@ -109,6 +133,38 @@ function App() {
         </main>
       </div>
     </BrowserRouter>
+  );
+}
+
+function formatEta(etaMs: number): string {
+  const sec = Math.max(1, Math.ceil(etaMs / 1000));
+  if (sec < 60) return `~${sec}s`;
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  return `~${m}m ${String(s).padStart(2, "0")}s`;
+}
+
+function GlobalProgressBar({ snapshot }: { snapshot: NetworkActivitySnapshot }) {
+  if (!snapshot.visible) return null;
+  const pct = Math.max(5, Math.min(97, Math.round(snapshot.progress * 100)));
+  return (
+    <div className="px-6 pt-2">
+      <div className="surface-card px-4 py-2">
+        <div className="flex items-center justify-between text-xs text-muted mb-2">
+          <span>{snapshot.label}</span>
+          <span>
+            ETA {formatEta(snapshot.etaMs)}
+            {snapshot.pendingCount > 1 ? ` • ${snapshot.pendingCount} in progress` : ""}
+          </span>
+        </div>
+        <div className="h-1.5 w-full rounded-full bg-surface-alt overflow-hidden">
+          <div
+            className="h-full bg-accent transition-all duration-300 ease-out"
+            style={{ width: `${pct}%` }}
+          />
+        </div>
+      </div>
+    </div>
   );
 }
 

@@ -1,5 +1,7 @@
 # Claude Code — Стартовый промпт для Joe v2
 
+> Исторический bootstrap-промпт для ранней сборки MVP. Для текущей архитектуры и запуска использовать `README.md` + `docs/START_HERE.md`.
+
 ## Контекст
 
 Создаём MVP web-приложения для автоматизации откликов на вакансии.
@@ -24,10 +26,10 @@
 
 ## Требования
 
-### Стек
+### Стек (на момент запуска MVP)
 - Frontend: React + Tailwind CSS
 - Backend: Python (FastAPI или Flask)
-- БД: Google Sheets (gspread)
+- Хранилище: Google Sheets (первичный вариант MVP)
 - AI: Claude API для генерации CV/Letter
 
 ### Экраны (5)
@@ -48,7 +50,7 @@
 Letter Module должен быть изолирован — замена файлов в `/modules/letter/` не ломает остальное.
 
 ### Интеграции
-- Google Sheets как единственная БД (читаем при загрузке, пишем при каждом действии)
+- Google Sheets как БД (MVP-база; текущий runtime уже поддерживает Sheets/Postgres через storage facade)
 - Claude API для генерации (CV tailoring, Letter generation, Fit assessment)
 
 ---

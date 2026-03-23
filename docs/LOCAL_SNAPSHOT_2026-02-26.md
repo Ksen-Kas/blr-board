@@ -1,5 +1,7 @@
 # Local Snapshot — 2026-02-26
 
+> Historical snapshot (point-in-time). Paths, deploy details, and risks reflect 2026-02-26 only.
+
 This file is a local, human-readable checkpoint of what was done so the session can resume later.
 
 ## Repos and Branches
@@ -53,7 +55,13 @@ This file is a local, human-readable checkpoint of what was done so the session 
 - On URL → adds row immediately.
 - LinkedIn URL → adds row with comment “insert JD manually”.
 - Long JD text (>200 chars) → adds row with Unknown company/role + comment.
-- Reminder scheduler still reads `Follow-up 1/2` dates only.
+- Current `mvp-service` backend scheduler sends daily Telegram reminders by product rules:
+  - Stale New (New + 3 days)
+  - Follow-up 1 (Applied + 4 days)
+  - Follow-up 2 (FU1 + 7 days)
+  - No Response (Applied + 30 days)
+  - Auto status updates
+  - "Напоминаний на сегодня нет" if no items are due
 
 ## Docs Updated
 - `docs/JOE_V2_MVP_PRODUCT_DESCRIPTION.md`:
@@ -67,8 +75,8 @@ This file is a local, human-readable checkpoint of what was done so the session 
 - PDF endpoints: still failing on prod due to WeasyPrint libs; fallback added (see below).
 
 ## Known Gaps / Notes
-- Follow-up reminders are **not** derived from touchpoints; only from Applied Date / Follow-up 1/2.
-- No Telegram push from web backend yet.
+- Follow-up reminders are **not** derived from touchpoints.
+- Telegram push is sent from web backend scheduler (`backend/app/services/reminder.py`).
 - PDF export: WeasyPrint missing system libs in Railway. Fallback PDF added:
   - `backend/app/services/pdf.py` uses `fpdf2` if WeasyPrint fails.
   - Unicode and long-token handling added, but PDF still failing on prod (investigation ongoing).

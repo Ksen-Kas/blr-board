@@ -3,6 +3,8 @@
 **Дата:** 2025-02-23  
 **Статус:** Концепт согласован, готов к детализации
 
+> Исторический архитектурный концепт MVP. Текущая runtime-реализация обновлена (storage facade + Postgres migration path); актуальные операционные детали см. в `README.md` и `docs/PROJECT_BRIEF.md`.
+
 ---
 
 ## 1. Контекст: откуда идём
@@ -266,10 +268,10 @@ JOE_CORE (ядро)
 
 ## 10. Архитектура данных
 
-### Источник правды: Google Sheets
+### Источник правды (MVP baseline): Google Sheets
 
 ```
-Google Sheets (единственная БД)
+Google Sheets (MVP baseline storage)
          ↓
     [Кэш в памяти]
          ↓
@@ -373,8 +375,8 @@ New → In Progress → Applied → Waiting → Response / No Response
 |--------|--------------|
 | Парсинг LinkedIn — API или scraping? | Этап 3 |
 | UI платформа — React | ✅ Решено |
-| БД — Sheets | ✅ Решено (MVP) |
-| Где хостить — Railway? Vercel? | Этап 5 |
+| БД — Sheets | ✅ Решено (MVP baseline, позже расширено до Sheets/Postgres) |
+| Где хостить — Railway? Vercel? | Исторический вопрос (в текущем runtime используется Railway) |
 
 ---
 

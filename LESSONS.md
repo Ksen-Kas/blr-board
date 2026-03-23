@@ -2,6 +2,8 @@
 
 Insights, gotchas, and decisions made during development.
 
+> Mixed chronology note: some bullets capture early Sheets-only MVP decisions. Validate operational settings against `README.md` and `docs/DEPLOY_SECURITY_BRIEF.md`.
+
 ---
 
 ## Architecture
@@ -60,5 +62,6 @@ Insights, gotchas, and decisions made during development.
 ## Deployment
 
 - Bot: Railway (Python)
-- Web: TBD (Railway or Vercel)
-- Both need the same env vars: ANTHROPIC_API_KEY, GOOGLE_SHEET_ID, GOOGLE_CREDENTIALS_JSON_CONTENT
+- Web: Railway (frontend + backend)
+- Storage in current runtime: Postgres primary with optional Sheets compatibility path
+- Core env vars: `ANTHROPIC_API_KEY`, `DATABASE_URL`, `DATA_READ_SOURCE`, `DATA_WRITE_MODE` (+ Google vars when compatibility mode is enabled)

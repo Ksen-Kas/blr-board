@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getJob, evaluateJD, updateJob, getEvents, addEvent, updateEvent } from "../api/jobs";
+import { getJob, evaluateJD, updateJob, getEvents, addEvent } from "../api/jobs";
 import { JOB_STATUSES } from "../constants/statuses";
 import type { Job, JobEvent } from "../types/job";
 import { canonicalStatusLabel } from "../utils/status";
@@ -32,6 +32,7 @@ function extractVacancyId(url: string): string {
 
 type TouchpointRow = {
   eventId?: number;
+  rawTimestamp: string;
   timestamp: string;
   eventType: string;
   detail: string;
@@ -45,9 +46,49 @@ type TouchpointRow = {
 };
 
 function parseDateToMs(value: string): number {
-  const normalized = value.includes(" ") ? value.replace(" ", "T") : `${value}T00:00:00`;
+  const raw = (value || "").trim();
+  if (!raw) return 0;
+
+  const dotted = raw.match(
+    /^(\d{2})[.](\d{2})[.](\d{2,4})(?:\s+(\d{2}):(\d{2})(?::(\d{2}))?)?$/
+  );
+  if (dotted) {
+    const dd = Number(dotted[1]);
+    const mm = Number(dotted[2]);
+    const yy = dotted[3].length === 2 ? 2000 + Number(dotted[3]) : Number(dotted[3]);
+    const hh = Number(dotted[4] || "0");
+    const mi = Number(dotted[5] || "0");
+    const ss = Number(dotted[6] || "0");
+    return new Date(yy, mm - 1, dd, hh, mi, ss).getTime();
+  }
+
+  const normalized = raw.includes(" ") ? raw.replace(" ", "T") : `${raw}T00:00:00`;
   const ms = Date.parse(normalized);
   return Number.isNaN(ms) ? 0 : ms;
+}
+
+function formatDateDDMMYY(value: string): string {
+  const raw = (value || "").trim();
+  if (!raw) return "";
+
+  const isoMatch = raw.match(/(\d{4})-(\d{2})-(\d{2})/);
+  if (isoMatch) return `${isoMatch[3]}-${isoMatch[2]}-${isoMatch[1].slice(-2)}`;
+
+  const dotted = raw.match(/^(\d{2})[.](\d{2})[.](\d{2,4})/);
+  if (dotted) {
+    const yy = dotted[3].slice(-2);
+    return `${dotted[1]}-${dotted[2]}-${yy}`;
+  }
+
+  const normalized = raw.includes(" ") ? raw.replace(" ", "T") : `${raw}T00:00:00`;
+  const date = new Date(normalized);
+  if (!Number.isNaN(date.getTime())) {
+    const dd = String(date.getDate()).padStart(2, "0");
+    const mm = String(date.getMonth() + 1).padStart(2, "0");
+    const yy = String(date.getFullYear()).slice(-2);
+    return `${dd}-${mm}-${yy}`;
+  }
+  return raw;
 }
 
 function parseTouchpointData(data: string): { channel: string; direction: string; note: string } {
@@ -79,14 +120,8 @@ export default function JobCard() {
   const [events, setEvents] = useState<JobEvent[]>([]);
   const [showTouchForm, setShowTouchForm] = useState(false);
   const [touchNote, setTouchNote] = useState("");
-  const [touchChannel, setTouchChannel] = useState("Email");
   const [touchDirection, setTouchDirection] = useState("Outbound");
   const [touchSaving, setTouchSaving] = useState(false);
-  const [editingTouchEventId, setEditingTouchEventId] = useState<number | null>(null);
-  const [editTouchNote, setEditTouchNote] = useState("");
-  const [editTouchChannel, setEditTouchChannel] = useState("Email");
-  const [editTouchDirection, setEditTouchDirection] = useState("Outbound");
-  const [editTouchSaving, setEditTouchSaving] = useState(false);
   const [statusMessage, setStatusMessage] = useState("");
   const [statusMessageKind, setStatusMessageKind] = useState<"success" | "error" | "info">("info");
   const [statusUpdating, setStatusUpdating] = useState(false);
@@ -187,7 +222,7 @@ export default function JobCard() {
     if (!job || !touchNote.trim() || touchSaving) return;
     setTouchSaving(true);
     const data = JSON.stringify({
-      channel: touchChannel,
+      channel: "Manual",
       direction: touchDirection,
       note: touchNote.trim(),
     });
@@ -198,38 +233,6 @@ export default function JobCard() {
       setShowTouchForm(false);
     } finally {
       setTouchSaving(false);
-    }
-  };
-
-  const handleStartTouchpointEdit = (row: TouchpointRow) => {
-    if (!row.eventId || !row.touchpoint) return;
-    setEditingTouchEventId(row.eventId);
-    setEditTouchChannel(row.touchpoint.channel || "Other");
-    setEditTouchDirection(row.touchpoint.direction || "Outbound");
-    setEditTouchNote(row.touchpoint.note || "");
-  };
-
-  const handleCancelTouchpointEdit = () => {
-    setEditingTouchEventId(null);
-    setEditTouchNote("");
-    setEditTouchChannel("Email");
-    setEditTouchDirection("Outbound");
-  };
-
-  const handleSaveTouchpointEdit = async () => {
-    if (!job || !editingTouchEventId || !editTouchNote.trim() || editTouchSaving) return;
-    setEditTouchSaving(true);
-    try {
-      const data = JSON.stringify({
-        channel: editTouchChannel,
-        direction: editTouchDirection,
-        note: editTouchNote.trim(),
-      });
-      await updateEvent(job.row_num, editingTouchEventId, { event_type: "touchpoint", data });
-      setEvents(await getEvents(job.row_num));
-      handleCancelTouchpointEdit();
-    } finally {
-      setEditTouchSaving(false);
     }
   };
 
@@ -269,7 +272,8 @@ export default function JobCard() {
     }
     return {
       eventId: ev.event_id,
-      timestamp: ev.timestamp,
+      rawTimestamp: ev.timestamp,
+      timestamp: formatDateDDMMYY(ev.timestamp),
       eventType: ev.event_type,
       detail,
       sortMs: parseDateToMs(ev.timestamp),
@@ -280,23 +284,46 @@ export default function JobCard() {
 
   const timelineRows: TouchpointRow[] = [
     ...(job.followup_1
-      ? [{ timestamp: job.followup_1, eventType: "followup_1", detail: "Follow-up 1 sent", sortMs: parseDateToMs(job.followup_1) }]
+      ? [{
+          rawTimestamp: job.followup_1,
+          timestamp: formatDateDDMMYY(job.followup_1),
+          eventType: "followup_1",
+          detail: "Follow-up 1 sent",
+          sortMs: parseDateToMs(job.followup_1),
+        }]
       : []),
     ...(job.followup_2
-      ? [{ timestamp: job.followup_2, eventType: "followup_2", detail: "Follow-up 2 sent", sortMs: parseDateToMs(job.followup_2) }]
+      ? [{
+          rawTimestamp: job.followup_2,
+          timestamp: formatDateDDMMYY(job.followup_2),
+          eventType: "followup_2",
+          detail: "Follow-up 2 sent",
+          sortMs: parseDateToMs(job.followup_2),
+        }]
       : []),
     ...(job.response_date
-      ? [{ timestamp: job.response_date, eventType: "response", detail: "Response received", sortMs: parseDateToMs(job.response_date) }]
+      ? [{
+          rawTimestamp: job.response_date,
+          timestamp: formatDateDDMMYY(job.response_date),
+          eventType: "response",
+          detail: "Response received",
+          sortMs: parseDateToMs(job.response_date),
+        }]
       : []),
   ].map((item) => ({ ...item, editable: false }));
 
   const touchpointRows = [...eventRows, ...timelineRows]
     .sort((a, b) => b.sortMs - a.sortMs)
     .filter((row, index, all) => {
-      const key = `${row.timestamp}|${row.eventType}|${row.detail}`;
-      return index === all.findIndex((candidate) => `${candidate.timestamp}|${candidate.eventType}|${candidate.detail}` === key);
+      const key = `${row.rawTimestamp}|${row.eventType}|${row.detail}`;
+      return (
+        index ===
+        all.findIndex(
+          (candidate) => `${candidate.rawTimestamp}|${candidate.eventType}|${candidate.detail}` === key
+        )
+      );
     });
-  const lastTouchpoint = touchpointRows[0]?.timestamp || "";
+  const lastTouchpointDate = touchpointRows[0]?.timestamp || "";
 
   return (
     <div className="p-6 max-w-3xl mx-auto">
@@ -402,11 +429,11 @@ export default function JobCard() {
       </div>
 
       {/* Timeline */}
-      {(job.applied_date || job.followup_2 || job.response_date || lastTouchpoint) && (
+      {(job.applied_date || job.followup_2 || job.response_date || lastTouchpointDate) && (
         <div className="mb-4 p-4 surface-card">
           <div className="grid grid-cols-2 gap-2 text-sm">
             {job.applied_date && <div><span className="text-muted">Applied:</span> <span className="text-text">{job.applied_date}</span></div>}
-            {lastTouchpoint && <div><span className="text-muted">Last touchpoint:</span> <span className="text-text">{lastTouchpoint}</span></div>}
+            {lastTouchpointDate && <div><span className="text-muted">Last touchpoint:</span> <span className="text-text">{lastTouchpointDate}</span></div>}
             {job.followup_2 && <div><span className="text-muted">Follow-up 2:</span> <span className="text-text">{job.followup_2}</span></div>}
             {job.response_date && <div><span className="text-muted">Response:</span> <span className="text-text">{job.response_date}</span></div>}
             {job.days_to_response && <div><span className="text-muted">Days to response:</span> <span className="text-text">{job.days_to_response}</span></div>}
@@ -487,70 +514,13 @@ export default function JobCard() {
           {touchpointRows.length > 0 ? (
             <div className="space-y-2">
               {touchpointRows.map((row, i) => {
-                const isEditing = row.eventId === editingTouchEventId;
                 return (
                   <div key={`${row.eventId || "row"}-${i}`} className="text-sm border-b border-border/70 pb-2 last:border-b-0">
                     <div className="flex gap-2">
                       <span className="text-muted shrink-0 w-36">{row.timestamp}</span>
                       <span className="text-muted shrink-0 w-28">{row.eventType}</span>
                       <span className="text-text flex-1">{row.detail}</span>
-                      {row.editable && (
-                        <button
-                          onClick={() => handleStartTouchpointEdit(row)}
-                          className="text-xs text-accent hover:text-accent-hover font-semibold cursor-pointer"
-                        >
-                          Edit
-                        </button>
-                      )}
                     </div>
-                    {isEditing && (
-                      <div className="mt-2 ml-[18rem] p-3 bg-surface-alt rounded-xl space-y-2 border border-border/70">
-                        <div className="flex gap-2">
-                          <select
-                            value={editTouchChannel}
-                            onChange={(e) => setEditTouchChannel(e.target.value)}
-                            className="border border-border bg-input text-text rounded-full px-3 py-1 text-sm cursor-pointer"
-                          >
-                            <option>Email</option>
-                            <option>LinkedIn</option>
-                            <option>Phone</option>
-                            <option>Portal</option>
-                            <option>Other</option>
-                          </select>
-                          <select
-                            value={editTouchDirection}
-                            onChange={(e) => setEditTouchDirection(e.target.value)}
-                            className="border border-border bg-input text-text rounded-full px-3 py-1 text-sm cursor-pointer"
-                          >
-                            <option>Outbound</option>
-                            <option>Inbound</option>
-                          </select>
-                        </div>
-                        <textarea
-                          value={editTouchNote}
-                          onChange={(e) => setEditTouchNote(e.target.value)}
-                          placeholder="Note..."
-                          rows={2}
-                          className="w-full border border-border bg-input rounded-xl px-3 py-2 text-sm text-text resize-none placeholder:text-muted/50 focus:outline-none focus:ring-2 focus:ring-accent/20"
-                        />
-                        <div className="flex gap-2">
-                          <button
-                            onClick={handleSaveTouchpointEdit}
-                            disabled={editTouchSaving || !editTouchNote.trim()}
-                            className="px-3 py-1 text-sm bg-accent text-white rounded-full hover:bg-accent-hover disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer font-semibold"
-                          >
-                            {editTouchSaving ? "Saving..." : "Save"}
-                          </button>
-                          <button
-                            onClick={handleCancelTouchpointEdit}
-                            disabled={editTouchSaving}
-                            className="px-3 py-1 text-sm border border-border rounded-full hover:bg-surface-alt disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer text-muted"
-                          >
-                            Cancel
-                          </button>
-                        </div>
-                      </div>
-                    )}
                   </div>
                 );
               })}
@@ -570,17 +540,6 @@ export default function JobCard() {
           ) : (
             <div className="mt-3 p-3 bg-surface-alt rounded-xl space-y-2 border border-border/70">
               <div className="flex gap-2">
-                <select
-                  value={touchChannel}
-                  onChange={(e) => setTouchChannel(e.target.value)}
-                  className="border border-border bg-input text-text rounded-full px-3 py-1 text-sm cursor-pointer"
-                >
-                  <option>Email</option>
-                  <option>LinkedIn</option>
-                  <option>Phone</option>
-                  <option>Portal</option>
-                  <option>Other</option>
-                </select>
                 <select
                   value={touchDirection}
                   onChange={(e) => setTouchDirection(e.target.value)}

@@ -413,6 +413,11 @@ def generate_canonical_cv_pdf() -> bytes:
     return generate_cv_pdf_from_markdown(get_canonical_resume())
 
 
+def generate_text_fallback_pdf(text: str, title: str = "") -> bytes:
+    """Public safe fallback PDF helper (never raises on missing render deps)."""
+    return _fallback_pdf(text or "", title=title)
+
+
 def _build_track_changes_preview(canonical_md: str, tailored_md: str) -> list[dict]:
     preview: list[dict] = []
     canonical_sections = _extract_sections(canonical_md)

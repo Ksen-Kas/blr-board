@@ -20,6 +20,17 @@ type TailorResult = {
   track_changes?: TrackSection[];
 };
 
+function extractErrorMessage(err: unknown, fallback: string): string {
+  if (err && typeof err === "object" && "response" in err) {
+    const response = (err as { response?: { data?: { detail?: string } } }).response;
+    const detail = response?.data?.detail;
+    if (typeof detail === "string" && detail.trim()) {
+      return detail;
+    }
+  }
+  return fallback;
+}
+
 export default function CVScreen() {
   const { rowNum } = useParams<{ rowNum: string }>();
   const navigate = useNavigate();
@@ -97,9 +108,9 @@ export default function CVScreen() {
       await downloadCanonicalCvPdf({ company: job.company, role: job.role });
       setActionKind("success");
       setActionMessage("Canonical PDF download started.");
-    } catch {
+    } catch (err: unknown) {
       setActionKind("error");
-      setActionMessage("Failed to download canonical PDF.");
+      setActionMessage(extractErrorMessage(err, "Failed to download canonical PDF."));
     }
   };
 
@@ -115,9 +126,9 @@ export default function CVScreen() {
       });
       setActionKind("success");
       setActionMessage("Tailored PDF download started.");
-    } catch {
+    } catch (err: unknown) {
       setActionKind("error");
-      setActionMessage("PDF generation failed.");
+      setActionMessage(extractErrorMessage(err, "PDF generation failed."));
     }
   };
 

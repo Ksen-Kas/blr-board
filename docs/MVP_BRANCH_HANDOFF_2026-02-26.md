@@ -1,5 +1,7 @@
 # MVP Branch Handoff (for next chat)
 
+> Historical handoff document from 2026-02-26. Keep as archive; validate all operational details against current docs before executing.
+
 ## 1) Context Snapshot
 
 - Repository: `https://github.com/Ksen-Kas/joe_services`
@@ -132,4 +134,3 @@ railway domain --service frontend --json
 # Push branch updates
 git push origin mvp-service
 ```
-

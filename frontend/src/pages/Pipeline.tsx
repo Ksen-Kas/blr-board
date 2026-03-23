@@ -22,7 +22,7 @@ function hasEligibilityAlert(stopFlags: string) {
 function fitColor(roleFit: string) {
   const fit = roleFit.toLowerCase();
   if (fit === "strong") return "text-emerald-600";
-  if (fit === "stretch" || fit === "partial") return "text-teal-600";
+  if (fit === "stretch" || fit === "partial") return "text-amber-500";
   return "text-muted";
 }
 
@@ -97,13 +97,6 @@ export default function Pipeline() {
     }
     return 0;
   });
-  const newestRowNums = new Set(
-    [...jobs]
-      .filter((j) => j.status.toLowerCase() === "new")
-      .sort((a, b) => b.row_num - a.row_num)
-      .slice(0, 6)
-      .map((j) => j.row_num)
-  );
 
   return (
     <div className="p-6 max-w-[1400px] mx-auto">
@@ -184,25 +177,18 @@ export default function Pipeline() {
             <tbody>
               {sorted.map((job) => {
                 const days = daysSince(job.applied_date);
-                const isFresh = newestRowNums.has(job.row_num);
+                const isNewStatus = canonicalStatusKey(job.status) === "new";
 
                 return (
                   <tr
                     key={job.row_num}
                     className={`border-t border-border/80 cursor-pointer hover:bg-surface-alt/70 ${
-                      isFresh ? "bg-blue-50/30" : ""
+                      isNewStatus ? "bg-sky-50/70" : ""
                     }`}
                     onClick={() => navigate(`/job/${job.row_num}`)}
                   >
                     <td className="px-3 py-2 text-muted">
-                      <span className="inline-flex items-center gap-1">
-                        <span>{job.row_num}</span>
-                        {isFresh && (
-                          <span className="text-[10px] px-1.5 py-0.5 rounded-full border border-blue-300 text-blue-700 bg-blue-100 animate-pulse">
-                            NEW
-                          </span>
-                        )}
-                      </span>
+                      <span>{job.row_num}</span>
                       {job.needs_followup && (
                         <span className="ml-1" title="Needs follow-up">🔔</span>
                       )}

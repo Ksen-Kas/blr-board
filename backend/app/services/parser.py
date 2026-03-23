@@ -213,14 +213,17 @@ def parse_url_bs4(url: str) -> str | None:
 
 def parse_url(url: str) -> str | None:
     """Parse JD from URL — Jina Reader first, BS4 fallback.
-
-    LinkedIn URLs are blocked — they return login pages, not JD content.
     """
     if not is_safe_public_url(url):
         logger.warning("Blocked unsafe URL: %s", url)
         return None
     if is_linkedin_url(url):
-        logger.info("LinkedIn URL blocked: %s", url)
+        # LinkedIn pages are often login-protected in normal fetch.
+        # Use Jina-only path to avoid pulling noisy BS4 login pages.
+        linkedin_result = parse_url_jina(url)
+        if linkedin_result:
+            return linkedin_result
+        logger.info("LinkedIn parser could not extract JD for %s", url)
         return None
     if is_hh_url(url):
         hh_result = parse_url_hh(url)

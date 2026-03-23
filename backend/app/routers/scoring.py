@@ -12,7 +12,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 
 from app.security import require_internal_api_key
-from app.services.contact_parser import parse_contact
+from app.services.contact_parser import extract_linkedin_poster_contact, parse_contact
 from app.services.parser import is_linkedin_url, is_safe_public_url, parse_url
 from app.services.storage import storage_service
 from modules.scoring.evaluate import evaluate_fit
@@ -164,6 +164,18 @@ def _build_no_jd_result(source_url: str) -> dict:
     }
 
 
+def _resolve_contact(req_contact: str, jd_text: str, source_url: str) -> str:
+    """Prefer explicit contact from UI, else infer from LinkedIn JD text."""
+    direct = parse_contact(req_contact or "")
+    if direct:
+        return direct
+    if source_url and is_linkedin_url(source_url):
+        inferred = extract_linkedin_poster_contact(jd_text or "")
+        if inferred:
+            return inferred
+    return ""
+
+
 @router.post("/evaluate")
 def score_jd(req: ScoreRequest, _: None = Depends(require_internal_api_key)) -> dict:
     jd_text = (req.jd_text or "").strip()
@@ -174,7 +186,7 @@ def score_jd(req: ScoreRequest, _: None = Depends(require_internal_api_key)) -> 
 
     # If URL provided and no text, try parsing. If parsing fails, keep the URL anyway.
     if source_url and not jd_text:
-        can_parse = is_safe_public_url(source_url) and not is_linkedin_url(source_url)
+        can_parse = is_safe_public_url(source_url)
         if can_parse:
             parsed = parse_url(source_url)
             if parsed:
@@ -201,6 +213,10 @@ def score_jd(req: ScoreRequest, _: None = Depends(require_internal_api_key)) -> 
     else:
         raise HTTPException(400, "Provide jd_text or source_url")
 
+    resolved_contact = _resolve_contact(req.contact, jd_text, source_url)
+    if resolved_contact:
+        result["contact"] = resolved_contact
+
     # Optionally write to sheet (same as bot's "Add to tracker" button)
     if req.add_to_tracker:
         # Check URL duplicate
@@ -217,7 +233,7 @@ def score_jd(req: ScoreRequest, _: None = Depends(require_internal_api_key)) -> 
                 "role": dup.role,
             }
         else:
-            result["contact"] = parse_contact(req.contact)
+            result["contact"] = resolved_contact
             result["summary"] = _build_comment_for_sheet(
                 jd_text=jd_text,
                 source_url=source_url,

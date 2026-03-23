@@ -6,6 +6,8 @@
 
 **Git repo:** https://github.com/Ksen-Kas/joe_services
 
+> Актуализация на 2026-03-21: документ сохраняет MVP-базу, но текущее runtime-хранилище уже работает через storage facade с режимами `sheets` / `postgres` / `both` (миграционный режим dual-write).
+
 ---
 
 ## 1. Краткое позиционирование
@@ -24,7 +26,7 @@
 ### Кто
 - **Профиль:** Соискатель (senior/executive), который откликается на много вакансий и хочет сохранять качество и честность материалов.
 - **Контекст:** Один канонический CV, одна «история правды» (CLIENT_SPACE), массовые отклики без выдумывания фактов.
-- **Ограничение MVP:** Один пользователь на инстанс (single-tenant), данные в Google Sheets.
+- **Ограничение MVP:** Один пользователь на инстанс (single-tenant), данные в процессе миграции Sheets -> Postgres.
 
 ### Сценарий использования (end-to-end)
 1. Пользователь вставляет **пачку ссылок** (LinkedIn/другие) или текст JD.
@@ -34,7 +36,7 @@
 5. Joe **генерирует cover letter** (150–250 слов, тема + текст), при необходимости — с учётом заметок пользователя → аппрув.
 6. Пользователь **скачивает PDF** (CV + письмо) или копирует текст и отправляет отклик вручную.
 7. В pipeline фиксируется статус; **напоминания** (stale new, follow-up, no response) отображаются в UI.
-   - Примечание: автоматические Telegram‑напоминания пока берут даты из колонок Follow‑up 1/2.
+   - Примечание: ежедневное Telegram-сообщение формируется backend scheduler по правилам Stale New / FU1 / FU2 / No Response, с секцией автопереходов статусов.
 
 ---
 
@@ -87,23 +89,32 @@
   - Follow-up 1: Applied + 4 дня.
   - Follow-up 2: FU1 + 7 дней.
   - No Response: Applied + 30 дней.
-- Хранение: **Google Sheets** как единственная БД (с кэшем в приложении).
+- **Активные Telegram-нотифы (daily digest):**
+  - 🆕 Stale New (New + 3 days)
+  - 📅 Follow-up 1 (Applied + 4 days)
+  - 📌 Follow-up 2 (FU1 + 7 days)
+  - ⏳ No Response (Applied + 30 days)
+  - ⚙️ Auto status updates (`Applied -> Waiting`, `Applied/Waiting -> No Response`)
+  - ✅ «Напоминаний на сегодня нет» (если секции пустые)
+- Хранение: **storage facade** с флагами источника/записи (`DATA_READ_SOURCE`, `DATA_WRITE_MODE`) для безопасной миграции Sheets -> Postgres.
 
 ### 4.6 UI (веб)
 - **Экраны:** Pipeline (таблица) → Карточка вакансии → CV (tailor + аппрув) → Letter (generate + аппрув) → Готово (запись в pipeline).
 - **Dashboard:** сводка (всего / новые / подано / ответы), простая воронка, недавняя активность.
 - Письмо в таблице: truncate ~50 символов, по клику — popup с полным текстом.
+- **Pipeline (актуально):** `NEW`-лейбл после номера строки убран; строки со статусом `New` подсвечиваются бледно-голубым.
+- **Touchpoints в JobCard:** дата показывается только как `dd-mm-yy`; список источников (channels) в форме скрыт; редактирование даты/времени touchpoint в карточке отключено.
 - Один экран = одно решение (минимум когнитивной нагрузки).
 
 ### 4.7 Интеграции MVP
-- **Google Sheets:** чтение/запись pipeline, один лист (например 21 колонка).
+- **Storage layer:** unified read/write через Sheets и/или Postgres в зависимости от runtime флагов.
 - **Claude API:** скоринг, CV tailor, letter generation.
 - **Telegram-бот (текущая версия):**
   - Пишет в тот же Google Sheets (Pipeline).
   - **Без скоринга** и без расхода токенов Claude.
   - При ссылке добавляет карточку сразу; LinkedIn помечает комментом «вставь JD вручную».
   - Парсинг не-LinkedIn URL используется только как проверка доступности текста.
-  - Напоминания: в боте работают по датам Follow‑up 1/2 (не по touchpoints).
+  - Ежедневные Telegram-напоминания отправляются backend scheduler (MVP service), не через legacy polling-бот.
 
 ---
 
@@ -143,8 +154,8 @@
 | Frontend | React, TypeScript, Vite, Tailwind CSS |
 | Backend | Python, FastAPI |
 | AI | Claude API (скоринг, CV, letter) |
-| Хранение | Google Sheets (service account) |
-| PDF | WeasyPrint (markdown/text → PDF) |
+| Хранение | Postgres (primary target) + Google Sheets (compatibility/migration path) |
+| PDF | WeasyPrint + fallback `fpdf2` |
 | Деплой (целевой) | Railway (GitHub-based deploy) |
 | Примечание по PDF | В Railway без системных libs WeasyPrint может падать; есть fallback PDF через fpdf2 |
 
@@ -153,7 +164,7 @@
 ## 8. Архитектура и реализация (кратко, понятным языком)
 
 ### 8.1 Общая схема
-- **Frontend (SPA)** → вызывает **Backend API** → записывает/читает **Google Sheets**.
+- **Frontend (SPA)** → вызывает **Backend API** → работает через **storage facade** (Sheets/Postgres).
 - **AI‑модули** вызываются только из backend.
 - **Telegram‑бот** пишет в ту же таблицу (Pipeline), чтобы всё было в одном месте.
 
@@ -169,10 +180,12 @@
 
 **Сервисы внутри backend:**
 - `sheets` — Google Sheets (Pipeline + Events)
+- `storage` — unified facade (route by `DATA_READ_SOURCE` / `DATA_WRITE_MODE`)
+- `postgres` — Postgres storage + events
 - `parser` — парсинг JD (Jina Reader → BS4 fallback)
 - `canon` — канонические данные (CLIENT_SPACE или env fallback)
 - `claude` — вызовы Claude API
-- `pdf` — сборка PDF (WeasyPrint)
+- `pdf` — сборка PDF (WeasyPrint + fallback `fpdf2`)
 - `contact_parser` — извлечение контакта из JD
 
 ### 8.3 Frontend (React)
@@ -182,12 +195,19 @@
 - CVScreen / LetterScreen (генерация + апрув)
 - Dashboard (сводка + воронка)
 
+**Текущее поведение JobCard touchpoints:**
+- read-only timeline для существующих записей;
+- добавление нового touchpoint без выбора источника;
+- отображение timestamp как даты `dd-mm-yy`.
+
+**Текущее поведение Pipeline (визуальные маркеры):**
+- нет отдельного `NEW`-бейджа после row id;
+- статус `New` выделяется фоном строки (pale blue).
+
 ### 8.4 Telegram‑бот (текущая версия)
-- Polling‑бот на Python.
-- Принимает URL или текст, **не оценивает**, сразу создаёт запись в Pipeline.
-- LinkedIn → пометка, что JD нужно вставить вручную.
-- Напоминания сохраняются (scheduler).
- - Напоминания основаны на колонках Follow‑up 1/2 (не на touchpoints).
+- В `mvp-service` нотификации отправляет backend scheduler (`backend/app/services/reminder.py`) один раз в день.
+- Типы секций в сообщении: Stale New, Follow-up 1, Follow-up 2, No Response, Auto status updates, либо «Напоминаний на сегодня нет».
+- Legacy polling‑бот (ветка `main`) используется как отдельный архивный поток и не является источником текущих web-reminder уведомлений.
 
 ### 8.5 Репозиторий и ветки
 - **Git repo:** https://github.com/Ksen-Kas/joe_services  
@@ -256,7 +276,7 @@
 
 **Joe v2 MVP — кратко:**
 - Сильные: честность (No-Invention), один канон, явный аппрув, pipeline в одном месте, модульность письма, флаги.
-- Слабые: single-user, зависимость от Sheets и Claude API, парсинг LinkedIn не в MVP, нет мобильного приложения.
+- Слабые: single-user, зависимость от Claude API и миграционного dual-storage, парсинг LinkedIn не в MVP, нет мобильного приложения.
 
 ---
 

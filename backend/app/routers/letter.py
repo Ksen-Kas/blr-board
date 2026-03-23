@@ -7,7 +7,7 @@ from fastapi.responses import Response
 from pydantic import BaseModel
 
 from app.security import require_internal_api_key
-from app.services.parser import is_linkedin_url, is_safe_public_url, parse_url
+from app.services.parser import is_safe_public_url, parse_url
 from modules.letter.generate import generate_letter
 from app.services.pdf import render_letter_pdf
 
@@ -35,7 +35,7 @@ def generate(req: LetterRequest, _: None = Depends(require_internal_api_key)) ->
     source_url = (req.source_url or "").strip()
 
     if not jd_text and source_url:
-        if is_safe_public_url(source_url) and not is_linkedin_url(source_url):
+        if is_safe_public_url(source_url):
             parsed = parse_url(source_url)
             if parsed:
                 jd_text = parsed.strip()
