@@ -34,6 +34,18 @@ export const updateEvent = (
   data: { event_type?: string; data?: string },
 ) => api.patch(`/jobs/${rowNum}/events/${eventId}`, data).then((r) => r.data);
 
+export const saveLetterVersion = (
+  rowNum: number,
+  data: { subject?: string; body: string; source?: string },
+) =>
+  api
+    .post<{ status: string; job: Job }>(`/jobs/${rowNum}/cl/save`, {
+      subject: data.subject || "",
+      body: data.body || "",
+      source: data.source || "manual",
+    })
+    .then((r) => r.data);
+
 // Scoring — same output as Telegram bot's joe.evaluate()
 export const evaluateJD = (data: {
   jd_text?: string;

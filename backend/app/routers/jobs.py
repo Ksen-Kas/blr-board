@@ -121,6 +121,12 @@ class EventUpdate(BaseModel):
     data: str | None = None
 
 
+class LetterSaveRequest(BaseModel):
+    subject: str = ""
+    body: str = ""
+    source: str = "manual"
+
+
 @router.get("/{row_num}/events")
 def get_events(row_num: int) -> list[dict]:
     return storage_service.get_events(row_num)
@@ -159,3 +165,43 @@ def patch_event(
     if not ok:
         raise HTTPException(404, "Event not found")
     return {"status": "ok"}
+
+
+@router.post("/{row_num}/cl/save")
+def save_cover_letter(
+    row_num: int,
+    req: LetterSaveRequest,
+    _: None = Depends(require_internal_api_key),
+):
+    job = storage_service.get_job_by_row(row_num)
+    if not job:
+        raise HTTPException(404, "Job not found")
+
+    subject = (req.subject or "").strip()
+    body = (req.body or "").strip()
+    source = (req.source or "manual").strip() or "manual"
+    if not body:
+        raise HTTPException(422, "Letter body is empty")
+
+    cl_text = f"Subject: {subject}\n\n{body}" if subject else body
+    updated = storage_service.update_job(row_num, {"cl": cl_text})
+    if not updated:
+        raise HTTPException(500, "Failed to save cover letter")
+
+    try:
+        storage_service.log_event(
+            row_num,
+            "letter_saved",
+            json.dumps(
+                {
+                    "subject": subject,
+                    "body": body,
+                    "source": source,
+                },
+                ensure_ascii=False,
+            ),
+        )
+    except Exception as exc:
+        logger.warning("Failed to log letter_saved event: %s", exc)
+
+    return {"status": "ok", "job": updated}
