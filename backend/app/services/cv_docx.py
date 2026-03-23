@@ -61,6 +61,14 @@ def _canonical_template_path() -> Path:
     )
 
 
+def _canonical_pdf_template_path() -> Path | None:
+    for base in _candidate_client_space_dirs():
+        candidate = base / "canonical_resume.pdf"
+        if candidate.exists():
+            return candidate
+    return None
+
+
 def _run_libreoffice_convert(input_docx: Path, output_dir: Path) -> Path:
     commands = [
         [
@@ -193,6 +201,10 @@ def _render_docx_to_pdf_bytes(docx_path: Path) -> bytes:
 
 
 def render_canonical_cv_pdf() -> bytes:
+    pdf_template = _canonical_pdf_template_path()
+    if pdf_template:
+        return pdf_template.read_bytes()
+
     template = _canonical_template_path()
     try:
         return _render_docx_to_pdf_bytes(template)
