@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getJob, evaluateJD, updateJob, getEvents, addEvent } from "../api/jobs";
+import { getJob, evaluateJD, updateJob, getEvents, addEvent, saveLetterVersion } from "../api/jobs";
 import { JOB_STATUSES } from "../constants/statuses";
 import type { Job, JobEvent } from "../types/job";
 import { canonicalStatusLabel } from "../utils/status";
@@ -141,6 +141,14 @@ function parseTouchpointData(data: string): { channel: string; direction: string
   }
 }
 
+function parseStoredLetter(rawLetter: string): { subject: string; body: string } {
+  const text = (rawLetter || "").trim();
+  if (!text) return { subject: "", body: "" };
+  const match = text.match(/^Subject:\s*(.+)\n\n([\s\S]+)$/i);
+  if (match) return { subject: match[1].trim(), body: match[2].trim() };
+  return { subject: "", body: text };
+}
+
 function formatDateTimeDDMMYY(value: string): string {
   const raw = (value || "").trim();
   if (!raw) return "";
@@ -207,12 +215,18 @@ export default function JobCard() {
   const [letterActionMessage, setLetterActionMessage] = useState("");
   const [letterActionKind, setLetterActionKind] = useState<"success" | "error" | "info">("info");
   const [loadingLetterEventId, setLoadingLetterEventId] = useState<number | null>(null);
+  const [manualLetterSubject, setManualLetterSubject] = useState("");
+  const [manualLetterBody, setManualLetterBody] = useState("");
+  const [manualLetterSaving, setManualLetterSaving] = useState(false);
 
   useEffect(() => {
     if (rowNum) {
       getJob(Number(rowNum)).then((j) => {
         setJob(j);
         setStatus(canonicalStatusLabel(j.status) || j.status);
+        const stored = parseStoredLetter(j.cl || "");
+        setManualLetterSubject(stored.subject);
+        setManualLetterBody(stored.body);
       });
       getEvents(Number(rowNum)).then(setEvents).catch(() => {});
     }
@@ -333,6 +347,8 @@ export default function JobCard() {
     try {
       const updated = await updateJob(job.row_num, { cl: clText });
       setJob((prev) => (prev ? { ...prev, cl: updated.cl } : prev));
+      setManualLetterSubject(row.subject);
+      setManualLetterBody(row.body);
       setLetterActionKind("success");
       setLetterActionMessage("CL version loaded into current card.");
     } catch {
@@ -356,6 +372,30 @@ export default function JobCard() {
     } catch {
       setLetterActionKind("error");
       setLetterActionMessage("Copy failed.");
+    }
+  };
+
+  const handleSaveManualLetter = async () => {
+    if (!job || !manualLetterBody.trim() || manualLetterSaving) return;
+    setManualLetterSaving(true);
+    setLetterActionKind("info");
+    setLetterActionMessage("Saving custom CL to history...");
+    try {
+      const saved = await saveLetterVersion(job.row_num, {
+        subject: manualLetterSubject.trim(),
+        body: manualLetterBody.trim(),
+        source: "manual",
+      });
+      setJob(saved.job);
+      const updatedEvents = await getEvents(job.row_num);
+      setEvents(updatedEvents);
+      setLetterActionKind("success");
+      setLetterActionMessage("Custom CL saved to history.");
+    } catch {
+      setLetterActionKind("error");
+      setLetterActionMessage("Failed to save custom CL.");
+    } finally {
+      setManualLetterSaving(false);
     }
   };
 
@@ -646,6 +686,39 @@ export default function JobCard() {
             )}
           </Section>
         )}
+
+        <Section title="Save Custom CL">
+          <div className="space-y-3">
+            <input
+              value={manualLetterSubject}
+              onChange={(e) => setManualLetterSubject(e.target.value)}
+              className="w-full border border-border bg-input rounded-xl px-3 py-2 text-sm text-text focus:outline-none focus:ring-2 focus:ring-accent/20"
+              placeholder="Subject (optional)"
+            />
+            <textarea
+              value={manualLetterBody}
+              onChange={(e) => setManualLetterBody(e.target.value)}
+              rows={8}
+              className="w-full border border-border bg-input rounded-xl px-3 py-2 text-sm text-text resize-y placeholder:text-muted/50 focus:outline-none focus:ring-2 focus:ring-accent/20"
+              placeholder="Paste your custom cover letter text here..."
+            />
+            <div className="flex items-center gap-3">
+              <button
+                onClick={handleSaveManualLetter}
+                disabled={manualLetterSaving || !manualLetterBody.trim()}
+                className="px-4 py-2 border border-border rounded-full hover:bg-surface-alt text-sm cursor-pointer text-muted hover:text-text font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {manualLetterSaving ? "Saving..." : "Save to history"}
+              </button>
+              <button
+                onClick={() => navigate(`/job/${job.row_num}/letter`)}
+                className="px-4 py-2 bg-surface-alt rounded-full hover:bg-border text-sm cursor-pointer text-muted font-medium"
+              >
+                Open Letter Editor
+              </button>
+            </div>
+          </div>
+        </Section>
 
         {job.cl && (
           <Section title="Cover Letter">
