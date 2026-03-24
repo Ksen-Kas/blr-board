@@ -69,6 +69,15 @@ type TouchpointRow = {
   };
 };
 
+type LetterHistoryRow = {
+  eventId: number;
+  rawTimestamp: string;
+  timestamp: string;
+  source: string;
+  subject: string;
+  body: string;
+};
+
 function parseDateToMs(value: string): number {
   const raw = (value || "").trim();
   if (!raw) return 0;
@@ -132,6 +141,52 @@ function parseTouchpointData(data: string): { channel: string; direction: string
   }
 }
 
+function formatDateTimeDDMMYY(value: string): string {
+  const raw = (value || "").trim();
+  if (!raw) return "";
+  const normalized = raw.includes(" ") ? raw.replace(" ", "T") : raw;
+  const date = new Date(normalized);
+  if (Number.isNaN(date.getTime())) return formatDateDDMMYY(raw);
+  const dd = String(date.getDate()).padStart(2, "0");
+  const mm = String(date.getMonth() + 1).padStart(2, "0");
+  const yy = String(date.getFullYear()).slice(-2);
+  const hh = String(date.getHours()).padStart(2, "0");
+  const mi = String(date.getMinutes()).padStart(2, "0");
+  return `${dd}-${mm}-${yy} ${hh}:${mi}`;
+}
+
+function parseLetterHistory(events: JobEvent[]): LetterHistoryRow[] {
+  const allowed = new Set(["letter_saved", "cl_saved", "letter_snapshot"]);
+  const rows: LetterHistoryRow[] = [];
+
+  for (const ev of events) {
+    const eventType = (ev.event_type || "").toLowerCase();
+    if (!allowed.has(eventType)) continue;
+    try {
+      const parsed = JSON.parse(ev.data || "{}");
+      const subject = String(parsed.subject || "").trim();
+      const body = String(parsed.body || "").trim();
+      const source = String(parsed.source || (eventType === "letter_saved" ? "manual" : "unknown")).trim();
+      if (!body) continue;
+      rows.push({
+        eventId: Number(ev.event_id || 0),
+        rawTimestamp: ev.timestamp || "",
+        timestamp: formatDateTimeDDMMYY(ev.timestamp || ""),
+        source,
+        subject,
+        body,
+      });
+    } catch {
+      continue;
+    }
+  }
+
+  return rows.sort((a, b) => {
+    if (a.eventId && b.eventId) return b.eventId - a.eventId;
+    return parseDateToMs(b.rawTimestamp) - parseDateToMs(a.rawTimestamp);
+  });
+}
+
 export default function JobCard() {
   const { rowNum } = useParams<{ rowNum: string }>();
   const navigate = useNavigate();
@@ -149,6 +204,9 @@ export default function JobCard() {
   const [statusMessage, setStatusMessage] = useState("");
   const [statusMessageKind, setStatusMessageKind] = useState<"success" | "error" | "info">("info");
   const [statusUpdating, setStatusUpdating] = useState(false);
+  const [letterActionMessage, setLetterActionMessage] = useState("");
+  const [letterActionKind, setLetterActionKind] = useState<"success" | "error" | "info">("info");
+  const [loadingLetterEventId, setLoadingLetterEventId] = useState<number | null>(null);
 
   useEffect(() => {
     if (rowNum) {
@@ -165,6 +223,12 @@ export default function JobCard() {
     const timeoutId = window.setTimeout(() => setStatusMessage(""), 3500);
     return () => window.clearTimeout(timeoutId);
   }, [statusMessage, statusMessageKind, statusUpdating]);
+
+  useEffect(() => {
+    if (!letterActionMessage) return;
+    const timeoutId = window.setTimeout(() => setLetterActionMessage(""), 3500);
+    return () => window.clearTimeout(timeoutId);
+  }, [letterActionMessage, letterActionKind]);
 
   const handleScore = async () => {
     if (!job) return;
@@ -260,6 +324,41 @@ export default function JobCard() {
     }
   };
 
+  const handleLoadLetterVersion = async (row: LetterHistoryRow) => {
+    if (!job) return;
+    const clText = row.subject ? `Subject: ${row.subject}\n\n${row.body}` : row.body;
+    setLoadingLetterEventId(row.eventId);
+    setLetterActionKind("info");
+    setLetterActionMessage("Loading selected CL version...");
+    try {
+      const updated = await updateJob(job.row_num, { cl: clText });
+      setJob((prev) => (prev ? { ...prev, cl: updated.cl } : prev));
+      setLetterActionKind("success");
+      setLetterActionMessage("CL version loaded into current card.");
+    } catch {
+      setLetterActionKind("error");
+      setLetterActionMessage("Failed to load CL version.");
+    } finally {
+      setLoadingLetterEventId(null);
+    }
+  };
+
+  const handleCopyLetterVersion = async (row: LetterHistoryRow) => {
+    if (!navigator.clipboard) {
+      setLetterActionKind("error");
+      setLetterActionMessage("Clipboard not available in this browser.");
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(row.subject ? `Subject: ${row.subject}\n\n${row.body}` : row.body);
+      setLetterActionKind("success");
+      setLetterActionMessage("CL history version copied.");
+    } catch {
+      setLetterActionKind("error");
+      setLetterActionMessage("Copy failed.");
+    }
+  };
+
   if (!job) return <div className="p-6 text-muted">Loading...</div>;
 
   const stopFlags = job.stop_flags || "";
@@ -275,7 +374,9 @@ export default function JobCard() {
       : roleFit.toLowerCase() === "stretch" || roleFit.toLowerCase() === "partial"
         ? "border-amber-200 bg-amber-50 text-amber-700"
         : "border-border bg-surface text-muted";
-  const eventRows: TouchpointRow[] = events.map((ev) => {
+  const eventRows: TouchpointRow[] = events
+    .filter((ev) => ev.event_type === "touchpoint" || ev.event_type === "status_change")
+    .map((ev) => {
     let detail = "";
     let touchpoint: TouchpointRow["touchpoint"] =
       ev.event_type === "touchpoint" ? parseTouchpointData(ev.data) : undefined;
@@ -349,6 +450,7 @@ export default function JobCard() {
       );
     });
   const lastTouchpointDate = touchpointRows[0]?.timestamp || "";
+  const letterHistoryRows = parseLetterHistory(events);
 
   return (
     <div className="p-6 max-w-3xl mx-auto">
@@ -548,6 +650,52 @@ export default function JobCard() {
         {job.cl && (
           <Section title="Cover Letter">
             <pre className="whitespace-pre-wrap text-sm leading-relaxed text-text">{job.cl}</pre>
+            {letterActionMessage && (
+              <div
+                className={`mt-3 inline-flex items-center rounded-full border px-3 py-1 text-xs ${
+                  letterActionKind === "success"
+                    ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                    : letterActionKind === "error"
+                      ? "border-red-200 bg-red-50 text-red-700"
+                      : "border-border bg-surface text-muted"
+                }`}
+              >
+                {letterActionMessage}
+              </div>
+            )}
+          </Section>
+        )}
+
+        {letterHistoryRows.length > 0 && (
+          <Section title="CL History">
+            <div className="space-y-2">
+              {letterHistoryRows.slice(0, 10).map((row) => (
+                <div key={`${row.eventId}-${row.rawTimestamp}`} className="border-b border-border/70 pb-2 last:border-b-0">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="text-xs text-muted">
+                      {row.timestamp} • {row.source}
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <button
+                        onClick={() => handleLoadLetterVersion(row)}
+                        disabled={loadingLetterEventId === row.eventId}
+                        className="text-xs text-accent hover:text-accent-hover cursor-pointer font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {loadingLetterEventId === row.eventId ? "Loading..." : "Load"}
+                      </button>
+                      <button
+                        onClick={() => handleCopyLetterVersion(row)}
+                        className="text-xs text-accent hover:text-accent-hover cursor-pointer font-semibold"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                  </div>
+                  <div className="text-sm font-medium text-text mt-1 truncate">{row.subject || "(No subject)"}</div>
+                  <div className="text-xs text-muted line-clamp-2">{row.body}</div>
+                </div>
+              ))}
+            </div>
           </Section>
         )}
 
