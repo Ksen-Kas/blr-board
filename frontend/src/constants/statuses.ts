@@ -8,5 +8,6 @@ export const JOB_STATUSES = [
   "Response",
   "Interview",
   "No Response",
+  "Rejected",
   "Closed",
 ] as const;

@@ -504,6 +504,7 @@ function StatusBadge({ status }: { status: string }) {
   else if (s === "response") color = "bg-violet-50 text-violet-700 border border-violet-200";
   else if (s === "interview") color = "bg-indigo-50 text-indigo-700 border border-indigo-200";
   else if (s === "no response") color = "bg-slate-100 text-slate-600 border border-slate-200";
+  else if (s === "rejected") color = "bg-rose-50 text-rose-700 border border-rose-200";
   else if (s === "closed") color = "bg-rose-50 text-rose-700 border border-rose-200";
 
   return (

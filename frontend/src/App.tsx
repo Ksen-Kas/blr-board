@@ -5,6 +5,7 @@ import JobCard from "./pages/JobCard";
 import CVScreen from "./pages/CVScreen";
 import LetterScreen from "./pages/LetterScreen";
 import Dashboard from "./pages/Dashboard";
+import { getSheetUrl } from "./api/jobs";
 import api, {
   clearAuth,
   getNetworkActivitySnapshot,
@@ -38,6 +39,7 @@ function App() {
   const [networkActivity, setNetworkActivity] = useState<NetworkActivitySnapshot>(
     getNetworkActivitySnapshot()
   );
+  const [sheetUrl, setSheetUrl] = useState("");
 
   useEffect(() => {
     setUnauthorizedHandler(() => {
@@ -59,6 +61,13 @@ function App() {
     }, 250);
     return () => window.clearInterval(t);
   }, [authed, networkActivity.pendingCount]);
+
+  useEffect(() => {
+    if (!authed) return;
+    getSheetUrl()
+      .then((res) => setSheetUrl(res.url || ""))
+      .catch(() => setSheetUrl(""));
+  }, [authed]);
 
   const handleLogin = async (username: string, password: string) => {
     setIsLoggingIn(true);
@@ -112,6 +121,16 @@ function App() {
           <div className="flex items-center gap-2">
             <NavLink to="/">Pipeline</NavLink>
             <NavLink to="/dashboard">Dashboard</NavLink>
+            {sheetUrl && (
+              <a
+                href={sheetUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm font-semibold px-3 py-1.5 rounded-full text-muted hover:text-text hover:bg-surface-alt"
+              >
+                Google Base
+              </a>
+            )}
           </div>
           <button
             type="button"

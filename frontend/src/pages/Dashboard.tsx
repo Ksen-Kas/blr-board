@@ -12,6 +12,7 @@ const STATUS_CARDS = [
   { key: "Response", label: "Response", color: "bg-purple-500" },
   { key: "Interview", label: "Interview", color: "bg-indigo-500" },
   { key: "No Response", label: "No Response", color: "bg-gray-400" },
+  { key: "Rejected", label: "Rejected", color: "bg-rose-500" },
   { key: "Closed", label: "Closed", color: "bg-red-500" },
 ];
 

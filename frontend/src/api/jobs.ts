@@ -21,6 +21,9 @@ export const getStatuses = () =>
 export const getStats = () =>
   api.get<PipelineStats>("/pipeline/stats").then((r) => r.data);
 
+export const getSheetUrl = () =>
+  api.get<{ url: string }>("/pipeline/sheet-url").then((r) => r.data);
+
 // Events
 export const getEvents = (rowNum: number) =>
   api.get<JobEvent[]>(`/jobs/${rowNum}/events`).then((r) => r.data);

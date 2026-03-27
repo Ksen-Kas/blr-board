@@ -13,6 +13,7 @@ class JobStatus(str, Enum):
     RESPONSE = "Response"
     INTERVIEW = "Interview"
     NO_RESPONSE = "No Response"
+    REJECTED = "Rejected"
     CLOSED = "Closed"
 
 

@@ -3,6 +3,7 @@
 from collections import Counter
 from fastapi import APIRouter, Depends
 
+from app import config
 from app.security import require_internal_api_key
 from app.services.reminder import daily_followup_check, get_reminder_runtime_status
 from app.services.storage import storage_service
@@ -18,6 +19,13 @@ def get_stats():
         "total": len(jobs),
         "by_status": dict(status_counts),
     }
+
+
+@router.get("/sheet-url")
+def get_sheet_url():
+    sheet_id = (config.GOOGLE_SHEET_ID or "").strip()
+    url = f"https://docs.google.com/spreadsheets/d/{sheet_id}" if sheet_id else ""
+    return {"url": url}
 
 
 @router.get("/storage/status")

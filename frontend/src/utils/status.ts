@@ -4,7 +4,8 @@ const ALIAS_TO_CANONICAL: Record<string, string> = {
   "screening req": "Screening Req",
   "screening request": "Screening Req",
   "no response": "No Response",
-  rejected: "Closed",
+  rejected: "Rejected",
+  declined: "Rejected",
   "hr screen": "Interview",
 };
 
