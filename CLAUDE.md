@@ -1,7 +1,9 @@
-# CLAUDE.md — BLR Board
+# CLAUDE.md — OPS-LAB
 
-Интерактивная доска задач BLR-комьюнити. GitHub Pages + JSON.
-Полная архитектура системы агентов: `ARCHITECTURE.md`.
+Таск-менеджер Ксении. Проекты: BLR, CV-LAB (позже — личные).
+GitHub Pages + JSON. Автосбор из TG-чатов + автосортировка.
+
+Полная архитектура: `ARCHITECTURE.md`
 
 ---
 
@@ -9,27 +11,36 @@
 
 ```
 blr-board/
-├── index.html        ← UI (НЕ ТРОГАТЬ без запроса Ксении)
-├── data.json         ← данные доски (агент редактирует ТОЛЬКО этот файл)
-├── CLAUDE.md         ← этот файл (быстрый старт для агента)
-└── ARCHITECTURE.md   ← полная архитектура, план развития, экономика токенов
+├── index.html         ← UI (НЕ ТРОГАТЬ без запроса Ксении)
+├── data.json          ← данные (агент редактирует ТОЛЬКО этот файл)
+├── CLAUDE.md          ← этот файл
+├── ARCHITECTURE.md    ← архитектура, агенты, экономика токенов
+├── agents/            ← промпты агентов (collector, sorter)
+└── scripts/           ← autopush.sh (launchd)
 ```
 
-**URL:** `https://ksen-kas.github.io/blr-board/`
+**URL:** https://ksen-kas.github.io/blr-board/
 **Репо:** `Ksen-Kas/blr-board` (public)
 **Local:** `/Users/sizovaka/Documents/AI_LAB/GitHub/blr-board/`
-**Деплой:** push в main → Pages обновляется ~30 сек
+**Деплой:** сохранить data.json → launchd autopush → Pages ~30 сек
 
 ---
 
-## Как обновить доску (быстрый путь)
+## Как обновить (быстрый путь)
 
-```bash
-cd /Users/sizovaka/Documents/AI_LAB/GitHub/blr-board
-# 1. Edit data.json (точечно, через Edit tool)
-# 2. Обнови "updated" на текущую дату
-git add data.json && git commit -m "update: описание" && git push
-```
+1. Edit `data.json` (точечно)
+2. Обнови `updated` и `updated_at`
+3. Если из Code: `git add data.json && git commit -m "update: ..." && git push`
+4. Если из Cowork: просто сохрани файл — autopush сделает push
+
+---
+
+## Проекты в data.json
+
+| Проект | Секции | Переключатель в UI |
+|--------|--------|--------------------|
+| **BLR** | inbox, fire, tasks, backlog, playbook, goals, waiting, metrics, horizons | по умолчанию |
+| **CV-LAB** | cvlab | переключатель в шапке |
 
 ---
 
@@ -37,76 +48,93 @@ git add data.json && git commit -m "update: описание" && git push
 
 | Секция | Что | ID-префикс |
 |--------|-----|------------|
-| `inbox` | Входящие, не отсортированы (показываются в табе "горит" оранжевым) | `i1-i999` |
-| `fire` | Горящие: сегодня/завтра, макс 5-7 шт | `f1-f99` |
+| `inbox` | Входящие, не отсортированы. Вкладка "задачи" → "входящие" | `i1-i999` |
+| `fire` | Горящие: сегодня/завтра, макс 7 шт | `f1-f99` |
 | `tasks` | Активные задачи по категориям с приоритетами | `t1-t999` |
-| `backlog` | Идеи, бэклог, долгоиграющие проекты по категориям | `b1-b999` |
-| `playbook` | OPS Playbook — 16 процессов (справочник, не задачи) | `p1-p99` |
+| `backlog` | Идеи, бэклог, долгоиграющие проекты | `b1-b999` |
+| `playbook` | OPS Playbook — процессы (справочник) | `p1-p99` |
+| `cvlab` | CV-LAB клиенты и идеи | `cv1-cv999` |
 | `goals` | Цели Юли | — |
-| `waiting` | Заблокировано, ждём от кого-то | — |
-| `metrics` | Ключевые метрики | — |
+| `waiting` | Заблокировано | — |
+| `metrics` | Метрики | — |
 | `horizons` | 30/60/90 дней | — |
-| `updated` | Дата обновления (YYYY-MM-DD) | — |
+| `updated` | Дата (YYYY-MM-DD) | — |
+| `updated_at` | ISO datetime с timezone | — |
+| `last_collected_ids` | {chat_id: last_msg_id} для сборщика | — |
 
-### Формат задачи (fire / tasks)
+### Форматы
 
+**fire / tasks:**
 ```json
-{
-  "id": "t22",
-  "title": "название",
-  "sub": "описание",
-  "tags": [["red","горит"], ["amber","эта неделя"]],
-  "done": false,
-  "priority": "fire|high|mid|low"
-}
+{ "id": "t22", "title": "...", "sub": "...", "tags": [["red","горит"]], "done": false, "priority": "fire|high|mid|low" }
 ```
 
-### Формат inbox
-
+**inbox (от сборщика):**
 ```json
-{ "id": "i1", "title": "что прилетело", "sub": "откуда / контекст" }
+{ "id": "i1", "title": "...", "sub": "кто, откуда, когда", "urgency": "fire|week|backlog" }
 ```
 
-### Формат backlog
-
+**backlog:**
 ```json
-{ "id": "b1", "title": "идея", "sub": "источник или контекст" }
+{ "id": "b1", "title": "...", "sub": "источник" }
 ```
 
-**Цвета тегов:** `red`, `amber`, `teal`, `purple`, `gray`.
+**Теги:** `red`, `amber`, `teal`, `purple`, `gray`
 
-### Поток карточек
+---
 
-```
-inbox → сортировка → fire | tasks | backlog | удалить (шум)
-fire/tasks → done: true → через время удалить из JSON
-```
+## Агенты
+
+| Агент | Что делает | Расписание | Модель |
+|-------|-----------|------------|--------|
+| **Сборщик** | TG чаты → inbox | 4x/день (9, 13, 17, 21) | Sonnet (Cowork) |
+| **Сортировщик** | inbox → fire/tasks/backlog | 2x/день (10, 18) | Sonnet (Cowork) |
+| **Autopush** | data.json → git push | при изменении файла | launchd |
+
+**Сборщик:** читает только новые сообщения (min_id), оценивает urgency из контекста.
+**Сортировщик:** раскладывает по urgency от сборщика. НЕ ставит done.
+**Done решает только Ксения.**
+
+Промпты: `agents/collector-chats.md`, `agents/sorter.md`
+SKILL.md для Cowork: `/Users/sizovaka/Documents/Claude/Scheduled/blr-board-*/SKILL.md`
+
+---
+
+## Источники задач
+
+| Источник | Как попадает |
+|----------|-------------|
+| TG чаты BLR (канал, чат, Юля, публичный) | Автосбор через сборщик |
+| `ksenia :: inbox` (личный TG канал) | Автосбор, каждое сообщение = задача |
+| Ксения через агента | "добавь в inbox: ..." |
 
 ---
 
 ## Правила
 
 - Редактировать ТОЛЬКО `data.json`
-- Не трогать `index.html` без явного запроса Ксении
-- Не менять структуру JSON
-- Пушить только в main
-- Всегда обновлять поле `"updated"`
-- Читать только `data.json` (~5KB), не index.html — экономия токенов
+- НЕ трогать `index.html` без запроса Ксении
+- НЕ ставить `done: true` — это решает только Ксения
+- Читать `data.json` (~5KB), не index.html — экономия токенов
+- Push только в main
+- Всегда обновлять `updated` и `updated_at`
 
 ---
 
-## Доступ для агентов
+## Доступ
 
 | Агент | Как работает |
 |-------|-------------|
-| **Claude Code** | Edit data.json → git commit → git push |
-| **Claude Desktop / Cowork** | Читает raw JSON с GitHub, предлагает изменения |
+| **Claude Code** | Edit → git commit → git push |
+| **Cowork (Desktop)** | Edit → сохранить → autopush |
 | **Codex** | Напрямую через git |
+| **Ксения с телефона** | TG → ksenia :: inbox → сборщик подхватит |
 
 ---
 
 ## Контекст
 
-BLR — подписочное AI-комьюнити. Ксения — Community Ops Manager.
-Главная цель: churn 45% → 20% за 90 дней.
-Подробный контекст: `/Users/sizovaka/Documents/AI_LAB/Projects/06_BLR/CLAUDE.md`
+**Ксения Сизова** — Community Ops Manager (BLR), карьерный консультант (CV-LAB).
+**BLR:** подписочное AI-комьюнити. Цель: churn 45% → 20% за 90 дней.
+**CV-LAB:** работа с клиентами по карьерному консалтингу.
+Подробнее: `/Users/sizovaka/Documents/AI_LAB/Projects/06_BLR/CLAUDE.md`
