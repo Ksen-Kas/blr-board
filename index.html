@@ -1,4 +1,14 @@
 <!DOCTYPE html>
+<!--
+  ╔═══════════════════════════════════════════════════════╗
+  ║  BLR BOARD — task dashboard for BLR community        ║
+  ║                                                       ║
+  ║  AGENT: данные в data.json (этот же репо/папка).      ║
+  ║  Читай CLAUDE.md для полной инструкции.               ║
+  ║  Repo: Ksen-Kas/blr-board                             ║
+  ║  Local: /Users/sizovaka/Documents/AI_LAB/GitHub/blr-board/ ║
+  ╚═══════════════════════════════════════════════════════╝
+-->
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
@@ -28,7 +38,7 @@
     --purple-bg: #1a1730;
     --gray: #8a8580;
     --gray-bg: #1c1c1e;
-    --w: 340px;
+    --w: 520px;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -43,6 +53,7 @@
     width: 100%;
     max-width: var(--w);
     margin: 0 auto;
+    padding: 0 env(safe-area-inset-right, 0) 0 env(safe-area-inset-left, 0);
     min-height: 100dvh;
     background: var(--bg);
     color: var(--text);
