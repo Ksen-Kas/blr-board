@@ -423,18 +423,19 @@
 
 <script>
 let DATA = {};
-// Clean up old localStorage from previous version
-localStorage.removeItem('blr-done');
+const local = JSON.parse(localStorage.getItem('blr-done') || '{}');
+function saveLocal() { localStorage.setItem('blr-done', JSON.stringify(local)); }
+function toggleDone(id) { local[id] = !isDone(id); saveLocal(); render(); }
 function isDone(id) {
-  // data.json is the ONLY source of truth for done state
-  // To mark done: tell any agent "отметь {id} как done" → agent updates data.json → syncs everywhere
+  // data.json done:true = permanent (synced everywhere)
+  // localStorage = local quick-mark (this device only, until agent syncs)
   const f = (DATA.fire||[]).find(t=>t.id===id);
-  if (f) return !!f.done;
+  if (f && f.done) return true;
   for (const cat of (DATA.tasks||[])) {
     const t = cat.items.find(t=>t.id===id);
-    if (t) return !!t.done;
+    if (t && t.done) return true;
   }
-  return false;
+  return !!local[id];
 }
 function tagHTML(tags) {
   if (!tags || !tags.length) return '';
@@ -472,7 +473,7 @@ function switchSub(sub) {
 
 function renderFire() {
   document.getElementById('fire-list').innerHTML = DATA.fire.map(t => `
-    <div class="task ${isDone(t.id)?'done':''}">
+    <div class="task ${isDone(t.id)?'done':''}" onclick="toggleDone('${t.id}')">
       <div class="task-check"></div>
       <div class="task-body">
         <div class="task-title">${t.title}</div>
@@ -486,7 +487,7 @@ function renderTasks() {
   document.getElementById('tasks-list').innerHTML = DATA.tasks.map(cat => `
     <div class="section-label">${cat.category}</div>
     <div>${cat.items.map(t => `
-      <div class="task ${isDone(t.id)?'done':''}">
+      <div class="task ${isDone(t.id)?'done':''}" onclick="toggleDone('${t.id}')">
         <div class="p-dot p-${t.priority}"></div>
         <div class="task-body">
           <div class="task-title">${t.title}</div>
