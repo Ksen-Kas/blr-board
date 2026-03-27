@@ -364,10 +364,21 @@
 
 <script>
 let DATA = {};
-const state = JSON.parse(localStorage.getItem('blr-done') || '{}');
-function saveDone() { localStorage.setItem('blr-done', JSON.stringify(state)); }
-function toggleDone(id) { state[id] = !state[id]; saveDone(); render(); }
-function isDone(id) { return !!state[id]; }
+const local = JSON.parse(localStorage.getItem('blr-done') || '{}');
+function saveLocal() { localStorage.setItem('blr-done', JSON.stringify(local)); }
+function toggleDone(id) { local[id] = !isDone(id); saveLocal(); render(); }
+function isDone(id) {
+  // data.json is the source of truth; localStorage is a local overlay
+  if (local[id] !== undefined) return !!local[id];
+  // check done field in fire/tasks items
+  const f = (DATA.fire||[]).find(t=>t.id===id);
+  if (f) return !!f.done;
+  for (const cat of (DATA.tasks||[])) {
+    const t = cat.items.find(t=>t.id===id);
+    if (t) return !!t.done;
+  }
+  return false;
+}
 function tagHTML(tags) {
   if (!tags || !tags.length) return '';
   return '<div class="task-tags">' + tags.map(([c,t]) => `<span class="tag tag-${c}">${t}</span>`).join('') + '</div>';
@@ -442,8 +453,9 @@ function renderStatus() {
       <div class="metric-sub">${m.sub}</div>
     </div>`).join('');
   const allTasks = DATA.tasks.flatMap(c => c.items);
-  const doneCount = allTasks.filter(t => isDone(t.id)).length;
-  const pct = Math.round(doneCount / allTasks.length * 100);
+  const allItems = [...DATA.fire, ...allTasks];
+  const doneCount = allItems.filter(t => isDone(t.id)).length;
+  const pct = allItems.length ? Math.round(doneCount / allItems.length * 100) : 0;
   const fireCount = DATA.fire.filter(t => !isDone(t.id)).length;
   document.getElementById('horizons-list').innerHTML = `
     <div class="goal-card" style="margin-bottom:6px;">
