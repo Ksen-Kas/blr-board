@@ -311,6 +311,9 @@
   <button class="tab" onclick="switchTab('goals')">
     <span class="tab-dot" style="background:var(--teal)"></span>юля
   </button>
+  <button class="tab" onclick="switchTab('cvlab')">
+    <span class="tab-dot" style="background:var(--teal)"></span>cv-lab
+  </button>
   <button class="tab" onclick="switchTab('status')">
     <span class="tab-dot" style="background:var(--purple)"></span>статус
   </button>
@@ -336,6 +339,9 @@
     <div class="section-label">ждёт от ксении</div>
     <div id="waiting-list"></div>
   </div>
+  <div class="view" id="view-cvlab">
+    <div id="cvlab-list"></div>
+  </div>
   <div class="view" id="view-status">
     <div class="section-label">метрики</div>
     <div class="metrics-grid" id="metrics-grid"></div>
@@ -356,6 +362,9 @@
   </button>
   <button class="nav-item" onclick="switchTab('goals')" id="nav-goals">
     <span class="nav-icon">◎</span>юля
+  </button>
+  <button class="nav-item" onclick="switchTab('cvlab')" id="nav-cvlab">
+    <span class="nav-icon">✦</span>cv
   </button>
   <button class="nav-item" onclick="switchTab('status')" id="nav-status">
     <span class="nav-icon">≡</span>статус
@@ -488,8 +497,21 @@ function renderBacklog() {
     </div>`).join('');
 }
 
+function renderCvlab() {
+  document.getElementById('cvlab-list').innerHTML = (DATA.cvlab || []).map(cat => `
+    <div class="section-label">${cat.category}</div>
+    <div>${cat.items.map(t => `
+      <div class="goal-card" style="padding:8px 12px;margin-bottom:4px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div class="task-title" style="font-size:14px;">${t.title}</div>
+          ${t.tags ? tagHTML(t.tags) : ''}
+        </div>
+        ${t.sub ? `<div class="task-sub">${t.sub}</div>` : ''}
+      </div>`).join('')}</div>`).join('');
+}
+
 function render() {
-  renderInbox(); renderFire(); renderTasks(); renderBacklog(); renderGoals(); renderStatus();
+  renderInbox(); renderFire(); renderTasks(); renderBacklog(); renderCvlab(); renderGoals(); renderStatus();
   document.getElementById('updated-date').textContent = DATA.updated;
 }
 

@@ -201,5 +201,23 @@
     { "period": "30 дней", "items": ["онбординг как система","стартер-пак","знакомство с участниками","первые метрики"] },
     { "period": "60 дней", "items": ["три пиллара: enabled / capable / empowered","UGC регулярно","данные где теряем"] },
     { "period": "90 дней", "items": ["retention → 80%","операционка ai-first","самоподдерживающаяся среда","рефералы работают"] }
+  ],
+
+  "cvlab": [
+    {
+      "category": "активные клиенты",
+      "items": [
+        { "id": "cv1", "title": "Алёна Шуста", "sub": "Extraction — слой 2. Следующий шаг: живая сессия → кейсы.", "tags": [["amber","в работе"]], "priority": "high" },
+        { "id": "cv2", "title": "Катя Шашина", "sub": "Extraction — ждём ответов. Следующий шаг: ответы → Facts Base → JD анализ.", "tags": [["purple","ждём"]], "priority": "mid" },
+        { "id": "cv3", "title": "Алексей Авдуевский", "sub": "Ранняя фаза. По запросу.", "tags": [["gray","пауза"]], "priority": "low" }
+      ]
+    },
+    {
+      "category": "идеи и развитие",
+      "items": [
+        { "id": "cv10", "title": "методология vs Даша — анализ", "sub": "файл cvlab_method_vs_dasha_analysis.md уже есть" },
+        { "id": "cv11", "title": "список материалов JOE + CV-LAB", "sub": "файл list-joe-cvlab-materials.md уже есть" }
+      ]
+    }
   ]
 }
