@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="BLR Tasks">
+<title>BLR — задачи</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700&display=swap');
+
+  :root {
+    --bg: #0e0e0f;
+    --bg2: #161618;
+    --bg3: #1e1e21;
+    --line: #2a2a2e;
+    --text: #e8e6e0;
+    --muted: #6b6966;
+    --dim: #3a3936;
+    --red: #e85555;
+    --red-bg: #2a1414;
+    --amber: #d4903a;
+    --amber-bg: #261d0e;
+    --teal: #4ab88a;
+    --teal-bg: #0e2018;
+    --purple: #8b7fe8;
+    --purple-bg: #1a1730;
+    --gray: #8a8580;
+    --gray-bg: #1c1c1e;
+    --w: 340px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  html {
+    width: 100%;
+    min-height: 100dvh;
+    background: var(--bg);
+  }
+
+  body {
+    width: 100%;
+    max-width: var(--w);
+    margin: 0 auto;
+    min-height: 100dvh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Manrope', sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+    overflow-x: hidden;
+  }
+
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+    padding: 12px 14px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .header-logo {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .header-logo span { color: var(--text); }
+  .header-meta {
+    font-size: 10px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .tabs {
+    display: flex;
+    padding: 8px 14px 0;
+    gap: 2px;
+    border-bottom: 1px solid var(--line);
+    background: var(--bg);
+    position: sticky;
+    top: 45px;
+    z-index: 99;
+  }
+  .tab {
+    padding: 6px 10px;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--muted);
+    border-radius: 4px 4px 0 0;
+    cursor: pointer;
+    border: none;
+    background: none;
+    letter-spacing: 0.02em;
+    transition: color 0.15s;
+  }
+  .tab.active { color: var(--text); background: var(--bg2); }
+  .tab-dot { display: inline-block; width: 5px; height: 5px; border-radius: 50%; margin-right: 5px; vertical-align: middle; }
+
+  .content { padding: 12px 14px 80px; }
+  .view { display: none; }
+  .view.active { display: block; }
+
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 18px 0 8px;
+  }
+  .section-label:first-child { margin-top: 4px; }
+
+  .task {
+    display: flex;
+    gap: 9px;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--line);
+    align-items: flex-start;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .task:last-child { border-bottom: none; }
+  .task.done { opacity: 0.35; }
+  .task.done .task-title { text-decoration: line-through; }
+
+  .task-check {
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    border: 1px solid var(--dim);
+    flex-shrink: 0;
+    margin-top: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+  .task.done .task-check { background: var(--dim); border-color: var(--dim); }
+  .task.done .task-check::after {
+    content: '';
+    width: 8px;
+    height: 5px;
+    border-left: 1.5px solid var(--muted);
+    border-bottom: 1.5px solid var(--muted);
+    transform: rotate(-45deg) translateY(-1px);
+  }
+
+  .task-body { flex: 1; min-width: 0; }
+  .task-title { font-size: 13px; color: var(--text); line-height: 1.4; }
+  .task-sub { font-size: 11px; color: var(--muted); margin-top: 3px; line-height: 1.45; }
+  .task-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; }
+
+  .tag {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    padding: 2px 6px;
+    border-radius: 3px;
+    text-transform: uppercase;
+  }
+  .tag-red    { background: var(--red-bg);    color: var(--red); }
+  .tag-amber  { background: var(--amber-bg);  color: var(--amber); }
+  .tag-teal   { background: var(--teal-bg);   color: var(--teal); }
+  .tag-purple { background: var(--purple-bg); color: var(--purple); }
+  .tag-gray   { background: var(--gray-bg);   color: var(--gray); }
+
+  .p-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+  .p-fire   { background: var(--red); box-shadow: 0 0 6px var(--red); }
+  .p-high   { background: var(--amber); }
+  .p-mid    { background: var(--teal); }
+  .p-low    { background: var(--dim); }
+
+  .fire-block {
+    background: var(--red-bg);
+    border: 1px solid #3d1515;
+    border-radius: 6px;
+    padding: 10px 12px;
+    margin-bottom: 6px;
+  }
+  .fire-block .task { border-bottom: 1px solid #3d1515; }
+  .fire-block .task:last-child { border-bottom: none; }
+
+  .goal-card {
+    background: var(--bg2);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 10px 12px;
+    margin-bottom: 6px;
+  }
+  .goal-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .goal-sub { font-size: 11px; color: var(--muted); line-height: 1.5; }
+
+  .metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 6px; }
+  .metric-card {
+    background: var(--bg2);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 10px 12px;
+  }
+  .metric-label { font-size: 10px; color: var(--muted); margin-bottom: 3px; }
+  .metric-val { font-size: 22px; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+  .metric-sub { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+  .progress-wrap { margin: 4px 0 8px; }
+  .progress-label { display: flex; justify-content: space-between; font-size: 10px; color: var(--muted); margin-bottom: 4px; }
+  .progress-bar { height: 3px; background: var(--line); border-radius: 2px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--teal); border-radius: 2px; transition: width 0.3s; }
+
+  .wait-card {
+    background: var(--bg2);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 10px 12px;
+    margin-bottom: 6px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .wait-from {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    flex-shrink: 0;
+    padding-top: 1px;
+  }
+  .wait-body { flex: 1; }
+  .wait-title { font-size: 13px; color: var(--text); }
+  .wait-sub { font-size: 11px; color: var(--muted); margin-top: 3px; line-height: 1.45; }
+
+  .cat-divider { border: none; border-top: 1px solid var(--line); margin: 6px 0 12px; }
+
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: var(--w);
+    background: var(--bg);
+    border-top: 1px solid var(--line);
+    display: flex;
+    padding: 8px 0 env(safe-area-inset-bottom, 8px);
+  }
+  .nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    font-size: 9px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 4px 0;
+    border: none;
+    background: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
+    transition: color 0.15s;
+  }
+  .nav-item.active { color: var(--text); }
+  .nav-icon { font-size: 16px; line-height: 1; }
+
+  .loading {
+    text-align: center;
+    padding: 40px 0;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-logo"><span>BLR</span> / задачи</div>
+  <div class="header-meta" id="updated-date">—</div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('fire')">
+    <span class="tab-dot" style="background:var(--red)"></span>горит
+  </button>
+  <button class="tab" onclick="switchTab('tasks')">
+    <span class="tab-dot" style="background:var(--amber)"></span>задачи
+  </button>
+  <button class="tab" onclick="switchTab('goals')">
+    <span class="tab-dot" style="background:var(--teal)"></span>юля
+  </button>
+  <button class="tab" onclick="switchTab('status')">
+    <span class="tab-dot" style="background:var(--purple)"></span>статус
+  </button>
+</div>
+
+<div class="content">
+  <div class="view active" id="view-fire">
+    <div class="section-label">сегодня / завтра</div>
+    <div class="fire-block" id="fire-list"><div class="loading">загрузка...</div></div>
+  </div>
+  <div class="view" id="view-tasks">
+    <div id="tasks-list"></div>
+  </div>
+  <div class="view" id="view-goals">
+    <div class="section-label">цели юли — ближайший период</div>
+    <div id="goals-list"></div>
+    <div class="section-label">ждёт от ксении</div>
+    <div id="waiting-list"></div>
+  </div>
+  <div class="view" id="view-status">
+    <div class="section-label">метрики</div>
+    <div class="metrics-grid" id="metrics-grid"></div>
+    <div class="section-label">горизонты</div>
+    <div id="horizons-list"></div>
+  </div>
+</div>
+
+<nav class="bottom-nav">
+  <button class="nav-item active" onclick="switchTab('fire')" id="nav-fire">
+    <span class="nav-icon">🔥</span>горит
+  </button>
+  <button class="nav-item" onclick="switchTab('tasks')" id="nav-tasks">
+    <span class="nav-icon">◻</span>задачи
+  </button>
+  <button class="nav-item" onclick="switchTab('goals')" id="nav-goals">
+    <span class="nav-icon">◎</span>юля
+  </button>
+  <button class="nav-item" onclick="switchTab('status')" id="nav-status">
+    <span class="nav-icon">≡</span>статус
+  </button>
+</nav>
+
+<script>
+let DATA = {};
+const state = JSON.parse(localStorage.getItem('blr-done') || '{}');
+function saveDone() { localStorage.setItem('blr-done', JSON.stringify(state)); }
+function toggleDone(id) { state[id] = !state[id]; saveDone(); render(); }
+function isDone(id) { return !!state[id]; }
+function tagHTML(tags) {
+  if (!tags || !tags.length) return '';
+  return '<div class="task-tags">' + tags.map(([c,t]) => `<span class="tag tag-${c}">${t}</span>`).join('') + '</div>';
+}
+
+function renderFire() {
+  document.getElementById('fire-list').innerHTML = DATA.fire.map(t => `
+    <div class="task ${isDone(t.id)?'done':''}" onclick="toggleDone('${t.id}')">
+      <div class="task-check"></div>
+      <div class="task-body">
+        <div class="task-title">${t.title}</div>
+        <div class="task-sub">${t.sub}</div>
+        ${tagHTML(t.tags)}
+      </div>
+    </div>`).join('');
+}
+
+function renderTasks() {
+  document.getElementById('tasks-list').innerHTML = DATA.tasks.map(cat => `
+    <div class="section-label">${cat.category}</div>
+    <div>${cat.items.map(t => `
+      <div class="task ${isDone(t.id)?'done':''}" onclick="toggleDone('${t.id}')">
+        <div class="p-dot p-${t.priority}"></div>
+        <div class="task-body">
+          <div class="task-title">${t.title}</div>
+          <div class="task-sub">${t.sub}</div>
+          ${tagHTML(t.tags)}
+        </div>
+      </div>`).join('')}</div>
+    <hr class="cat-divider">`).join('');
+}
+
+function renderGoals() {
+  document.getElementById('goals-list').innerHTML = DATA.goals.map(g => `
+    <div class="goal-card">
+      <div class="goal-title">${g.title}</div>
+      <div class="goal-sub">${g.sub}</div>
+    </div>`).join('');
+  document.getElementById('waiting-list').innerHTML = DATA.waiting.map(w => `
+    <div class="wait-card">
+      <div class="wait-from" style="color:var(--purple)">${w.from}</div>
+      <div class="wait-body">
+        <div class="wait-title">${w.title}</div>
+        <div class="wait-sub">${w.sub}</div>
+      </div>
+    </div>`).join('');
+}
+
+function renderStatus() {
+  const colorMap = { red:'var(--red)', teal:'var(--teal)', purple:'var(--purple)', amber:'var(--amber)' };
+  document.getElementById('metrics-grid').innerHTML = DATA.metrics.map(m => `
+    <div class="metric-card">
+      <div class="metric-label">${m.label}</div>
+      <div class="metric-val" style="color:${colorMap[m.color]}">${m.val}</div>
+      <div class="metric-sub">${m.sub}</div>
+    </div>`).join('');
+  const allTasks = DATA.tasks.flatMap(c => c.items);
+  const doneCount = allTasks.filter(t => isDone(t.id)).length;
+  const pct = Math.round(doneCount / allTasks.length * 100);
+  const fireCount = DATA.fire.filter(t => !isDone(t.id)).length;
+  document.getElementById('horizons-list').innerHTML = `
+    <div class="goal-card" style="margin-bottom:6px;">
+      <div class="metric-label">прогресс задач</div>
+      <div class="progress-wrap">
+        <div class="progress-label"><span>${doneCount} / ${allTasks.length}</span><span>${pct}%</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+      </div>
+      <div class="metric-sub">${fireCount} горящих осталось</div>
+    </div>` + DATA.horizons.map(h => `
+    <div class="goal-card">
+      <div class="goal-title">${h.period}</div>
+      <div class="goal-sub">${h.items.map(i => '· ' + i).join('<br>')}</div>
+    </div>`).join('');
+}
+
+function render() {
+  renderFire(); renderTasks(); renderGoals(); renderStatus();
+  document.getElementById('updated-date').textContent = DATA.updated;
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('view-' + tab).classList.add('active');
+  document.querySelector(`.tab[onclick="switchTab('${tab}')"]`).classList.add('active');
+  document.getElementById('nav-' + tab).classList.add('active');
+}
+
+// Load data from JSON with cache-busting
+fetch('data.json?' + Date.now())
+  .then(r => r.json())
+  .then(d => { DATA = d; render(); })
+  .catch(e => {
+    document.getElementById('fire-list').innerHTML =
+      '<div class="loading" style="color:var(--red)">ошибка загрузки data.json</div>';
+  });
+</script>
+</body>
+</html>
