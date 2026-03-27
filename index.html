@@ -615,7 +615,13 @@ function switchProject(proj) {
 
 function render() {
   renderInbox(); renderFire(); renderTasks(); renderBacklog(); renderCvlab(); renderGoals(); renderStatus();
-  document.getElementById('updated-date').textContent = DATA.updated || '—';
+  const d = DATA.updated_at || DATA.updated;
+  if (d && d.includes('T')) {
+    const dt = new Date(d);
+    document.getElementById('updated-date').textContent = String(dt.getHours()).padStart(2,'0') + ':' + String(dt.getMinutes()).padStart(2,'0');
+  } else {
+    document.getElementById('updated-date').textContent = d || '—';
+  }
 }
 
 function switchTab(tab) {
