@@ -134,7 +134,6 @@
     padding: 9px 0;
     border-bottom: 1px solid var(--line);
     align-items: flex-start;
-    cursor: pointer;
     transition: opacity 0.2s;
   }
   .task:last-child { border-bottom: none; }
@@ -424,13 +423,9 @@
 
 <script>
 let DATA = {};
-const local = JSON.parse(localStorage.getItem('blr-done') || '{}');
-function saveLocal() { localStorage.setItem('blr-done', JSON.stringify(local)); }
-function toggleDone(id) { local[id] = !isDone(id); saveLocal(); render(); }
 function isDone(id) {
-  // data.json is the source of truth; localStorage is a local overlay
-  if (local[id] !== undefined) return !!local[id];
-  // check done field in fire/tasks items
+  // data.json is the ONLY source of truth for done state
+  // To mark done: tell any agent "отметь {id} как done" → agent updates data.json → syncs everywhere
   const f = (DATA.fire||[]).find(t=>t.id===id);
   if (f) return !!f.done;
   for (const cat of (DATA.tasks||[])) {
@@ -475,7 +470,7 @@ function switchSub(sub) {
 
 function renderFire() {
   document.getElementById('fire-list').innerHTML = DATA.fire.map(t => `
-    <div class="task ${isDone(t.id)?'done':''}" onclick="toggleDone('${t.id}')">
+    <div class="task ${isDone(t.id)?'done':''}">
       <div class="task-check"></div>
       <div class="task-body">
         <div class="task-title">${t.title}</div>
@@ -489,7 +484,7 @@ function renderTasks() {
   document.getElementById('tasks-list').innerHTML = DATA.tasks.map(cat => `
     <div class="section-label">${cat.category}</div>
     <div>${cat.items.map(t => `
-      <div class="task ${isDone(t.id)?'done':''}" onclick="toggleDone('${t.id}')">
+      <div class="task ${isDone(t.id)?'done':''}">
         <div class="p-dot p-${t.priority}"></div>
         <div class="task-body">
           <div class="task-title">${t.title}</div>

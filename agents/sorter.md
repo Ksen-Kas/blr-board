@@ -4,8 +4,9 @@
 
 ## Что делает
 - inbox → fire / tasks / backlog / удалить (шум/дубли)
-- НЕ закрывает задачи (done: true ставит только Ксения)
+- НЕ закрывает задачи (done: true ставит только Ксения через агента)
 - НЕ удаляет существующие задачи
+- Пишет в `log` при каждом перемещении задачи
 
 ## SKILL.md для Cowork
 `/Users/sizovaka/Documents/Claude/Scheduled/blr-board-sorter/SKILL.md`

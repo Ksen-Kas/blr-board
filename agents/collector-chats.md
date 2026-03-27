@@ -27,8 +27,12 @@
    ```
 4. Прочитай текущий `data.json` из `/Users/sizovaka/Documents/AI_LAB/GitHub/blr-board/data.json`
 5. Добавь новые элементы в массив `inbox` (НЕ заменяй существующие)
-6. Обнови поле `updated` на текущую дату
-7. `git add data.json && git commit -m "collector: inbox update" && git push`
+6. Записать в `log` каждый добавленный элемент:
+   ```json
+   { "date": "YYYY-MM-DD", "action": "added", "id": "i1", "title": "..." }
+   ```
+7. Обнови поле `updated` на текущую дату
+8. `git add data.json && git commit -m "collector: inbox update" && git push`
 
 ## Правила
 

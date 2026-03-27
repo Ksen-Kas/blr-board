@@ -58,6 +58,7 @@ blr-board/
 | `waiting` | Заблокировано | — |
 | `metrics` | Метрики | — |
 | `horizons` | 30/60/90 дней | — |
+| `log` | Лог действий (done, added, moved) — append-only | `—` |
 | `updated` | Дата (YYYY-MM-DD) | — |
 | `updated_at` | ISO datetime с timezone | — |
 | `last_collected_ids` | {chat_id: last_msg_id} для сборщика | — |
@@ -79,6 +80,12 @@ blr-board/
 { "id": "b1", "title": "...", "sub": "источник" }
 ```
 
+**log (append-only):**
+```json
+{ "date": "2026-03-27", "action": "done", "id": "f3", "title": "онбординг v1 — залить сегодня" }
+```
+Действия: `done`, `added`, `moved`, `removed`. Агент пишет в лог при любом изменении задачи.
+
 **Теги:** `red`, `amber`, `teal`, `purple`, `gray`
 
 ---
@@ -92,8 +99,9 @@ blr-board/
 | **Autopush** | data.json → git push | при изменении файла | launchd |
 
 **Сборщик:** читает только новые сообщения (min_id), оценивает urgency из контекста.
-**Сортировщик:** раскладывает по urgency от сборщика. НЕ ставит done.
-**Done решает только Ксения.**
+**Сортировщик:** раскладывает по urgency от сборщика. НЕ ставит done. Пишет в `log` при перемещении задач.
+**Done решает только Ксения** — через любого агента ("отметь f3 как done"). UI read-only, без чекбоксов.
+**Все изменения задач логируются** в `log` (append-only).
 
 Промпты: `agents/collector-chats.md`, `agents/sorter.md`
 SKILL.md для Cowork: `/Users/sizovaka/Documents/Claude/Scheduled/blr-board-*/SKILL.md`
@@ -114,7 +122,8 @@ SKILL.md для Cowork: `/Users/sizovaka/Documents/Claude/Scheduled/blr-board-*/
 
 - Редактировать ТОЛЬКО `data.json`
 - НЕ трогать `index.html` без запроса Ксении
-- НЕ ставить `done: true` — это решает только Ксения
+- `done: true` ставит ТОЛЬКО Ксения через агента ("отметь f3 как done")
+- При установке done — записать в `log` и НЕ удалять задачу из секции
 - Читать `data.json` (~5KB), не index.html — экономия токенов
 - Push только в main
 - Всегда обновлять `updated` и `updated_at`
