@@ -615,7 +615,17 @@ function switchProject(proj) {
 
 function render() {
   renderInbox(); renderFire(); renderTasks(); renderBacklog(); renderCvlab(); renderGoals(); renderStatus();
-  document.getElementById('updated-date').textContent = DATA.updated;
+  const d = DATA.updated_at || DATA.updated;
+  if (d && d.includes('T')) {
+    const dt = new Date(d);
+    const hh = String(dt.getHours()).padStart(2,'0');
+    const mm = String(dt.getMinutes()).padStart(2,'0');
+    const dd = String(dt.getDate()).padStart(2,'0');
+    const mo = String(dt.getMonth()+1).padStart(2,'0');
+    document.getElementById('updated-date').textContent = `${hh}:${mm} · ${dd}.${mo}`;
+  } else {
+    document.getElementById('updated-date').textContent = d || '—';
+  }
 }
 
 function switchTab(tab) {
