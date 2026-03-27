@@ -282,6 +282,35 @@
   .nav-item.active { color: var(--text); }
   .nav-icon { font-size: 16px; line-height: 1; }
 
+  .sub-switch {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 12px;
+  }
+  .sub-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    padding: 5px 12px;
+    border-radius: 4px;
+    border: 1px solid var(--line);
+    background: none;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .sub-btn.active {
+    color: var(--text);
+    background: var(--bg2);
+    border-color: var(--dim);
+  }
+  .inbox-badge {
+    font-size: 10px;
+    color: var(--amber);
+    font-weight: 600;
+  }
+
   .project-switch {
     display: flex;
     gap: 4px;
@@ -345,12 +374,16 @@
 
 <div class="content" id="content-blr">
   <div class="view active" id="view-fire">
-    <div id="inbox-section"></div>
     <div class="section-label">сегодня / завтра</div>
     <div class="fire-block" id="fire-list"><div class="loading">загрузка...</div></div>
   </div>
   <div class="view" id="view-tasks">
+    <div class="sub-switch">
+      <button class="sub-btn active" id="sub-tasks" onclick="switchSub('tasks')">задачи</button>
+      <button class="sub-btn" id="sub-inbox" onclick="switchSub('inbox')">входящие <span id="inbox-count" class="inbox-badge"></span></button>
+    </div>
     <div id="tasks-list"></div>
+    <div id="inbox-section" style="display:none;"></div>
   </div>
   <div class="view" id="view-backlog">
     <div id="backlog-list"></div>
@@ -420,19 +453,31 @@ function tagHTML(tags) {
 
 function renderInbox() {
   const el = document.getElementById('inbox-section');
-  if (!DATA.inbox || !DATA.inbox.length) { el.innerHTML = ''; return; }
-  el.innerHTML = `
-    <div class="section-label" style="color:var(--amber)">входящие — не отсортировано</div>
-    <div class="fire-block" style="background:var(--amber-bg);border-color:#3d2a0e;">
-    ${DATA.inbox.map(t => `
-      <div class="task" style="border-color:#3d2a0e;">
-        <div class="p-dot p-high"></div>
-        <div class="task-body">
+  const count = (DATA.inbox || []).length;
+  const badge = document.getElementById('inbox-count');
+  if (badge) badge.textContent = count > 0 ? `(${count})` : '';
+
+  if (!count) { el.innerHTML = '<div class="loading">входящих нет</div>'; return; }
+  el.innerHTML = DATA.inbox.map(t => {
+    const urgColor = t.urgency === 'fire' ? 'p-fire' : t.urgency === 'week' ? 'p-high' : 'p-low';
+    return `
+    <div class="goal-card" style="padding:9px 12px;margin-bottom:4px;">
+      <div style="display:flex;gap:8px;align-items:flex-start;">
+        <div class="p-dot ${urgColor}" style="margin-top:5px;"></div>
+        <div>
           <div class="task-title">${t.title}</div>
           <div class="task-sub">${t.sub || ''}</div>
         </div>
-      </div>`).join('')}
+      </div>
     </div>`;
+  }).join('');
+}
+
+function switchSub(sub) {
+  document.querySelectorAll('.sub-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('sub-' + sub).classList.add('active');
+  document.getElementById('tasks-list').style.display = sub === 'tasks' ? 'block' : 'none';
+  document.getElementById('inbox-section').style.display = sub === 'inbox' ? 'block' : 'none';
 }
 
 function renderFire() {
