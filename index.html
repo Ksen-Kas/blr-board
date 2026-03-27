@@ -423,6 +423,8 @@
 
 <script>
 let DATA = {};
+// Clean up old localStorage from previous version
+localStorage.removeItem('blr-done');
 function isDone(id) {
   // data.json is the ONLY source of truth for done state
   // To mark done: tell any agent "отметь {id} как done" → agent updates data.json → syncs everywhere
