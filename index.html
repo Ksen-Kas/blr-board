@@ -305,6 +305,9 @@
   <button class="tab" onclick="switchTab('tasks')">
     <span class="tab-dot" style="background:var(--amber)"></span>задачи
   </button>
+  <button class="tab" onclick="switchTab('backlog')">
+    <span class="tab-dot" style="background:var(--gray)"></span>бэклог
+  </button>
   <button class="tab" onclick="switchTab('goals')">
     <span class="tab-dot" style="background:var(--teal)"></span>юля
   </button>
@@ -315,11 +318,17 @@
 
 <div class="content">
   <div class="view active" id="view-fire">
+    <div id="inbox-section"></div>
     <div class="section-label">сегодня / завтра</div>
     <div class="fire-block" id="fire-list"><div class="loading">загрузка...</div></div>
   </div>
   <div class="view" id="view-tasks">
     <div id="tasks-list"></div>
+  </div>
+  <div class="view" id="view-backlog">
+    <div id="backlog-list"></div>
+    <div class="section-label" style="margin-top:24px">ops playbook</div>
+    <div id="playbook-list"></div>
   </div>
   <div class="view" id="view-goals">
     <div class="section-label">цели юли — ближайший период</div>
@@ -342,6 +351,9 @@
   <button class="nav-item" onclick="switchTab('tasks')" id="nav-tasks">
     <span class="nav-icon">◻</span>задачи
   </button>
+  <button class="nav-item" onclick="switchTab('backlog')" id="nav-backlog">
+    <span class="nav-icon">💡</span>бэклог
+  </button>
   <button class="nav-item" onclick="switchTab('goals')" id="nav-goals">
     <span class="nav-icon">◎</span>юля
   </button>
@@ -359,6 +371,23 @@ function isDone(id) { return !!state[id]; }
 function tagHTML(tags) {
   if (!tags || !tags.length) return '';
   return '<div class="task-tags">' + tags.map(([c,t]) => `<span class="tag tag-${c}">${t}</span>`).join('') + '</div>';
+}
+
+function renderInbox() {
+  const el = document.getElementById('inbox-section');
+  if (!DATA.inbox || !DATA.inbox.length) { el.innerHTML = ''; return; }
+  el.innerHTML = `
+    <div class="section-label" style="color:var(--amber)">входящие — не отсортировано</div>
+    <div class="fire-block" style="background:var(--amber-bg);border-color:#3d2a0e;">
+    ${DATA.inbox.map(t => `
+      <div class="task" style="border-color:#3d2a0e;">
+        <div class="p-dot p-high"></div>
+        <div class="task-body">
+          <div class="task-title">${t.title}</div>
+          <div class="task-sub">${t.sub || ''}</div>
+        </div>
+      </div>`).join('')}
+    </div>`;
 }
 
 function renderFire() {
@@ -431,8 +460,24 @@ function renderStatus() {
     </div>`).join('');
 }
 
+function renderBacklog() {
+  document.getElementById('backlog-list').innerHTML = (DATA.backlog || []).map(cat => `
+    <div class="section-label">${cat.category}</div>
+    <div>${cat.items.map(t => `
+      <div class="goal-card" style="padding:8px 12px;margin-bottom:4px;">
+        <div class="task-title" style="font-size:14px;">${t.title}</div>
+        ${t.sub ? `<div class="task-sub">${t.sub}</div>` : ''}
+      </div>`).join('')}</div>`).join('');
+
+  document.getElementById('playbook-list').innerHTML = (DATA.playbook || []).map(p => `
+    <div class="goal-card" style="padding:8px 12px;margin-bottom:4px;">
+      <div class="task-title" style="font-size:14px;">${p.title}</div>
+      ${p.sub ? `<div class="task-sub">${p.sub}</div>` : ''}
+    </div>`).join('');
+}
+
 function render() {
-  renderFire(); renderTasks(); renderGoals(); renderStatus();
+  renderInbox(); renderFire(); renderTasks(); renderBacklog(); renderGoals(); renderStatus();
   document.getElementById('updated-date').textContent = DATA.updated;
 }
 

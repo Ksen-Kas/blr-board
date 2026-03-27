@@ -1,12 +1,16 @@
 {
-  "updated": "2026-03-26",
+  "updated": "2026-03-27",
+
+  "inbox": [],
 
   "fire": [
     { "id": "f1", "title": "бот: принять людей после оплаты лабы", "sub": "оплата в Tribute → флажок «лаба» → welcome. без этого люди платят в тишину.", "tags": [["red","горит"],["amber","tribute"],["teal","лаба"]], "done": false },
     { "id": "f2", "title": "написать поддержку Tribute", "sub": "атрибуция пользователей по продуктам, пересечения, user ID. до открытия продаж.", "tags": [["red","горит"],["amber","инфра"]], "done": false },
     { "id": "f3", "title": "онбординг v1 — залить сегодня", "sub": "step-by-step, материалы из LMS. первая версия в прод.", "tags": [["red","горит"],["amber","онбординг"]], "done": false },
     { "id": "f4", "title": "github бота от Лёши Хохунова", "sub": "Юля просит сегодня. там связка с Tribute — забрать практики.", "tags": [["amber","ждёт юлю"]], "done": false },
-    { "id": "f5", "title": "написать Кате Кириловой за презом", "sub": "тон: тепло, на ты, от Ксюши из команды по просьбе Юли.", "tags": [["amber","участники"]], "done": false }
+    { "id": "f5", "title": "написать Кате Кириловой за презом", "sub": "тон: тепло, на ты, от Ксюши из команды по просьбе Юли.", "tags": [["amber","участники"]], "done": false },
+    { "id": "f6", "title": "напоминания: завтра закрытие спринта Health OS", "sub": "утром + за 1 час + за 3 мин до старта. МСК. Юля пишет текст анонса.", "tags": [["red","горит"],["amber","спринт"]], "done": false },
+    { "id": "f7", "title": "пт 28: ретро с Юлей — первый срез", "sub": "подготовить данные, метрики, что сделано за неделю.", "tags": [["red","горит"],["purple","юля"]], "done": false }
   ],
 
   "tasks": [
@@ -17,17 +21,22 @@
         { "id": "t2", "title": "добавить бота в админы канала и чата", "sub": "для будущих автоматических публикаций.", "tags": [["amber","эта неделя"]], "done": false, "priority": "high" },
         { "id": "t3", "title": "переделать ссылки → deep-link с автостартом", "sub": "Юля показала формат — бот стартует без нажатия Start.", "tags": [["amber","эта неделя"]], "done": false, "priority": "high" },
         { "id": "t4", "title": "Tribute: атрибуция, уведомления, webhook", "sub": "найти чат уведомлений. изучить webhook апдейты от Юли.", "tags": [["red","горит"],["amber","эта неделя"]], "done": false, "priority": "fire" },
-        { "id": "t5", "title": "GitHub: доступы к репозиториям", "sub": "два репо: публичный + командный. проверить коммиты.", "tags": [["gray","скоро"]], "done": false, "priority": "low" }
+        { "id": "t5", "title": "GitHub: доступы к репозиториям", "sub": "два репо: публичный + командный. проверить коммиты.", "tags": [["gray","скоро"]], "done": false, "priority": "low" },
+        { "id": "t14", "title": "посмотреть бота комьюнити (GitHub от Юли)", "sub": "из Trello Priority. разобрать код, понять что можно переиспользовать.", "tags": [["amber","эта неделя"]], "done": false, "priority": "high" },
+        { "id": "t25", "title": "забрать: апдейт бота контентом внутренним", "sub": "из Trello Priority.", "tags": [["amber","эта неделя"]], "done": false, "priority": "high" },
+        { "id": "t26", "title": "забрать: напоминалки по звонкам", "sub": "напоминания, записи, постинг. из Trello Priority.", "tags": [["amber","эта неделя"]], "done": false, "priority": "high" }
       ]
     },
     {
       "category": "онбординг и участники",
       "items": [
-        { "id": "t6", "title": "онбординг v1 — залить сегодня", "sub": "step-by-step, все материалы из LMS.", "tags": [["red","горит"]], "done": false, "priority": "fire" },
+        { "id": "t6", "title": "онбординг — 1 действие для улучшения", "sub": "из Trello Priority. конкретное, измеримое.", "tags": [["red","горит"]], "done": false, "priority": "fire" },
         { "id": "t7", "title": "создать канал помощи в чате", "sub": "отдельный тред куда направлять с вопросами. Юля согласовала.", "tags": [["amber","эта неделя"]], "done": false, "priority": "high" },
         { "id": "t8", "title": "забрать у Юли шаблоны для анкетчиков", "sub": "примеры → снять процесс → настроить в боте.", "tags": [["amber","эта неделя"],["purple","ждёт юлю"]], "done": false, "priority": "high" },
         { "id": "t9", "title": "список протагонистов — изучить", "sub": "Юля скинет список. уровень: Мика (ManyChat), Андрей Доронич.", "tags": [["amber","эта неделя"]], "done": false, "priority": "high" },
-        { "id": "t10", "title": "сигналы оттока — начать отслеживать", "sub": "кто замолчал, кто не пришёл на звонок.", "tags": [["gray","бэклог"]], "done": false, "priority": "low" }
+        { "id": "t10", "title": "сигналы оттока — начать отслеживать", "sub": "кто замолчал, кто не пришёл на звонок.", "tags": [["gray","бэклог"]], "done": false, "priority": "low" },
+        { "id": "t22", "title": "запустить starter pack для новых участников", "sub": "из Trello Priority.", "tags": [["amber","эта неделя"]], "done": false, "priority": "high" },
+        { "id": "t23", "title": "запустить ежедневный онбординг-репорт во внутренний чат", "sub": "из Trello Priority.", "tags": [["amber","эта неделя"]], "done": false, "priority": "high" }
       ]
     },
     {
@@ -36,7 +45,7 @@
         { "id": "t11", "title": "AI-сетап для лабы", "sub": "из GConf, убрать Cursor, оставить Codex + Claude Code.", "tags": [["amber","эта/след неделя"]], "done": false, "priority": "high" },
         { "id": "t12", "title": "протагонисты для видосов лабы", "sub": "за видос — доступ к лабе или годовой к комьюнити.", "tags": [["amber","след неделя"]], "done": false, "priority": "mid" },
         { "id": "t13", "title": "промпт коуча от Димы — выдавать всем", "sub": "публичный, открытый. by default для лабы и комьюнити.", "tags": [["amber","след неделя"]], "done": false, "priority": "mid" },
-        { "id": "t14", "title": "понедельник: разобрать лабу с Юлей", "sub": "методология, delivery, микроквесты (1.5-2 нед).", "tags": [["gray","понедельник"]], "done": false, "priority": "mid" }
+        { "id": "t24", "title": "понедельник: разобрать лабу с Юлей", "sub": "методология, delivery, микроквесты (1.5-2 нед).", "tags": [["gray","понедельник"]], "done": false, "priority": "mid" }
       ]
     },
     {
@@ -51,11 +60,116 @@
     {
       "category": "операционка",
       "items": [
-        { "id": "t19", "title": "дейли Юле — настроить систему", "sub": "рабочий TG-чат. агент забирает сам.", "tags": [["amber","эта неделя"]], "done": false, "priority": "high" },
-        { "id": "t20", "title": "контракт → написать → отправить Рите", "sub": "не финальная версия, но сегодня.", "tags": [["amber","сегодня"]], "done": false, "priority": "high" },
-        { "id": "t21", "title": "ToV бота — показать живой пример Юле", "sub": "не документ. скинуть 1-2 сообщения на проверку.", "tags": [["gray","скоро"]], "done": false, "priority": "low" }
+        { "id": "t19", "title": "daily async workflow — начать использовать", "sub": "из Trello Priority. рабочий TG-чат. агент забирает сам.", "tags": [["amber","эта неделя"]], "done": false, "priority": "high" },
+        { "id": "t20", "title": "контракт → написать → отправить Рите", "sub": "составить полностью → прислать на согласование.", "tags": [["amber","сегодня"]], "done": false, "priority": "high" },
+        { "id": "t21", "title": "ToV бота — показать живой пример Юле", "sub": "не документ. скинуть 1-2 сообщения на проверку.", "tags": [["gray","скоро"]], "done": false, "priority": "low" },
+        { "id": "t27", "title": "пн 23: end-to-end ручные процессы с Юлей → чеклист передачи", "sub": "из Trello Priority.", "tags": [["amber","эта неделя"]], "done": false, "priority": "high" }
       ]
     }
+  ],
+
+  "backlog": [
+    {
+      "category": "идеи: онбординг",
+      "items": [
+        { "id": "b1", "title": "двухэтапное вводное видео (2-3 мин + детали)", "sub": "из onboarding-improvement-ideas.md" },
+        { "id": "b2", "title": "карта «что где» для новичка: канал, чат, бот, Tribute", "sub": "из onboarding-improvement-ideas.md" },
+        { "id": "b3", "title": "явное представление платформы на старте", "sub": "из onboarding-improvement-ideas.md" },
+        { "id": "b4", "title": "вводная к коуч-промпту: «AI-дневник»", "sub": "из onboarding-improvement-ideas.md" },
+        { "id": "b5", "title": "краткие описания протагонистов (кто, откуда)", "sub": "из onboarding-improvement-ideas.md" },
+        { "id": "b6", "title": "прозрачность стоимости артефактов", "sub": "из onboarding-improvement-ideas.md" },
+        { "id": "b7", "title": "даты к артефактам для ориентировки", "sub": "из onboarding-improvement-ideas.md" },
+        { "id": "b8", "title": "тёплый тон онбординга + напутствие от Димы", "sub": "из onboarding-improvement-ideas.md" },
+        { "id": "b9", "title": "навигация в боте: ссылка на чат в подвале", "sub": "из onboarding-improvement-ideas.md" },
+        { "id": "b10", "title": "определение Second Brain в контексте BLR", "sub": "из onboarding-improvement-ideas.md" },
+        { "id": "b11", "title": "уточнение модели в инструкции про Cursor", "sub": "из onboarding-improvement-ideas.md" },
+        { "id": "b12", "title": "разделение контента: спринт vs параллельные активности", "sub": "из onboarding-improvement-ideas.md" },
+        { "id": "b13", "title": "гибридный фокус онбординга 70/30", "sub": "из community-building-research.md" },
+        { "id": "b14", "title": "персонализация онбординга через опрос", "sub": "из community-building-research.md" },
+        { "id": "b15", "title": "ежемесячный День новичков с повтором базы", "sub": "из community-building-research.md" },
+        { "id": "b16", "title": "еженедельный новичковый час", "sub": "из community-building-research.md" },
+        { "id": "b17", "title": "механика первого быстрого win для новичка", "sub": "из community-building-research.md" },
+        { "id": "b18", "title": "pairing новичков с ментором на неделю", "sub": "из community-building-research.md" },
+        { "id": "b19", "title": "intro «Привет, новички недели!» в чате", "sub": "из community-building-research.md" },
+        { "id": "b20", "title": "шаблон «Расскажи о себе за 1 мин»", "sub": "из community-building-research.md" }
+      ]
+    },
+    {
+      "category": "идеи: контент и форматы",
+      "items": [
+        { "id": "b21", "title": "формула поста: Ситуация → AI → Результат → Смысл", "sub": "из post-formula.md" },
+        { "id": "b22", "title": "protagonist stories: воронка сбора кейсов", "sub": "из protagonist-stories-value.md" },
+        { "id": "b23", "title": "систематическая модерация комментариев в публичном канале", "sub": "из blr-public-channel-analysis.md" },
+        { "id": "b24", "title": "контент с ситуационного, не технического входа", "sub": "из blr-value-gap.md" },
+        { "id": "b25", "title": "персональный голос комьюнити (не только Дима)", "sub": "из blr-positioning.md" },
+        { "id": "b26", "title": "анблокинг-звонок как формат ответа на блоки", "sub": "из blr-channel-content-analysis.md" },
+        { "id": "b27", "title": "архив как ресурс: #библиотека с тегами", "sub": "из community-building-research.md" },
+        { "id": "b28", "title": "спецканалы: #практика, #ревью, #ивенты", "sub": "из community-building-research.md" },
+        { "id": "b29", "title": "система признания: бейджи, shoutout'ы", "sub": "из community-building-research.md" }
+      ]
+    },
+    {
+      "category": "идеи: спринты и механики",
+      "items": [
+        { "id": "b30", "title": "3-дневный warmup перед спринтом", "sub": "из blr-sprint-warmup-concept.md" },
+        { "id": "b31", "title": "зеркало на старте: 5-7 дневный асинхронный цикл", "sub": "из blr-newyear-format-idea.md" },
+        { "id": "b32", "title": "микро-квесты для мета-навыков в спринте", "sub": "из idea-gconf-metaskills-format.md" },
+        { "id": "b33", "title": "анонимный опрос перед каждым спринтом", "sub": "из blr-sprint-warmup-concept.md" },
+        { "id": "b34", "title": "«X% из вас написали что...» — узнавание в других", "sub": "из blr-sprint-warmup-concept.md" },
+        { "id": "b35", "title": "коуч-промпт как письмо от себя-из-конца-спринта", "sub": "из blr-sprint-warmup-concept.md" },
+        { "id": "b36", "title": "артефакт вместо глубокого личного раскрытия", "sub": "из blr-sprint-warmup-concept.md" },
+        { "id": "b37", "title": "финальный пост — визитная карточка когорты", "sub": "из blr-sprint-warmup-concept.md" },
+        { "id": "b38", "title": "отдельный трек мета-навыков внутри спринта", "sub": "из idea-gconf-metaskills-format.md" }
+      ]
+    },
+    {
+      "category": "идеи: позиционирование и рост",
+      "items": [
+        { "id": "b39", "title": "стартер-пак «от нуля до единицы» для людей без GConf", "sub": "из blr-positioning.md" },
+        { "id": "b40", "title": "явное позиционирование: BLR ≠ GConf", "sub": "из blr-value-gap.md" },
+        { "id": "b41", "title": "сегментация на входе: готовый vs новичок", "sub": "из blr-positioning.md" },
+        { "id": "b42", "title": "опрос ожиданий через 2 недели после входа (не на старте)", "sub": "из Trello Backlog" }
+      ]
+    },
+    {
+      "category": "задачи: бэклог",
+      "items": [
+        { "id": "b43", "title": "ежедневный мониторинг чата — внедрить в ритм", "sub": "из Trello Backlog" },
+        { "id": "b44", "title": "написать 5-7 молчащим участникам", "sub": "из Trello Backlog" },
+        { "id": "b45", "title": "разбор атомарных заметок из закрытого канала", "sub": "из Trello Backlog" },
+        { "id": "b46", "title": "HTML-карта: блок быстрые действия", "sub": "из Trello Backlog" },
+        { "id": "b47", "title": "HTML-карта: блок GConf vs BLR", "sub": "из Trello Backlog" },
+        { "id": "b48", "title": "дашборд v0 — план и реализация", "sub": "из Trello Backlog" },
+        { "id": "b49", "title": "бот: чистка технических сообщений в канале", "sub": "напоминания сгорают через 3 дня. из Trello Backlog" },
+        { "id": "b50", "title": "адаптировать упражнение метанавыки #2 для онбординга", "sub": "из Trello Backlog" },
+        { "id": "b51", "title": "адаптировать протокол Пеннибейкера → подготовка к обучению", "sub": "из Trello Backlog" },
+        { "id": "b52", "title": "активнее вести выпускников GConf → комьюнити", "sub": "из Trello Backlog" },
+        { "id": "b53", "title": "делиться своими кейсами в комьюнити", "sub": "из Trello Backlog" },
+        { "id": "b54", "title": "подключить внешние метрики к каналам (найти инструмент)", "sub": "из Trello Backlog" },
+        { "id": "b55", "title": "еженедельная аналитика участников: канал + чат (снапшот)", "sub": "раз в неделю снимать снапшот участников канала и чата. из Trello Backlog" },
+        { "id": "b56", "title": "три пиллара: аналитика → методология → автоматизация", "sub": "система пилларов Enabled → Capable → Empowered. из Trello Backlog" },
+        { "id": "b57", "title": "автоматический bot-welcoming новых участников", "sub": "из community-building-research.md" }
+      ]
+    }
+  ],
+
+  "playbook": [
+    { "id": "p1", "title": "обработка заявок", "sub": "скрининг, отправка оплаты" },
+    { "id": "p2", "title": "онбординг новых участников", "sub": "welcome, навигация, папка" },
+    { "id": "p3", "title": "мониторинг чата", "sub": "энергия, вопросы, wins, тишина" },
+    { "id": "p4", "title": "churn-сигналы → личные сообщения", "sub": "3 дня / 7 дней молчания" },
+    { "id": "p5", "title": "еженедельный снапшот", "sub": "дифф участников, кросс канал↔чат, views" },
+    { "id": "p6", "title": "запись звонков → транскрипт → саммари → контент", "sub": "" },
+    { "id": "p7", "title": "YouTube: залить запись, обложка, описание, timestamps", "sub": "" },
+    { "id": "p8", "title": "сбор UGC / wins из чата → контент", "sub": "" },
+    { "id": "p9", "title": "обработка протагониста", "sub": "организация звонка → кейс-стори" },
+    { "id": "p10", "title": "контент-пайплайн", "sub": "сырьё → дистилляция → формат → публикация" },
+    { "id": "p11", "title": "ведение контент-лога", "sub": "тема, формат, дата, охват, ER" },
+    { "id": "p12", "title": "еженедельное ретро контента", "sub": "метрики → гипотезы → что менять" },
+    { "id": "p13", "title": "daily задания во время потока", "sub": "микроквесты" },
+    { "id": "p14", "title": "настройка бота", "sub": "deep-links, сегменты, уведомления" },
+    { "id": "p15", "title": "FAQ / поддержка участников", "sub": "" },
+    { "id": "p16", "title": "сверка Tribute", "sub": "оплаты vs участники" }
   ],
 
   "goals": [
@@ -71,6 +185,8 @@
     { "from": "юля", "title": "github бота от Лёши", "sub": "постарается сегодня, без обещаний." },
     { "from": "юля", "title": "список протагонистов (не трогать)", "sub": "есть список — скинет." },
     { "from": "юля", "title": "ответы на 5 открытых вопросов", "sub": "подписки, ценообразование $600, артефакты, пересылки, Community Talks." },
+    { "from": "юля", "title": "GitHub внутренний — доступ", "sub": "из Trello Waiting." },
+    { "from": "юля", "title": "правило пересылок из закрытого канала", "sub": "из Trello Waiting." },
     { "from": "рита", "title": "контракт подписать", "sub": "после того как Ксения напишет и отправит." }
   ],
 
