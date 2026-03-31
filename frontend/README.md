@@ -39,3 +39,10 @@ Key variable:
 - Sorting/filtering/status flows should always be validated against real backend data after UI changes.
 - Pipeline table: no `NEW` pill near row id; rows with status `New` use pale-blue row highlight.
 - JobCard touchpoints: date is displayed as `dd-mm-yy`; channel/source selector and touchpoint date-time editing are intentionally disabled in card UI.
+- Draft sync model:
+  - `JobCard` and `LetterScreen` write to local queue first (`frontend/src/state/syncQueue.ts`),
+  - batched server sync is done via `POST /api/jobs/{row_num}/batch`,
+  - global flush button is in Pipeline: `Sync All (N)`.
+- Safety behavior for unsynced drafts:
+  - autosync on page leave / visibility / reconnect,
+  - browser warning on tab close if pending queue exists.

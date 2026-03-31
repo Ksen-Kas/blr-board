@@ -75,30 +75,7 @@ def update_job(row_num: int, data: JobUpdate, _: None = Depends(require_internal
     if not job:
         raise HTTPException(404, "Job not found")
     updates = data.model_dump(exclude_none=True)
-
-    # Auto-log status change
-    if "status" in updates and updates["status"] != job.status:
-        try:
-            storage_service.log_event(
-                row_num,
-                "status_change",
-                json.dumps({"from": job.status, "to": updates["status"]}),
-            )
-        except Exception as e:
-            logger.warning("Failed to log status_change event: %s", e)
-
-    # Auto-fill Applied Date when status is moved to Applied and date is still empty.
-    if (
-        updates.get("status") == JobStatus.APPLIED.value
-        and "applied_date" not in updates
-        and not (job.applied_date or "").strip()
-    ):
-        updates["applied_date"] = date.today().isoformat()
-
-    updated = storage_service.update_job(row_num, updates)
-    if not updated:
-        raise HTTPException(500, "Update failed")
-    return updated
+    return _apply_job_updates(row_num, job, updates)
 
 
 @router.post("/refresh")
@@ -125,6 +102,75 @@ class LetterSaveRequest(BaseModel):
     subject: str = ""
     body: str = ""
     source: str = "manual"
+
+
+class TouchpointDraft(BaseModel):
+    direction: str = "Outbound"
+    note: str
+    channel: str = "Manual"
+
+
+class BatchUpdateRequest(BaseModel):
+    updates: JobUpdate | None = None
+    touchpoints: list[TouchpointDraft] = []
+    letter_save: LetterSaveRequest | None = None
+
+
+def _apply_job_updates(row_num: int, job: Job, updates: dict) -> Job:
+    # Auto-log status change
+    if "status" in updates and updates["status"] != job.status:
+        try:
+            storage_service.log_event(
+                row_num,
+                "status_change",
+                json.dumps({"from": job.status, "to": updates["status"]}),
+            )
+        except Exception as e:
+            logger.warning("Failed to log status_change event: %s", e)
+
+    # Auto-fill Applied Date when status is moved to Applied and date is still empty.
+    if (
+        updates.get("status") == JobStatus.APPLIED.value
+        and "applied_date" not in updates
+        and not (job.applied_date or "").strip()
+    ):
+        updates["applied_date"] = date.today().isoformat()
+
+    updated = storage_service.update_job(row_num, updates)
+    if not updated:
+        raise HTTPException(500, "Update failed")
+    return updated
+
+
+def _save_cover_letter_internal(row_num: int, req: LetterSaveRequest) -> Job:
+    subject = (req.subject or "").strip()
+    body = (req.body or "").strip()
+    source = (req.source or "manual").strip() or "manual"
+    if not body:
+        raise HTTPException(422, "Letter body is empty")
+
+    cl_text = f"Subject: {subject}\n\n{body}" if subject else body
+    updated = storage_service.update_job(row_num, {"cl": cl_text})
+    if not updated:
+        raise HTTPException(500, "Failed to save cover letter")
+
+    try:
+        storage_service.log_event(
+            row_num,
+            "letter_saved",
+            json.dumps(
+                {
+                    "subject": subject,
+                    "body": body,
+                    "source": source,
+                },
+                ensure_ascii=False,
+            ),
+        )
+    except Exception as exc:
+        logger.warning("Failed to log letter_saved event: %s", exc)
+
+    return updated
 
 
 @router.get("/{row_num}/events")
@@ -176,32 +222,51 @@ def save_cover_letter(
     job = storage_service.get_job_by_row(row_num)
     if not job:
         raise HTTPException(404, "Job not found")
-
-    subject = (req.subject or "").strip()
-    body = (req.body or "").strip()
-    source = (req.source or "manual").strip() or "manual"
-    if not body:
-        raise HTTPException(422, "Letter body is empty")
-
-    cl_text = f"Subject: {subject}\n\n{body}" if subject else body
-    updated = storage_service.update_job(row_num, {"cl": cl_text})
-    if not updated:
-        raise HTTPException(500, "Failed to save cover letter")
-
-    try:
-        storage_service.log_event(
-            row_num,
-            "letter_saved",
-            json.dumps(
-                {
-                    "subject": subject,
-                    "body": body,
-                    "source": source,
-                },
-                ensure_ascii=False,
-            ),
-        )
-    except Exception as exc:
-        logger.warning("Failed to log letter_saved event: %s", exc)
-
+    updated = _save_cover_letter_internal(row_num, req)
     return {"status": "ok", "job": updated}
+
+
+@router.post("/{row_num}/batch")
+def batch_update(
+    row_num: int,
+    req: BatchUpdateRequest,
+    _: None = Depends(require_internal_api_key),
+):
+    job = storage_service.get_job_by_row(row_num)
+    if not job:
+        raise HTTPException(404, "Job not found")
+
+    applied: list[str] = []
+
+    if req.updates is not None:
+        updates = req.updates.model_dump(exclude_none=True)
+        if updates:
+            job = _apply_job_updates(row_num, job, updates)
+            applied.append("job_updates")
+
+    if req.letter_save is not None:
+        job = _save_cover_letter_internal(row_num, req.letter_save)
+        applied.append("letter_save")
+
+    touchpoints_logged = 0
+    for point in req.touchpoints:
+        note = (point.note or "").strip()
+        if not note:
+            continue
+        payload = json.dumps(
+            {
+                "channel": (point.channel or "Manual").strip() or "Manual",
+                "direction": (point.direction or "Outbound").strip() or "Outbound",
+                "note": note,
+            },
+            ensure_ascii=False,
+        )
+        storage_service.log_event(row_num, "touchpoint", payload)
+        touchpoints_logged += 1
+
+    return {
+        "status": "ok",
+        "job": job,
+        "touchpoints_logged": touchpoints_logged,
+        "applied": applied,
+    }

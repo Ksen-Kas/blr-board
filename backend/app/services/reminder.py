@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import datetime as dt
 import logging
-from zoneinfo import ZoneInfo
 
 import httpx
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -202,24 +201,9 @@ async def daily_followup_check() -> None:
 
 def build_reminder_scheduler() -> AsyncIOScheduler | None:
     """Create scheduler if Telegram config is present."""
-    if not config.TELEGRAM_BOT_TOKEN or not config.TELEGRAM_CHAT_ID:
-        logger.info("Reminder scheduler: disabled (missing TELEGRAM_BOT_TOKEN/TELEGRAM_CHAT_ID)")
-        return None
-
-    try:
-        tz = ZoneInfo(config.TIMEZONE)
-    except Exception:
-        logger.warning("Reminder scheduler: unknown timezone %r, using Asia/Dubai", config.TIMEZONE)
-        tz = ZoneInfo("Asia/Dubai")
-
-    scheduler = AsyncIOScheduler(timezone=tz)
-    scheduler.add_job(
-        daily_followup_check,
-        trigger="cron",
-        hour=config.REMINDER_HOUR,
-        minute=config.REMINDER_MINUTE,
-    )
-    return scheduler
+    # Temporarily disabled by request: no scheduled Telegram reminders.
+    logger.info("Reminder scheduler: disabled by runtime flag (temporary)")
+    return None
 
 
 def get_reminder_runtime_status() -> dict:

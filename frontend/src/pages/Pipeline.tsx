@@ -4,6 +4,7 @@ import { getJobs, evaluateJD, refreshCache } from "../api/jobs";
 import { JOB_STATUSES } from "../constants/statuses";
 import type { Job } from "../types/job";
 import { canonicalStatusKey, canonicalStatusLabel } from "../utils/status";
+import { syncAllPendingChanges, useSyncQueueSnapshot } from "../state/syncQueue";
 
 function statusIndex(s: string) {
   const key = canonicalStatusKey(s);
@@ -54,7 +55,10 @@ export default function Pipeline() {
   const [statusFilter, setStatusFilter] = useState("All");
   const [sortKey, setSortKey] = useState<SortKey>("id");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
+  const [syncMessage, setSyncMessage] = useState("");
   const navigate = useNavigate();
+  const initialLoadDoneRef = useRef(false);
+  const syncSnapshot = useSyncQueueSnapshot();
 
   const loadJobs = () => {
     setLoading(true);
@@ -64,8 +68,23 @@ export default function Pipeline() {
   };
 
   useEffect(() => {
-    loadJobs();
+    if (initialLoadDoneRef.current) return;
+    initialLoadDoneRef.current = true;
+    const timeoutId = window.setTimeout(() => loadJobs(), 0);
+    return () => window.clearTimeout(timeoutId);
   }, []);
+
+  const handleSyncAll = async () => {
+    const res = await syncAllPendingChanges();
+    if (res.failedRows > 0) {
+      setSyncMessage(`Synced ${res.syncedRows}, failed ${res.failedRows}.`);
+    } else if (res.syncedRows > 0) {
+      setSyncMessage(`Synced ${res.syncedRows} queued job(s).`);
+    } else {
+      setSyncMessage("Nothing to sync.");
+    }
+    loadJobs();
+  };
 
   const handleSort = (key: SortKey) => {
     if (sortKey === key) {
@@ -106,6 +125,15 @@ export default function Pipeline() {
         </div>
         <div className="flex items-center">
           <button
+            onClick={() => void handleSyncAll()}
+            disabled={syncSnapshot.pendingRows === 0 || syncSnapshot.isSyncing}
+            className="mr-2 px-3 py-2 text-sm border border-border rounded-full hover:bg-surface-alt cursor-pointer text-muted hover:text-text font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {syncSnapshot.isSyncing
+              ? "Syncing..."
+              : `Sync All${syncSnapshot.pendingRows > 0 ? ` (${syncSnapshot.pendingRows})` : ""}`}
+          </button>
+          <button
             onClick={() => {
               refreshCache();
               loadJobs();
@@ -116,6 +144,10 @@ export default function Pipeline() {
           </button>
         </div>
       </div>
+
+      {syncMessage && (
+        <div className="mb-4 text-sm text-muted">{syncMessage}</div>
+      )}
 
       <AddJobBar onAdded={loadJobs} />
 

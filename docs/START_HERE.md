@@ -21,6 +21,23 @@ If you are a new agent/session, read in this order:
   - `backend/app/services/reminder.py`
   - `docs/DEPLOY_SECURITY_BRIEF.md`
 
+## Local Guide (Current Runtime Behavior)
+- Draft changes in `JobCard` and `LetterScreen` are queued and synced in batch, not per-field request.
+- Safety net is enabled:
+  - autosync on route leave (card/letter screens),
+  - autosync on app login/online/visibility/pagehide,
+  - `beforeunload` warning if unsynced changes remain.
+- Global manual flush button is available in Pipeline header: `Sync All (N)`.
+- Frontend queue implementation:
+  - `frontend/src/state/syncQueue.ts`
+  - local persistence key: `joe_sync_queue_v1` (browser localStorage)
+- Backend batch endpoint:
+  - `POST /api/jobs/{row_num}/batch`
+  - file: `backend/app/routers/jobs.py`
+- Reminder scheduler status:
+  - temporary OFF by runtime flag in `build_reminder_scheduler()` (`return None`)
+  - file: `backend/app/services/reminder.py`
+
 ## Current Branch
 `mvp-service`
 

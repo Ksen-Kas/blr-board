@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   getJob,
@@ -44,9 +44,18 @@ export default function CVScreen() {
   const [retailorNotes, setRetailorNotes] = useState("");
   const [previewHtml, setPreviewHtml] = useState("");
   const [previewLoading, setPreviewLoading] = useState(false);
+  const loadedRowRef = useRef<number | null>(null);
 
   useEffect(() => {
-    if (rowNum) getJob(Number(rowNum)).then(setJob);
+    if (!rowNum) {
+      loadedRowRef.current = null;
+      return;
+    }
+    const numericRow = Number(rowNum);
+    if (!Number.isFinite(numericRow)) return;
+    if (loadedRowRef.current === numericRow) return;
+    loadedRowRef.current = numericRow;
+    getJob(numericRow).then(setJob);
   }, [rowNum]);
 
   useEffect(() => {

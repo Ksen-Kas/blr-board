@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getStats, getJobs } from "../api/jobs";
 import type { PipelineStats, Job } from "../types/job";
 
@@ -26,8 +26,11 @@ function lastTouchpointDate(job: Job): string {
 export default function Dashboard() {
   const [stats, setStats] = useState<PipelineStats | null>(null);
   const [jobs, setJobs] = useState<Job[]>([]);
+  const initialLoadDoneRef = useRef(false);
 
   useEffect(() => {
+    if (initialLoadDoneRef.current) return;
+    initialLoadDoneRef.current = true;
     getStats().then(setStats);
     getJobs().then(setJobs);
   }, []);

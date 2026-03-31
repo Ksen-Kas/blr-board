@@ -49,6 +49,15 @@ export const saveLetterVersion = (
     })
     .then((r) => r.data);
 
+export const applyJobBatch = (
+  rowNum: number,
+  data: {
+    updates?: Partial<Job>;
+    touchpoints?: Array<{ direction: string; note: string; channel?: string }>;
+    letter_save?: { subject?: string; body: string; source?: string };
+  },
+) => api.post<{ status: string; job: Job }>(`/jobs/${rowNum}/batch`, data).then((r) => r.data);
+
 // Scoring — same output as Telegram bot's joe.evaluate()
 export const evaluateJD = (data: {
   jd_text?: string;

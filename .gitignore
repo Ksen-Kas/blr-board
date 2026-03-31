@@ -13,6 +13,8 @@ backend/.env
 # Build
 frontend/dist/
 *.egg-info/
+backend/tmp_resume_*.pdf
+backend/tmp_resume_*.html
 
 # IDE
 .vscode/

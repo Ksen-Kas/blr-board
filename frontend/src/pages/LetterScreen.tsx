@@ -1,14 +1,13 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   downloadLetterPdf,
   generateLetter,
   getEvents,
   getJob,
-  saveLetterVersion,
-  updateJob,
 } from "../api/jobs";
 import type { Job, JobEvent } from "../types/job";
+import { applyQueueDraft, getQueuedRowChange, syncPendingRows } from "../state/syncQueue";
 
 type LetterResult = {
   subject: string;
@@ -100,41 +99,68 @@ function parseLetterHistory(events: JobEvent[]): LetterHistoryItem[] {
   });
 }
 
-function extractErrorMessage(err: unknown, fallback: string): string {
-  if (err && typeof err === "object" && "response" in err) {
-    const response = (err as { response?: { data?: { detail?: string } } }).response;
-    const detail = response?.data?.detail;
-    if (typeof detail === "string" && detail.trim()) {
-      return detail;
-    }
-  }
-  return fallback;
-}
-
 export default function LetterScreen() {
   const { rowNum } = useParams<{ rowNum: string }>();
   const navigate = useNavigate();
   const [job, setJob] = useState<Job | null>(null);
   const [notes, setNotes] = useState("");
   const [generating, setGenerating] = useState(false);
-  const [savingLetter, setSavingLetter] = useState(false);
+  const [syncingDraft, setSyncingDraft] = useState(false);
   const [error, setError] = useState("");
   const [actionMessage, setActionMessage] = useState("");
   const [actionKind, setActionKind] = useState<"success" | "error" | "info">("info");
   const [result, setResult] = useState<LetterResult | null>(null);
   const [history, setHistory] = useState<LetterHistoryItem[]>([]);
   const [lastSavedSnapshot, setLastSavedSnapshot] = useState("");
+  const [pendingCommentUpdate, setPendingCommentUpdate] = useState("");
+  const [pendingStatus, setPendingStatus] = useState("");
+  const [draftSource, setDraftSource] = useState("manual");
+  const loadedRowRef = useRef<number | null>(null);
+  const latestDraftRef = useRef({
+    job: null as Job | null,
+    result: null as LetterResult | null,
+    lastSavedSnapshot: "",
+    pendingCommentUpdate: "",
+    pendingStatus: "",
+    draftSource: "manual",
+  });
 
   useEffect(() => {
-    if (!rowNum) return;
+    if (!rowNum) {
+      loadedRowRef.current = null;
+      return;
+    }
     const numericRow = Number(rowNum);
+    if (!Number.isFinite(numericRow)) return;
+    if (loadedRowRef.current === numericRow) return;
+    loadedRowRef.current = numericRow;
 
     getJob(numericRow).then((loadedJob) => {
+      const queued = getQueuedRowChange(loadedJob.row_num);
+      const queuedLetter = queued?.letterSave;
+      const queuedComment = queued?.updates?.comment;
+      const queuedStatus = queued?.updates?.status;
       setJob(loadedJob);
       const stored = parseStoredLetter(loadedJob.cl || "");
+      if (queuedStatus) {
+        setPendingStatus(String(queuedStatus));
+      } else {
+        setPendingStatus("");
+      }
+      setPendingCommentUpdate(
+        queuedComment ? String(queuedComment) : "",
+      );
       if (stored) {
-        setResult(stored);
+        setResult({
+          subject: queuedLetter?.subject ?? stored.subject,
+          body: queuedLetter?.body ?? stored.body,
+        });
         setLastSavedSnapshot(buildSnapshot(stored));
+        setDraftSource(queuedLetter?.source || "manual");
+      } else if (queuedLetter) {
+        setResult({ subject: queuedLetter.subject || "", body: queuedLetter.body || "" });
+        setLastSavedSnapshot("");
+        setDraftSource(queuedLetter.source || "manual");
       }
     });
 
@@ -154,12 +180,149 @@ export default function LetterScreen() {
     return buildSnapshot(result) !== lastSavedSnapshot;
   }, [result, lastSavedSnapshot]);
 
-  const refreshHistory = async (jobId: number) => {
+  const enqueueDraft = useCallback((overrideStatus?: string) => {
+    if (!job) return false;
+    const setUpdates: Partial<Job> = {};
+    const clearUpdateKeys: Array<keyof Job> = [];
+
+    const comment = pendingCommentUpdate.trim();
+    if (comment && comment !== (job.comment || "").trim()) {
+      setUpdates.comment = comment;
+    } else {
+      clearUpdateKeys.push("comment");
+    }
+
+    const currentStatus = job.status || "";
+    const nextStatus = (overrideStatus || pendingStatus || "").trim();
+    if (nextStatus && nextStatus !== currentStatus) {
+      setUpdates.status = nextStatus;
+    } else {
+      clearUpdateKeys.push("status");
+    }
+
+    const letterBody = (result?.body || "").trim();
+    const hasLetter = Boolean(result) && isDirty && Boolean(letterBody);
+
+    applyQueueDraft(job.row_num, {
+      setUpdates: Object.keys(setUpdates).length > 0 ? setUpdates : undefined,
+      clearUpdateKeys: clearUpdateKeys.length > 0 ? clearUpdateKeys : undefined,
+      letterSave: hasLetter
+        ? {
+            subject: (result?.subject || "").trim(),
+            body: letterBody,
+            source: draftSource || "manual",
+          }
+        : null,
+    });
+
+    return Object.keys(setUpdates).length > 0 || hasLetter;
+  }, [job, pendingCommentUpdate, pendingStatus, result, isDirty, draftSource]);
+
+  useEffect(() => {
+    latestDraftRef.current = {
+      job,
+      result,
+      lastSavedSnapshot,
+      pendingCommentUpdate,
+      pendingStatus,
+      draftSource,
+    };
+  }, [job, result, lastSavedSnapshot, pendingCommentUpdate, pendingStatus, draftSource]);
+
+  useEffect(() => {
+    enqueueDraft();
+  }, [enqueueDraft]);
+
+  useEffect(() => {
+    return () => {
+      const latest = latestDraftRef.current;
+      if (!latest.job) return;
+      const setUpdates: Partial<Job> = {};
+      const clearUpdateKeys: Array<keyof Job> = [];
+      const comment = latest.pendingCommentUpdate.trim();
+      if (comment && comment !== (latest.job.comment || "").trim()) {
+        setUpdates.comment = comment;
+      } else {
+        clearUpdateKeys.push("comment");
+      }
+      const nextStatus = latest.pendingStatus.trim();
+      if (nextStatus && nextStatus !== (latest.job.status || "")) {
+        setUpdates.status = nextStatus;
+      } else {
+        clearUpdateKeys.push("status");
+      }
+      const hasDirtyLetter =
+        Boolean(latest.result) &&
+        buildSnapshot(latest.result as LetterResult) !== latest.lastSavedSnapshot &&
+        Boolean((latest.result?.body || "").trim());
+      applyQueueDraft(latest.job.row_num, {
+        setUpdates: Object.keys(setUpdates).length > 0 ? setUpdates : undefined,
+        clearUpdateKeys: clearUpdateKeys.length > 0 ? clearUpdateKeys : undefined,
+        letterSave: hasDirtyLetter
+          ? {
+              subject: (latest.result?.subject || "").trim(),
+              body: (latest.result?.body || "").trim(),
+              source: latest.draftSource || "manual",
+            }
+          : null,
+      });
+      void syncPendingRows([latest.job.row_num]);
+    };
+  }, [rowNum]);
+
+  const syncRowNow = async (options: { silent?: boolean } = {}): Promise<boolean> => {
+    if (!job || syncingDraft) return false;
+    if (result && isDirty && !(result.body || "").trim()) {
+      setActionKind("error");
+      setActionMessage("Letter body is empty.");
+      return false;
+    }
+    const hasDraft = enqueueDraft();
+    if (!hasDraft) {
+      if (!options.silent) {
+        setActionKind("info");
+        setActionMessage("Nothing to sync.");
+      }
+      return true;
+    }
+    setSyncingDraft(true);
     try {
-      const events = await getEvents(jobId);
-      setHistory(parseLetterHistory(events));
+      const res = await syncPendingRows([job.row_num]);
+      if (res.failedRows > 0) {
+        setActionKind("error");
+        setActionMessage("Sync failed. Draft stays queued.");
+        return false;
+      }
+      if (result) {
+        setLastSavedSnapshot(buildSnapshot(result));
+      }
+      setJob((prev) =>
+        prev
+          ? {
+              ...prev,
+              status: pendingStatus || prev.status,
+              comment: pendingCommentUpdate || prev.comment,
+              cl: result
+                ? ((result.subject || "").trim()
+                    ? `Subject: ${(result.subject || "").trim()}\n\n${(result.body || "").trim()}`
+                    : (result.body || "").trim())
+                : prev.cl,
+            }
+          : prev,
+      );
+      setPendingCommentUpdate("");
+      setPendingStatus("");
+      if (!options.silent) {
+        setActionKind("success");
+        setActionMessage("Draft synced.");
+      }
+      return true;
     } catch {
-      // no-op
+      setActionKind("error");
+      setActionMessage("Sync failed. Draft stays queued.");
+      return false;
+    } finally {
+      setSyncingDraft(false);
     }
   };
 
@@ -167,8 +330,7 @@ export default function LetterScreen() {
     payload: { subject: string; body: string; source: string },
     options: { silent?: boolean } = {},
   ): Promise<boolean> => {
-    if (!job) return false;
-
+    if (!job || syncingDraft) return false;
     const subject = (payload.subject || "").trim();
     const body = (payload.body || "").trim();
     if (!body) {
@@ -179,35 +341,56 @@ export default function LetterScreen() {
       return false;
     }
 
-    setSavingLetter(true);
+    setSyncingDraft(true);
     if (!options.silent) {
       setActionKind("info");
-      setActionMessage("Saving letter to history...");
+      setActionMessage("Queueing letter draft...");
     }
 
     try {
-      const res = await saveLetterVersion(job.row_num, {
-        subject,
-        body,
-        source: payload.source,
+      applyQueueDraft(job.row_num, {
+        letterSave: {
+          subject,
+          body,
+          source: payload.source,
+        },
       });
-      setJob(res.job);
+      setHistory((prev) => {
+        const nextItem: LetterHistoryItem = {
+          eventId: Date.now(),
+          timestamp: new Date().toISOString().replace("T", " ").slice(0, 19),
+          source: payload.source,
+          subject,
+          body,
+        };
+        return [nextItem, ...prev].slice(0, 30);
+      });
+      setDraftSource(payload.source || "manual");
+
+      const syncRes = await syncPendingRows([job.row_num]);
+      if (syncRes.failedRows > 0) {
+        if (!options.silent) {
+          setActionKind("error");
+          setActionMessage("Sync failed. Draft stays queued.");
+        }
+        return false;
+      }
+
       setLastSavedSnapshot(buildSnapshot({ subject, body }));
-      await refreshHistory(job.row_num);
 
       if (!options.silent) {
         setActionKind("success");
-        setActionMessage("Letter saved to history.");
+        setActionMessage("Letter synced.");
       }
       return true;
-    } catch (err: unknown) {
+    } catch {
       if (!options.silent) {
         setActionKind("error");
-        setActionMessage(extractErrorMessage(err, "Failed to save letter."));
+        setActionMessage("Failed to sync letter draft.");
       }
       return false;
     } finally {
-      setSavingLetter(false);
+      setSyncingDraft(false);
     }
   };
 
@@ -233,14 +416,15 @@ export default function LetterScreen() {
         body: res.body || "",
       };
       setResult(generated);
+      setDraftSource("generated");
 
       const updates: Partial<Job> = {};
       if (!jdText && (res.jd_text_used || "").trim()) {
         updates.comment = (res.jd_text_used || "").trim();
       }
       if (Object.keys(updates).length > 0) {
-        await updateJob(job.row_num, updates);
         setJob((prev) => (prev ? { ...prev, ...updates } : prev));
+        setPendingCommentUpdate(updates.comment || "");
       }
 
       const saved = await persistLetter(
@@ -253,10 +437,10 @@ export default function LetterScreen() {
       );
       if (saved) {
         setActionKind("success");
-        setActionMessage("Letter generated and saved to history.");
+        setActionMessage("Letter generated and synced.");
       } else {
         setActionKind("info");
-        setActionMessage("Letter generated. Click Save to history.");
+        setActionMessage("Letter generated and queued.");
       }
     } catch (e: unknown) {
       const msg =
@@ -272,18 +456,28 @@ export default function LetterScreen() {
   const handleDone = async () => {
     if (!job) return;
 
-    if (result && isDirty) {
-      const saved = await persistLetter(
-        { subject: result.subject, body: result.body, source: "manual" },
-        { silent: true },
-      );
-      if (!saved) {
-        setError("Failed to save your latest letter edits. Click Save to history and retry.");
-        return;
-      }
+    if (result && isDirty && !(result.body || "").trim()) {
+      setError("Letter body is empty.");
+      return;
     }
 
-    await updateJob(job.row_num, { status: "Applied" });
+    if (result && isDirty) {
+      applyQueueDraft(job.row_num, {
+        letterSave: {
+          subject: result.subject,
+          body: result.body,
+          source: "manual",
+        },
+      });
+    }
+
+    setPendingStatus("Applied");
+    applyQueueDraft(job.row_num, { setUpdates: { status: "Applied" } });
+    const synced = await syncRowNow({ silent: true });
+    if (!synced) {
+      setError("Failed to sync latest changes. Try again.");
+      return;
+    }
     navigate(`/job/${rowNum}`);
   };
 
@@ -351,6 +545,7 @@ export default function LetterScreen() {
 
   const handleSaveCurrent = async () => {
     if (!result) return;
+    setDraftSource("manual");
     await persistLetter({
       subject: result.subject,
       body: result.body,
@@ -360,8 +555,9 @@ export default function LetterScreen() {
 
   const handleLoadHistory = (item: LetterHistoryItem) => {
     setResult({ subject: item.subject, body: item.body });
+    setDraftSource("manual");
     setActionKind("info");
-    setActionMessage("Loaded from history. Click Save to history to make it current.");
+    setActionMessage("Loaded from history. It will sync automatically when you leave.");
   };
 
   const handleCopyHistory = (item: LetterHistoryItem) => {
@@ -507,10 +703,10 @@ export default function LetterScreen() {
           <div className="flex flex-wrap gap-3 pt-2">
             <button
               onClick={handleSaveCurrent}
-              disabled={savingLetter || !result.body.trim()}
+              disabled={syncingDraft || !result.body.trim()}
               className="px-4 py-2 border border-border rounded-full hover:bg-surface-alt text-sm cursor-pointer text-muted hover:text-text font-medium disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {savingLetter ? "Saving..." : "Save to history"}
+              {syncingDraft ? "Syncing..." : "Sync now"}
             </button>
             <button
               onClick={handleDone}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BrowserRouter, Routes, Route, Link, useLocation } from "react-router-dom";
 import Pipeline from "./pages/Pipeline";
 import JobCard from "./pages/JobCard";
@@ -14,6 +14,7 @@ import api, {
   subscribeNetworkActivity,
   type NetworkActivitySnapshot,
 } from "./api/client";
+import { hasPendingSyncChanges, syncAllPendingChanges } from "./state/syncQueue";
 
 function NavLink({ to, children }: { to: string; children: React.ReactNode }) {
   const location = useLocation();
@@ -40,6 +41,7 @@ function App() {
     getNetworkActivitySnapshot()
   );
   const [sheetUrl, setSheetUrl] = useState("");
+  const sheetUrlRequestedRef = useRef(false);
 
   useEffect(() => {
     setUnauthorizedHandler(() => {
@@ -63,10 +65,57 @@ function App() {
   }, [authed, networkActivity.pendingCount]);
 
   useEffect(() => {
-    if (!authed) return;
+    if (!authed) {
+      sheetUrlRequestedRef.current = false;
+      return;
+    }
+    if (sheetUrlRequestedRef.current) return;
+    sheetUrlRequestedRef.current = true;
     getSheetUrl()
       .then((res) => setSheetUrl(res.url || ""))
       .catch(() => setSheetUrl(""));
+  }, [authed]);
+
+  useEffect(() => {
+    if (!authed) return;
+    void syncAllPendingChanges();
+
+    const handleOnline = () => {
+      if (hasPendingSyncChanges()) {
+        void syncAllPendingChanges();
+      }
+    };
+
+    const handleVisibility = () => {
+      if (!hasPendingSyncChanges()) return;
+      if (document.visibilityState === "hidden" || document.visibilityState === "visible") {
+        void syncAllPendingChanges();
+      }
+    };
+
+    const handlePageHide = () => {
+      if (hasPendingSyncChanges()) {
+        void syncAllPendingChanges();
+      }
+    };
+
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      if (!hasPendingSyncChanges()) return;
+      event.preventDefault();
+      event.returnValue = "";
+    };
+
+    window.addEventListener("online", handleOnline);
+    document.addEventListener("visibilitychange", handleVisibility);
+    window.addEventListener("pagehide", handlePageHide);
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      document.removeEventListener("visibilitychange", handleVisibility);
+      window.removeEventListener("pagehide", handlePageHide);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
   }, [authed]);
 
   const handleLogin = async (username: string, password: string) => {
@@ -76,7 +125,7 @@ function App() {
     try {
       await api.get("/health");
       setAuthed(true);
-    } catch (err) {
+    } catch {
       clearAuth();
       setAuthError("Invalid credentials.");
       setAuthed(false);

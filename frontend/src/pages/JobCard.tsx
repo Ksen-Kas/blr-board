@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getJob, evaluateJD, updateJob, getEvents, addEvent, saveLetterVersion } from "../api/jobs";
+import { getJob, evaluateJD, getEvents } from "../api/jobs";
 import { JOB_STATUSES } from "../constants/statuses";
 import type { Job, JobEvent } from "../types/job";
 import { canonicalStatusLabel } from "../utils/status";
+import { applyQueueDraft, getQueuedRowChange, syncPendingRows } from "../state/syncQueue";
 
 /** Extract domain from URL for display */
 function extractDomain(url: string): string {
@@ -76,6 +77,11 @@ type LetterHistoryRow = {
   source: string;
   subject: string;
   body: string;
+};
+
+type PendingTouchpoint = {
+  direction: string;
+  note: string;
 };
 
 function parseDateToMs(value: string): number {
@@ -208,35 +214,59 @@ export default function JobCard() {
   const [showTouchForm, setShowTouchForm] = useState(false);
   const [touchNote, setTouchNote] = useState("");
   const [touchDirection, setTouchDirection] = useState("Outbound");
-  const [touchSaving, setTouchSaving] = useState(false);
+  const [pendingTouchpoints, setPendingTouchpoints] = useState<PendingTouchpoint[]>([]);
   const [statusMessage, setStatusMessage] = useState("");
   const [statusMessageKind, setStatusMessageKind] = useState<"success" | "error" | "info">("info");
-  const [statusUpdating, setStatusUpdating] = useState(false);
   const [letterActionMessage, setLetterActionMessage] = useState("");
   const [letterActionKind, setLetterActionKind] = useState<"success" | "error" | "info">("info");
   const [loadingLetterEventId, setLoadingLetterEventId] = useState<number | null>(null);
   const [manualLetterSubject, setManualLetterSubject] = useState("");
   const [manualLetterBody, setManualLetterBody] = useState("");
-  const [manualLetterSaving, setManualLetterSaving] = useState(false);
+  const [savedManualSnapshot, setSavedManualSnapshot] = useState({ subject: "", body: "" });
+  const [isSavingBatch, setIsSavingBatch] = useState(false);
+  const loadedRowRef = useRef<number | null>(null);
+  const latestDraftRef = useRef({
+    job: null as Job | null,
+    status: "",
+    pendingTouchpoints: [] as PendingTouchpoint[],
+    manualLetterSubject: "",
+    manualLetterBody: "",
+    hasPendingLetterChanges: false,
+  });
 
   useEffect(() => {
-    if (rowNum) {
-      getJob(Number(rowNum)).then((j) => {
-        setJob(j);
-        setStatus(canonicalStatusLabel(j.status) || j.status);
-        const stored = parseStoredLetter(j.cl || "");
-        setManualLetterSubject(stored.subject);
-        setManualLetterBody(stored.body);
-      });
-      getEvents(Number(rowNum)).then(setEvents).catch(() => {});
+    if (!rowNum) {
+      loadedRowRef.current = null;
+      return;
     }
+    const numericRow = Number(rowNum);
+    if (!Number.isFinite(numericRow)) return;
+    if (loadedRowRef.current === numericRow) return;
+    loadedRowRef.current = numericRow;
+    getJob(numericRow).then((j) => {
+      const queued = getQueuedRowChange(j.row_num);
+      const queuedStatus = queued?.updates?.status;
+      const queuedLetter = queued?.letterSave;
+      setJob(j);
+      setStatus(
+        queuedStatus
+          ? String(queuedStatus)
+          : (canonicalStatusLabel(j.status) || j.status),
+      );
+      const stored = parseStoredLetter(j.cl || "");
+      setManualLetterSubject(queuedLetter?.subject ?? stored.subject);
+      setManualLetterBody(queuedLetter?.body ?? stored.body);
+      setSavedManualSnapshot({ subject: stored.subject, body: stored.body });
+      setPendingTouchpoints(queued?.touchpoints || []);
+    });
+    getEvents(numericRow).then(setEvents).catch(() => {});
   }, [rowNum]);
 
   useEffect(() => {
-    if (!statusMessage || statusUpdating) return;
+    if (!statusMessage || isSavingBatch) return;
     const timeoutId = window.setTimeout(() => setStatusMessage(""), 3500);
     return () => window.clearTimeout(timeoutId);
-  }, [statusMessage, statusMessageKind, statusUpdating]);
+  }, [statusMessage, statusMessageKind, isSavingBatch]);
 
   useEffect(() => {
     if (!letterActionMessage) return;
@@ -266,9 +296,11 @@ export default function JobCard() {
 
       const res = await evaluateJD(payload);
       setScoreResult(res);
-      await updateJob(job.row_num, {
-        role_fit: res.role_fit || "",
-        stop_flags: res.stop_flags === "NONE" ? "" : res.stop_flags || "",
+      applyQueueDraft(job.row_num, {
+        setUpdates: {
+          role_fit: res.role_fit || "",
+          stop_flags: res.stop_flags === "NONE" ? "" : res.stop_flags || "",
+        },
       });
       setJob((prev) =>
         prev
@@ -290,73 +322,207 @@ export default function JobCard() {
     }
   };
 
-  const handleStatusChange = async (newStatus: string) => {
-    if (!job) return;
-    if (newStatus === status) return;
-    const prevStatus = status;
-    setStatus(newStatus);
-    setStatusUpdating(true);
-    setStatusMessageKind("info");
-    setStatusMessage(`Updating status: ${prevStatus} -> ${newStatus}...`);
+  const hasPendingStatusChange = useMemo(() => {
+    if (!job) return false;
+    const current = canonicalStatusLabel(job.status) || job.status;
+    return status !== current;
+  }, [job, status]);
+
+  const hasPendingLetterChanges = useMemo(() => {
+    return (
+      manualLetterSubject.trim() !== savedManualSnapshot.subject ||
+      manualLetterBody.trim() !== savedManualSnapshot.body
+    );
+  }, [manualLetterSubject, manualLetterBody, savedManualSnapshot]);
+
+  useEffect(() => {
+    latestDraftRef.current = {
+      job,
+      status,
+      pendingTouchpoints,
+      manualLetterSubject,
+      manualLetterBody,
+      hasPendingLetterChanges,
+    };
+  }, [
+    job,
+    status,
+    pendingTouchpoints,
+    manualLetterSubject,
+    manualLetterBody,
+    hasPendingLetterChanges,
+  ]);
+
+  const enqueueCurrentDraft = useCallback((overrideStatus?: string) => {
+    if (!job) return false;
+    const nextStatus = overrideStatus || status;
+    const currentStatus = canonicalStatusLabel(job.status) || job.status;
+    const hasStatus = nextStatus !== currentStatus;
+
+    const subject = manualLetterSubject.trim();
+    const body = manualLetterBody.trim();
+    const hasLetter = hasPendingLetterChanges && Boolean(body);
+
+    applyQueueDraft(job.row_num, {
+      setUpdates: hasStatus ? { status: nextStatus } : undefined,
+      clearUpdateKeys: hasStatus ? undefined : ["status"],
+      touchpoints: pendingTouchpoints,
+      letterSave: hasLetter
+        ? {
+            subject,
+            body,
+            source: "manual",
+          }
+        : null,
+    });
+
+    return hasStatus || hasLetter || pendingTouchpoints.length > 0;
+  }, [
+    job,
+    status,
+    manualLetterSubject,
+    manualLetterBody,
+    hasPendingLetterChanges,
+    pendingTouchpoints,
+  ]);
+
+  useEffect(() => {
+    enqueueCurrentDraft();
+  }, [enqueueCurrentDraft]);
+
+  useEffect(() => {
+    return () => {
+      const latest = latestDraftRef.current;
+      if (!latest.job) return;
+      const currentStatus = canonicalStatusLabel(latest.job.status) || latest.job.status;
+      const hasStatus = latest.status !== currentStatus;
+      const subject = latest.manualLetterSubject.trim();
+      const body = latest.manualLetterBody.trim();
+      const hasLetter = latest.hasPendingLetterChanges && Boolean(body);
+      applyQueueDraft(latest.job.row_num, {
+        setUpdates: hasStatus ? { status: latest.status } : undefined,
+        clearUpdateKeys: hasStatus ? undefined : ["status"],
+        touchpoints: latest.pendingTouchpoints,
+        letterSave: hasLetter
+          ? {
+              subject,
+              body,
+              source: "manual",
+            }
+          : null,
+      });
+      void syncPendingRows([latest.job.row_num]);
+    };
+  }, [rowNum]);
+
+  const commitQueuedChanges = async (
+    options: { overrideStatus?: string; silent?: boolean } = {},
+  ): Promise<boolean> => {
+    if (!job || isSavingBatch) return false;
+    const nextStatus = options.overrideStatus || status;
+    const currentStatus = canonicalStatusLabel(job.status) || job.status;
+    const shouldApplyStatus = nextStatus !== currentStatus;
+    const shouldApplyLetter = hasPendingLetterChanges && Boolean(manualLetterBody.trim());
+    const syncedCl = manualLetterSubject.trim()
+      ? `Subject: ${manualLetterSubject.trim()}\n\n${manualLetterBody.trim()}`
+      : manualLetterBody.trim();
+
+    if (hasPendingLetterChanges && !manualLetterBody.trim()) {
+      setLetterActionKind("error");
+      setLetterActionMessage("Custom CL body is empty. Fill it or revert changes before save.");
+      return false;
+    }
+
+    const queuedAny = enqueueCurrentDraft(options.overrideStatus);
+    if (!queuedAny) {
+      if (!options.silent) {
+        setStatusMessageKind("info");
+        setStatusMessage("No pending changes.");
+      }
+      return true;
+    }
+
+    setIsSavingBatch(true);
+    if (!options.silent) {
+      setStatusMessageKind("info");
+      setStatusMessage("Saving queued changes...");
+    }
+
     try {
-      await updateJob(job.row_num, { status: newStatus });
-      setJob((prev) => (prev ? { ...prev, status: newStatus } : prev));
-      const updatedEvents = await getEvents(job.row_num);
-      setEvents(updatedEvents);
-      setStatusMessageKind("success");
-      setStatusMessage(`Status updated: ${newStatus}`);
+      const res = await syncPendingRows([job.row_num]);
+      if (res.failedRows > 0) {
+        setStatusMessageKind("error");
+        setStatusMessage("Failed to sync changes. They stay queued.");
+        return false;
+      }
+      setSavedManualSnapshot({
+        subject: manualLetterSubject.trim(),
+        body: manualLetterBody.trim(),
+      });
+      setJob((prev) =>
+        prev
+          ? {
+              ...prev,
+              status: shouldApplyStatus ? nextStatus : prev.status,
+              cl: shouldApplyLetter ? syncedCl : prev.cl,
+            }
+          : prev,
+      );
+      setStatus(nextStatus);
+      setPendingTouchpoints([]);
+      if (!options.silent) {
+        setStatusMessageKind("success");
+        setStatusMessage("Changes synced.");
+      }
+      return true;
     } catch {
-      setStatus(prevStatus);
       setStatusMessageKind("error");
-      setStatusMessage("Failed to update status.");
+      setStatusMessage("Failed to sync changes.");
+      return false;
     } finally {
-      setStatusUpdating(false);
+      setIsSavingBatch(false);
+    }
+  };
+
+  const handleStatusChange = (newStatus: string) => {
+    if (!job) return;
+    setStatus(newStatus);
+    if (newStatus !== (canonicalStatusLabel(job.status) || job.status)) {
+      setStatusMessageKind("info");
+      setStatusMessage(`Status queued: ${newStatus}`);
     }
   };
 
   const handlePrepare = async () => {
     if (!job) return;
-    await updateJob(job.row_num, { status: "In Progress" });
+    setStatus("In Progress");
+    const ok = await commitQueuedChanges({ overrideStatus: "In Progress", silent: true });
+    if (!ok) return;
     navigate(`/job/${job.row_num}/cv`);
   };
 
-  const handleAddTouchpoint = async () => {
-    if (!job || !touchNote.trim() || touchSaving) return;
-    setTouchSaving(true);
-    const data = JSON.stringify({
-      channel: "Manual",
-      direction: touchDirection,
-      note: touchNote.trim(),
-    });
-    try {
-      await addEvent(job.row_num, "touchpoint", data);
-      setEvents(await getEvents(job.row_num));
-      setTouchNote("");
-      setShowTouchForm(false);
-    } finally {
-      setTouchSaving(false);
-    }
+  const handleAddTouchpoint = () => {
+    if (!touchNote.trim()) return;
+    setPendingTouchpoints((prev) => [
+      ...prev,
+      { direction: touchDirection, note: touchNote.trim() },
+    ]);
+    setTouchNote("");
+    setShowTouchForm(false);
+    setStatusMessageKind("info");
+    setStatusMessage("Touchpoint queued.");
   };
 
-  const handleLoadLetterVersion = async (row: LetterHistoryRow) => {
-    if (!job) return;
-    const clText = row.subject ? `Subject: ${row.subject}\n\n${row.body}` : row.body;
+  const handleLoadLetterVersion = (row: LetterHistoryRow) => {
+    if (!job || loadingLetterEventId === row.eventId) return;
     setLoadingLetterEventId(row.eventId);
     setLetterActionKind("info");
-    setLetterActionMessage("Loading selected CL version...");
-    try {
-      const updated = await updateJob(job.row_num, { cl: clText });
-      setJob((prev) => (prev ? { ...prev, cl: updated.cl } : prev));
-      setManualLetterSubject(row.subject);
-      setManualLetterBody(row.body);
-      setLetterActionKind("success");
-      setLetterActionMessage("CL version loaded into current card.");
-    } catch {
-      setLetterActionKind("error");
-      setLetterActionMessage("Failed to load CL version.");
-    } finally {
-      setLoadingLetterEventId(null);
-    }
+    setLetterActionMessage("Loading selected CL version (local)...");
+    setManualLetterSubject(row.subject);
+    setManualLetterBody(row.body);
+    setLetterActionKind("success");
+    setLetterActionMessage("CL version loaded. It will auto-sync when you leave.");
+    setLoadingLetterEventId(null);
   };
 
   const handleCopyLetterVersion = async (row: LetterHistoryRow) => {
@@ -375,28 +541,14 @@ export default function JobCard() {
     }
   };
 
-  const handleSaveManualLetter = async () => {
-    if (!job || !manualLetterBody.trim() || manualLetterSaving) return;
-    setManualLetterSaving(true);
-    setLetterActionKind("info");
-    setLetterActionMessage("Saving custom CL to history...");
-    try {
-      const saved = await saveLetterVersion(job.row_num, {
-        subject: manualLetterSubject.trim(),
-        body: manualLetterBody.trim(),
-        source: "manual",
-      });
-      setJob(saved.job);
-      const updatedEvents = await getEvents(job.row_num);
-      setEvents(updatedEvents);
-      setLetterActionKind("success");
-      setLetterActionMessage("Custom CL saved to history.");
-    } catch {
+  const handleSaveManualLetter = () => {
+    if (!manualLetterBody.trim()) {
       setLetterActionKind("error");
-      setLetterActionMessage("Failed to save custom CL.");
-    } finally {
-      setManualLetterSaving(false);
+      setLetterActionMessage("Custom CL body is empty.");
+      return;
     }
+    setLetterActionKind("info");
+    setLetterActionMessage("CL queued.");
   };
 
   if (!job) return <div className="p-6 text-muted">Loading...</div>;
@@ -414,11 +566,13 @@ export default function JobCard() {
       : roleFit.toLowerCase() === "stretch" || roleFit.toLowerCase() === "partial"
         ? "border-amber-200 bg-amber-50 text-amber-700"
         : "border-border bg-surface text-muted";
+  const hasPendingChanges =
+    hasPendingStatusChange || hasPendingLetterChanges || pendingTouchpoints.length > 0;
   const eventRows: TouchpointRow[] = events
     .filter((ev) => ev.event_type === "touchpoint" || ev.event_type === "status_change")
     .map((ev) => {
     let detail = "";
-    let touchpoint: TouchpointRow["touchpoint"] =
+    const touchpoint: TouchpointRow["touchpoint"] =
       ev.event_type === "touchpoint" ? parseTouchpointData(ev.data) : undefined;
     try {
       const d = JSON.parse(ev.data);
@@ -565,7 +719,7 @@ export default function JobCard() {
             <select
               value={status}
               onChange={(e) => handleStatusChange(e.target.value)}
-              disabled={statusUpdating}
+              disabled={isSavingBatch}
               className="appearance-none bg-surface border border-border rounded-full px-3 py-1 pr-7 text-sm font-semibold cursor-pointer hover:border-muted text-text"
             >
               {JOB_STATUSES.map((s) => (
@@ -595,6 +749,16 @@ export default function JobCard() {
           {job.needs_followup && (
             <span className="bg-red-50 text-red-700 text-xs px-2 py-0.5 rounded-full border border-red-200">
               🔔 Needs follow-up
+            </span>
+          )}
+          {hasPendingStatusChange && (
+            <span className="bg-blue-50 text-blue-700 text-xs px-2 py-0.5 rounded-full border border-blue-200">
+              Status queued
+            </span>
+          )}
+          {pendingTouchpoints.length > 0 && (
+            <span className="bg-blue-50 text-blue-700 text-xs px-2 py-0.5 rounded-full border border-blue-200">
+              Touchpoints queued: {pendingTouchpoints.length}
             </span>
           )}
         </div>
@@ -705,10 +869,10 @@ export default function JobCard() {
             <div className="flex items-center gap-3">
               <button
                 onClick={handleSaveManualLetter}
-                disabled={manualLetterSaving || !manualLetterBody.trim()}
+                disabled={!manualLetterBody.trim()}
                 className="px-4 py-2 border border-border rounded-full hover:bg-surface-alt text-sm cursor-pointer text-muted hover:text-text font-medium disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {manualLetterSaving ? "Saving..." : "Save to history"}
+                Queue CL Change
               </button>
               <button
                 onClick={() => navigate(`/job/${job.row_num}/letter`)}
@@ -834,14 +998,13 @@ export default function JobCard() {
               <div className="flex gap-2">
                 <button
                   onClick={handleAddTouchpoint}
-                  disabled={touchSaving || !touchNote.trim()}
+                  disabled={!touchNote.trim()}
                   className="px-3 py-1 text-sm bg-accent text-white rounded-full hover:bg-accent-hover disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer font-semibold"
                 >
-                  {touchSaving ? "Saving..." : "Save"}
+                  Queue
                 </button>
                 <button
                   onClick={() => setShowTouchForm(false)}
-                  disabled={touchSaving}
                   className="px-3 py-1 text-sm border border-border rounded-full hover:bg-surface-alt disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer text-muted"
                 >
                   Cancel
@@ -855,7 +1018,15 @@ export default function JobCard() {
       {/* Actions */}
       <div className="flex flex-wrap gap-3 border-t border-border pt-4">
         <button
+          onClick={() => void commitQueuedChanges()}
+          disabled={!hasPendingChanges || isSavingBatch}
+          className="px-4 py-2 bg-accent text-white rounded-full hover:bg-accent-hover disabled:opacity-50 disabled:cursor-not-allowed text-sm font-semibold cursor-pointer"
+        >
+          {isSavingBatch ? "Syncing..." : "Sync now"}
+        </button>
+        <button
           onClick={handlePrepare}
+          disabled={isSavingBatch}
           className="px-4 py-2 bg-emerald-100 text-emerald-700 border border-emerald-300 rounded-full hover:bg-emerald-200 text-sm font-semibold cursor-pointer"
         >
           Prepare Application &rarr;
@@ -863,7 +1034,7 @@ export default function JobCard() {
         {!roleFit && (
           <button
             onClick={handleScore}
-            disabled={scoring}
+            disabled={scoring || isSavingBatch}
             className="px-4 py-2 border border-border rounded-full hover:bg-surface-alt disabled:opacity-40 text-sm cursor-pointer text-muted hover:text-text font-medium"
           >
             {scoring ? "Scoring..." : "Evaluate Fit"}
