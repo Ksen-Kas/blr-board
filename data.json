@@ -1,6 +1,6 @@
 {
   "updated": "2026-03-31",
-  "updated_at": "2026-03-31T19:50:00+03:00",
+  "updated_at": "2026-03-31T20:15:00+03:00",
   "last_collected_ids": {
     "-1003478224837": 123,
     "-1003590719886": 1419,
@@ -469,6 +469,324 @@
       "action": "added",
       "id": "b67",
       "title": "@alyonatikhonova — после 20 апреля"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "f2",
+      "title": "написать поддержку Tribute"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "f3",
+      "title": "онбординг v1 — залить сегодня"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "f8",
+      "title": "Выяснить у Юли политику подписок для участников: лаба vs продление"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "f9",
+      "title": "Написать Римме (@ri_riri_ririri) — Юля передала кейс сегодня"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "f11",
+      "title": "Открыть Юле доступ к статистике в Tribute"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "t2",
+      "title": "добавить бота в админы канала и чата"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "t3",
+      "title": "переделать ссылки → deep-link с автостартом"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "t4",
+      "title": "Tribute: атрибуция, уведомления, webhook"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "t5",
+      "title": "GitHub: доступы к репозиториям"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "t14",
+      "title": "посмотреть бота комьюнити (GitHub от Юли)"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "t25",
+      "title": "забрать: апдейт бота контентом внутренним"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "t26",
+      "title": "забрать: напоминалки по звонкам"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "t28",
+      "title": "Починить коворк-баг: бот шлёт в публичный канал вместо чата"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "t46",
+      "title": "Написать в Tribute support про годовые доступы для протагонистов"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "t62",
+      "title": "Проверить кнопку возврата в Tribute после оплаты лабы → ссылка start=lab"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "t6",
+      "title": "онбординг — 1 действие для улучшения"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "t7",
+      "title": "создать канал помощи в чате"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "t8",
+      "title": "забрать у Юли шаблоны для анкетчиков"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "t22",
+      "title": "запустить starter pack для новых участников"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "t29",
+      "title": "Выдать GitHub-доступ участнице к репо brain-love-and-robots"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "t36",
+      "title": "Повторно отправить GitHub-инвайт Евгении Минаевой"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "t37",
+      "title": "Отработать churn-сигнал: @tarabeen888 не вникает в программу"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "t43",
+      "title": "Написать Дине и передать никнейм в саппорт для возврата"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "t47",
+      "title": "Ответить Алине Теребилиной по условиям лабы и продлению подписки"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "t55",
+      "title": "Помочь участнику найти Loom-запись (потерял при переходе с OpenAI на Claude)"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "t61",
+      "title": "Обработать заявку Sergey Horsov — прочитать анкету, написать ему"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "t11",
+      "title": "AI-сетап для лабы"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "t13",
+      "title": "промпт коуча от Димы — выдавать всем"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "t24",
+      "title": "понедельник: разобрать лабу с Юлей"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "t16",
+      "title": "практики — собрать к пятнице"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "t17",
+      "title": "заполнять тишину в комьюнити"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "t18",
+      "title": "обложки YouTube — освоить процесс"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "t42",
+      "title": "Добавить Макса Януковича в комьюнити и попросить кружочек к эфиру"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "t19",
+      "title": "daily async workflow — начать использовать"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "t20",
+      "title": "контракт → написать → отправить Рите"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "t21",
+      "title": "ToV бота — показать живой пример Юле"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "t27",
+      "title": "пн 23: end-to-end ручные процессы с Юлей → чеклист передачи"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "t30",
+      "title": "Tribute: получить права на создание подписок"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "t31",
+      "title": "Tribute: дождаться ответа поддержки и разблокировать создание продукта лабы"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "t32",
+      "title": "Запланировать эфир с Максом Януковичем 8 апреля 10:00 мск"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "t33",
+      "title": "Обработать запрос на возврат денег от участницы"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "t34",
+      "title": "Сформировать расписание на неделю для участников"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "t39",
+      "title": "Сделать файл по loop-опросу"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "t40",
+      "title": "Разобрать daily 27.03 по BLR learning design"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "t41",
+      "title": "Анонс в чат: Radical Alignment + план апреля + эфир с Максом 8 апреля"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "t44",
+      "title": "Фидбэк-чат: открыть историю и перекинуть отзывы заново"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "t45",
+      "title": "Сделать short update по лабе в чат комьюнити"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "t52",
+      "title": "Отправить Юле PDF-контракт (1600 EUR) и передать Рите"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "t54",
+      "title": "Решить формат видео звонков: YouTube public vs unlisted для участников"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "t56",
+      "title": "напоминания: завтра закрытие спринта Health OS"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "t57",
+      "title": "пт 28: ретро с Юлей — первый срез"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "t59",
+      "title": "Ответить Юле на вопросы по цене лабы и доступу к артефактам при непродлении"
+    },
+    {
+      "date": "2026-03-31",
+      "action": "done",
+      "id": "t66",
+      "title": "Чекин 6 апреля в 11:00 — Signs с Димой (поставить Юле)"
     }
   ],
   "inbox": [],
@@ -507,7 +825,7 @@
           "инфра"
         ]
       ],
-      "done": false
+      "done": true
     },
     {
       "id": "f3",
@@ -523,7 +841,7 @@
           "онбординг"
         ]
       ],
-      "done": false
+      "done": true
     },
     {
       "id": "f8",
@@ -539,7 +857,7 @@
           "tribute"
         ]
       ],
-      "done": false
+      "done": true
     },
     {
       "id": "f9",
@@ -555,7 +873,7 @@
           "churn"
         ]
       ],
-      "done": false
+      "done": true
     },
     {
       "id": "f10",
@@ -587,7 +905,7 @@
           "tribute"
         ]
       ],
-      "done": false
+      "done": true
     }
   ],
   "tasks": [
@@ -621,7 +939,7 @@
               "эта неделя"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "high"
         },
         {
@@ -634,7 +952,7 @@
               "эта неделя"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "high"
         },
         {
@@ -651,7 +969,7 @@
               "эта неделя"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "fire"
         },
         {
@@ -664,7 +982,7 @@
               "скоро"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "low"
         },
         {
@@ -677,7 +995,7 @@
               "эта неделя"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "high"
         },
         {
@@ -690,7 +1008,7 @@
               "эта неделя"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "high"
         },
         {
@@ -703,7 +1021,7 @@
               "эта неделя"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "high"
         },
         {
@@ -720,7 +1038,7 @@
               "эта неделя"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "high"
         },
         {
@@ -750,7 +1068,7 @@
               "tribute"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "high"
         },
         {
@@ -767,7 +1085,7 @@
               "tribute"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "high"
         },
         {
@@ -802,7 +1120,7 @@
               "горит"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "fire"
         },
         {
@@ -815,7 +1133,7 @@
               "эта неделя"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "high"
         },
         {
@@ -832,7 +1150,7 @@
               "ждёт юлю"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "high"
         },
         {
@@ -871,7 +1189,7 @@
               "эта неделя"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "high"
         },
         {
@@ -897,7 +1215,7 @@
               "эта неделя"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "mid"
         },
         {
@@ -914,7 +1232,7 @@
               "ждём"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "high"
         },
         {
@@ -931,7 +1249,7 @@
               "churn"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "high"
         },
         {
@@ -948,7 +1266,7 @@
               "churn"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "high"
         },
         {
@@ -965,7 +1283,7 @@
               "участники"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "high"
         },
         {
@@ -995,7 +1313,7 @@
               "эта неделя"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "high"
         },
         {
@@ -1012,7 +1330,7 @@
               "онбординг"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "high"
         }
       ]
@@ -1030,7 +1348,7 @@
               "эта/след неделя"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "high"
         },
         {
@@ -1056,7 +1374,7 @@
               "след неделя"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "mid"
         },
         {
@@ -1069,7 +1387,7 @@
               "понедельник"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "mid"
         }
       ]
@@ -1104,7 +1422,7 @@
               "к пятнице"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "mid"
         },
         {
@@ -1117,7 +1435,7 @@
               "регулярно"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "mid"
         },
         {
@@ -1130,7 +1448,7 @@
               "эта неделя"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "mid"
         },
         {
@@ -1164,7 +1482,7 @@
               "протагонисты"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "high"
         },
         {
@@ -1229,7 +1547,7 @@
               "эта неделя"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "high"
         },
         {
@@ -1242,7 +1560,7 @@
               "сегодня"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "high"
         },
         {
@@ -1255,7 +1573,7 @@
               "скоро"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "low"
         },
         {
@@ -1268,7 +1586,7 @@
               "эта неделя"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "high"
         },
         {
@@ -1285,7 +1603,7 @@
               "tribute"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "high"
         },
         {
@@ -1302,7 +1620,7 @@
               "ждём"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "high"
         },
         {
@@ -1319,7 +1637,7 @@
               "контент"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "high"
         },
         {
@@ -1336,7 +1654,7 @@
               "churn"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "high"
         },
         {
@@ -1349,7 +1667,7 @@
               "эта неделя"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "high"
         },
         {
@@ -1362,7 +1680,7 @@
               "эта неделя"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "high"
         },
         {
@@ -1375,7 +1693,7 @@
               "эта неделя"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "high"
         },
         {
@@ -1392,7 +1710,7 @@
               "контент"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "high"
         },
         {
@@ -1409,7 +1727,7 @@
               "операционка"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "high"
         },
         {
@@ -1426,7 +1744,7 @@
               "лаба"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "high"
         },
         {
@@ -1473,7 +1791,7 @@
               "юля"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "high"
         },
         {
@@ -1486,7 +1804,7 @@
               "эта неделя"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "high"
         },
         {
@@ -1499,7 +1817,7 @@
               "спринт"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "high"
         },
         {
@@ -1512,7 +1830,7 @@
               "юля"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "high"
         },
         {
@@ -1546,7 +1864,7 @@
               "лаба"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "high"
         },
         {
@@ -1589,7 +1907,7 @@
               "эта неделя"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "high"
         }
       ]
