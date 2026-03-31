@@ -1,16 +1,4 @@
-# BLR Sorter — автоматическая сортировка inbox
+# DEPRECATED — объединён с collector
 
-Запускается 2 раза в день (после сборщика). Раскладывает inbox по секциям.
-
-## Что делает
-- inbox → fire / tasks / backlog / удалить (шум/дубли)
-- НЕ закрывает задачи (done: true ставит только Ксения через агента)
-- НЕ удаляет существующие задачи
-- Пишет в `log` при каждом перемещении задачи
-
-## SKILL.md для Cowork
-`/Users/sizovaka/Documents/Claude/Scheduled/blr-board-sorter/SKILL.md`
-
-## Когда запускается
-- Автоматически: 2 раза в день (10:00 и 18:00) — через 1 час после сборщика
-- По запросу: Ксения говорит "разбери inbox"
+Сбор и сортировка теперь в одном агенте: `collector-chats.md`
+Cowork SKILL.md: `/Users/sizovaka/Documents/Claude/Scheduled/blr-board-collector/SKILL.md`

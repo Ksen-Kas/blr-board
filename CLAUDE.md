@@ -90,21 +90,18 @@ blr-board/
 
 ---
 
-## Агенты
+## Агент
 
 | Агент | Что делает | Расписание | Модель |
 |-------|-----------|------------|--------|
-| **Сборщик** | TG чаты → inbox | 4x/день (9, 13, 17, 21) | Sonnet (Cowork) |
-| **Сортировщик** | inbox → fire/tasks/backlog | 2x/день (10, 18) | Sonnet (Cowork) |
-| **Autopush** | data.json → git push | при изменении файла | launchd |
+| **Sync** | TG чаты → сортировка → fire/tasks/backlog → git push | 4x/день (9, 13, 17, 21) | Sonnet (Cowork) |
 
-**Сборщик:** читает только новые сообщения (min_id), оценивает urgency из контекста.
-**Сортировщик:** раскладывает по urgency от сборщика. НЕ ставит done. Пишет в `log` при перемещении задач.
+Один агент делает всё: собирает из TG (min_id), оценивает срочность, кладёт сразу в нужную секцию, пушит.
 **Done решает только Ксения** — через любого агента ("отметь f3 как done"). UI read-only, без чекбоксов.
 **Все изменения задач логируются** в `log` (append-only).
 
-Промпты: `agents/collector-chats.md`, `agents/sorter.md`
-SKILL.md для Cowork: `/Users/sizovaka/Documents/Claude/Scheduled/blr-board-*/SKILL.md`
+Промпт: `agents/collector-chats.md`
+SKILL.md для Cowork: `/Users/sizovaka/Documents/Claude/Scheduled/blr-board-collector/SKILL.md`
 
 ---
 

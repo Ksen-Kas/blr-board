@@ -2,7 +2,12 @@
 # Auto-push data.json changes to GitHub Pages
 # Triggered by launchd when data.json is modified
 
+export PATH="/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/homebrew/bin"
+
 cd /Users/sizovaka/Documents/AI_LAB/GitHub/blr-board || exit 1
+
+# Wait a moment for file writes to finish
+sleep 2
 
 # Check if there are actual changes
 if git diff --quiet data.json 2>/dev/null; then
@@ -16,4 +21,6 @@ NOW=$(date -u +%Y-%m-%dT%H:%M:%S+00:00)
 
 git add data.json
 git commit -m "auto: board update $(date +%Y-%m-%d_%H:%M)"
-git push
+git push origin main 2>&1
+
+echo "$(date): push complete" >> /tmp/blr-autopush.log
