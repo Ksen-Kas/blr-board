@@ -167,6 +167,25 @@
 
   .task-body { flex: 1; min-width: 0; }
   .task-title { font-size: 15px; color: var(--text); line-height: 1.4; }
+
+  #sync-btn {
+    display: none;
+    position: fixed;
+    bottom: 74px;
+    right: 16px;
+    background: var(--purple);
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    gap: 5px;
+    align-items: center;
+    cursor: pointer;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
   .task-sub { font-size: 13px; color: var(--muted); margin-top: 3px; line-height: 1.45; }
   .task-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; }
 
@@ -406,6 +425,8 @@
   <div id="cvlab-ideas"></div>
 </div>
 
+<button id="sync-btn" onclick="syncDone()">↑ sync <span class="sync-count">0</span></button>
+
 <nav class="bottom-nav">
   <button class="nav-item active" onclick="switchTab('fire')" id="nav-fire">
     <span class="nav-icon">🔥</span>горит
@@ -428,7 +449,35 @@
 let DATA = {};
 const local = JSON.parse(localStorage.getItem('blr-done') || '{}');
 function saveLocal() { localStorage.setItem('blr-done', JSON.stringify(local)); }
-function toggleDone(id) { local[id] = !isDone(id); saveLocal(); render(); }
+function toggleDone(id) { local[id] = !isDone(id); saveLocal(); render(); syncBadge(); }
+
+function syncBadge() {
+  const ids = Object.keys(local).filter(id => local[id] && !isDataJsonDone(id));
+  const btn = document.getElementById('sync-btn');
+  if (btn) btn.style.display = ids.length ? 'flex' : 'none';
+  if (btn) btn.querySelector('.sync-count').textContent = ids.length;
+}
+function isDataJsonDone(id) {
+  const f = (DATA.fire||[]).find(t=>t.id===id);
+  if (f && f.done) return true;
+  for (const cat of (DATA.tasks||[])) { const t = cat.items.find(t=>t.id===id); if (t && t.done) return true; }
+  return false;
+}
+function syncDone() {
+  const ids = Object.keys(local).filter(id => local[id] && !isDataJsonDone(id));
+  if (!ids.length) { alert('Нет новых отмеченных задач'); return; }
+  const allItems = [...(DATA.fire||[]), ...(DATA.tasks||[]).flatMap(c=>c.items)];
+  const lines = ids.map(id => {
+    const item = allItems.find(t=>t.id===id);
+    return item ? `${id}: ${item.title}` : id;
+  });
+  const text = 'done:\n' + lines.join('\n');
+  navigator.clipboard.writeText(text).then(() => {
+    alert('Скопировано в буфер — вставь агенту:\n\n' + text);
+  }).catch(() => {
+    prompt('Скопируй вручную:', text);
+  });
+}
 function isDone(id) {
   // data.json done:true = permanent (synced everywhere)
   // localStorage = local quick-mark (this device only, until agent syncs)
@@ -607,7 +656,7 @@ function switchProject(proj) {
 }
 
 function render() {
-  renderInbox(); renderFire(); renderTasks(); renderBacklog(); renderCvlab(); renderGoals(); renderStatus();
+  renderInbox(); renderFire(); renderTasks(); renderBacklog(); renderCvlab(); renderGoals(); renderStatus(); syncBadge();
   const d = DATA.updated_at || DATA.updated;
   if (d && d.includes('T')) {
     const dt = new Date(d);
