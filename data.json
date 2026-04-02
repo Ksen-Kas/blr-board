@@ -1,6 +1,6 @@
 {
   "updated": "2026-04-02",
-  "updated_at": "2026-04-02T18:05:03",
+  "updated_at": "2026-04-02T18:05:49",
   "last_collected_ids": {
     "-1003478224837": 125,
     "-1003590719886": 1421,
@@ -1444,6 +1444,18 @@
       "action": "done",
       "id": "t102",
       "title": "3 апр: опрос в ветку 'как настраиваешься?' + анонс костра в канал"
+    },
+    {
+      "date": "2026-04-02",
+      "action": "added",
+      "id": "t117",
+      "title": "Починить Telegram MCP"
+    },
+    {
+      "date": "2026-04-02",
+      "action": "added",
+      "id": "t118",
+      "title": "Дать доступ Codex к репо"
     }
   ],
   "inbox": [],
@@ -1851,6 +1863,34 @@
             [
               "teal",
               "бот"
+            ]
+          ],
+          "done": false
+        },
+        {
+          "id": "t117",
+          "title": "Починить Telegram MCP",
+          "priority": "high",
+          "tags": [
+            [
+              "amber",
+              "эта неделя"
+            ],
+            [
+              "teal",
+              "бот"
+            ]
+          ],
+          "done": false
+        },
+        {
+          "id": "t118",
+          "title": "Дать доступ Codex к репо",
+          "priority": "high",
+          "tags": [
+            [
+              "amber",
+              "эта неделя"
             ]
           ],
           "done": false
