@@ -1,6 +1,6 @@
 {
   "updated": "2026-04-02",
-  "updated_at": "2026-04-02T17:41:56",
+  "updated_at": "2026-04-02T17:52:14",
   "last_collected_ids": {
     "-1003478224837": 125,
     "-1003590719886": 1421,
@@ -1402,6 +1402,12 @@
       "action": "done",
       "id": "t101",
       "title": "Отправить вопрос 1 в канал + ветку (вечер 2 апр)"
+    },
+    {
+      "date": "2026-04-02",
+      "action": "added",
+      "id": "t114",
+      "title": "Переписать и опубликовать пост из t.me/brainloveandrobots/29 — канал + чат Community"
     }
   ],
   "inbox": [],
@@ -2156,6 +2162,23 @@
           "id": "t98",
           "title": "Написать Ксении Устиновой: форма для протагонистов в канал (кейс → проходка в комьюнити/G-Conf)",
           "priority": "mid",
+          "done": false
+        },
+        {
+          "id": "t114",
+          "title": "Переписать и опубликовать пост из t.me/brainloveandrobots/29 — канал + чат Community",
+          "sub": "Источник: https://t.me/brainloveandrobots/29",
+          "priority": "fire",
+          "tags": [
+            [
+              "red",
+              "горит"
+            ],
+            [
+              "amber",
+              "3 апреля"
+            ]
+          ],
           "done": false
         }
       ]
