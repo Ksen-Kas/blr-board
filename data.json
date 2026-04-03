@@ -1,6 +1,6 @@
 {
   "updated": "2026-04-03",
-  "updated_at": "2026-04-03T10:30:00+03:00",
+  "updated_at": "2026-04-03T11:00:00+03:00",
   "last_collected_ids": {
     "-1003478224837": 129,
     "-1003590719886": 1436,
@@ -1592,6 +1592,26 @@
       "action": "added",
       "id": "b79",
       "title": "Публичный канал — решить стратегически: оставить витриной или строить как самостоятельную точку роста (сейчас трафик только с личного бренда Димы)"
+    },
+    {
+      "date": "2026-04-03",
+      "action": "done",
+      "id": "b72",
+      "title": "Публичный сайт BLR / knowledge base — спринты, протагонисты, артефакты, календарь. По образцу AI Mindset. Юля начнёт, Ксения складывает едино"
+    },
+    {
+      "date": "2026-04-03",
+      "action": "moved",
+      "id": "b73",
+      "title": "Weekly публичные демо от лица комьюнити — внешние спикеры, 3 слота по 15-20 мин, кейсы → воронка acquisition",
+      "from": "backlog",
+      "to": "waiting (юля)"
+    },
+    {
+      "date": "2026-04-03",
+      "action": "done",
+      "id": "b79",
+      "title": "Публичный канал — решить стратегически: оставить витриной или строить как самостоятельную точку роста (сейчас трафик только с личного бренда Димы)"
     }
   ],
   "inbox": [],
@@ -2808,102 +2828,222 @@
         {
           "id": "b1",
           "title": "двухэтапное вводное видео (2-3 мин + детали)",
-          "sub": "из onboarding-improvement-ideas.md"
+          "sub": "из onboarding-improvement-ideas.md",
+          "tags": [
+            [
+              "teal",
+              "long"
+            ]
+          ]
         },
         {
           "id": "b2",
           "title": "карта «что где» для новичка: канал, чат, бот, Tribute",
-          "sub": "из onboarding-improvement-ideas.md"
+          "sub": "из onboarding-improvement-ideas.md",
+          "tags": [
+            [
+              "teal",
+              "long"
+            ]
+          ]
         },
         {
           "id": "b3",
           "title": "явное представление платформы на старте",
-          "sub": "из onboarding-improvement-ideas.md"
+          "sub": "из onboarding-improvement-ideas.md",
+          "tags": [
+            [
+              "teal",
+              "long"
+            ]
+          ]
         },
         {
           "id": "b4",
           "title": "вводная к коуч-промпту: «AI-дневник»",
-          "sub": "из onboarding-improvement-ideas.md"
+          "sub": "из onboarding-improvement-ideas.md",
+          "tags": [
+            [
+              "teal",
+              "long"
+            ]
+          ]
         },
         {
           "id": "b5",
           "title": "краткие описания протагонистов (кто, откуда)",
-          "sub": "из onboarding-improvement-ideas.md"
+          "sub": "из onboarding-improvement-ideas.md",
+          "tags": [
+            [
+              "teal",
+              "long"
+            ]
+          ]
         },
         {
           "id": "b6",
           "title": "прозрачность стоимости артефактов",
-          "sub": "из onboarding-improvement-ideas.md"
+          "sub": "из onboarding-improvement-ideas.md",
+          "tags": [
+            [
+              "teal",
+              "long"
+            ]
+          ]
         },
         {
           "id": "b7",
           "title": "даты к артефактам для ориентировки",
-          "sub": "из onboarding-improvement-ideas.md"
+          "sub": "из onboarding-improvement-ideas.md",
+          "tags": [
+            [
+              "teal",
+              "long"
+            ]
+          ]
         },
         {
           "id": "b8",
           "title": "тёплый тон онбординга + напутствие от Димы",
-          "sub": "из onboarding-improvement-ideas.md"
+          "sub": "из onboarding-improvement-ideas.md",
+          "tags": [
+            [
+              "teal",
+              "long"
+            ]
+          ]
         },
         {
           "id": "b9",
           "title": "навигация в боте: ссылка на чат в подвале",
-          "sub": "из onboarding-improvement-ideas.md"
+          "sub": "из onboarding-improvement-ideas.md",
+          "tags": [
+            [
+              "teal",
+              "long"
+            ]
+          ]
         },
         {
           "id": "b10",
           "title": "определение Second Brain в контексте BLR",
-          "sub": "из onboarding-improvement-ideas.md"
+          "sub": "из onboarding-improvement-ideas.md",
+          "tags": [
+            [
+              "teal",
+              "long"
+            ]
+          ]
         },
         {
           "id": "b11",
           "title": "уточнение модели в инструкции про Cursor",
-          "sub": "из onboarding-improvement-ideas.md"
+          "sub": "из onboarding-improvement-ideas.md",
+          "tags": [
+            [
+              "teal",
+              "long"
+            ]
+          ]
         },
         {
           "id": "b12",
           "title": "разделение контента: спринт vs параллельные активности",
-          "sub": "из onboarding-improvement-ideas.md"
+          "sub": "из onboarding-improvement-ideas.md",
+          "tags": [
+            [
+              "teal",
+              "long"
+            ]
+          ]
         },
         {
           "id": "b13",
           "title": "гибридный фокус онбординга 70/30",
-          "sub": "из community-building-research.md"
+          "sub": "из community-building-research.md",
+          "tags": [
+            [
+              "teal",
+              "long"
+            ]
+          ]
         },
         {
           "id": "b14",
           "title": "персонализация онбординга через опрос",
-          "sub": "из community-building-research.md"
+          "sub": "из community-building-research.md",
+          "tags": [
+            [
+              "teal",
+              "long"
+            ]
+          ]
         },
         {
           "id": "b15",
           "title": "ежемесячный День новичков с повтором базы",
-          "sub": "из community-building-research.md"
+          "sub": "из community-building-research.md",
+          "tags": [
+            [
+              "teal",
+              "long"
+            ]
+          ]
         },
         {
           "id": "b16",
           "title": "еженедельный новичковый час",
-          "sub": "из community-building-research.md"
+          "sub": "из community-building-research.md",
+          "tags": [
+            [
+              "teal",
+              "long"
+            ]
+          ]
         },
         {
           "id": "b17",
           "title": "механика первого быстрого win для новичка",
-          "sub": "из community-building-research.md"
+          "sub": "из community-building-research.md",
+          "tags": [
+            [
+              "teal",
+              "long"
+            ]
+          ]
         },
         {
           "id": "b18",
           "title": "pairing новичков с ментором на неделю",
-          "sub": "из community-building-research.md"
+          "sub": "из community-building-research.md",
+          "tags": [
+            [
+              "teal",
+              "long"
+            ]
+          ]
         },
         {
           "id": "b19",
           "title": "intro «Привет, новички недели!» в чате",
-          "sub": "из community-building-research.md"
+          "sub": "из community-building-research.md",
+          "tags": [
+            [
+              "teal",
+              "long"
+            ]
+          ]
         },
         {
           "id": "b20",
           "title": "шаблон «Расскажи о себе за 1 мин»",
-          "sub": "из community-building-research.md"
+          "sub": "из community-building-research.md",
+          "tags": [
+            [
+              "teal",
+              "long"
+            ]
+          ]
         }
       ]
     },
@@ -2913,47 +3053,101 @@
         {
           "id": "b21",
           "title": "формула поста: Ситуация → AI → Результат → Смысл",
-          "sub": "из post-formula.md"
+          "sub": "из post-formula.md",
+          "tags": [
+            [
+              "teal",
+              "long"
+            ]
+          ]
         },
         {
           "id": "b22",
           "title": "protagonist stories: воронка сбора кейсов",
-          "sub": "из protagonist-stories-value.md"
+          "sub": "из protagonist-stories-value.md",
+          "tags": [
+            [
+              "teal",
+              "long"
+            ]
+          ]
         },
         {
           "id": "b23",
           "title": "систематическая модерация комментариев в публичном канале",
-          "sub": "из blr-public-channel-analysis.md"
+          "sub": "из blr-public-channel-analysis.md",
+          "tags": [
+            [
+              "teal",
+              "long"
+            ]
+          ]
         },
         {
           "id": "b24",
           "title": "контент с ситуационного, не технического входа",
-          "sub": "из blr-value-gap.md"
+          "sub": "из blr-value-gap.md",
+          "tags": [
+            [
+              "teal",
+              "long"
+            ]
+          ]
         },
         {
           "id": "b25",
           "title": "персональный голос комьюнити (не только Дима)",
-          "sub": "из blr-positioning.md"
+          "sub": "из blr-positioning.md",
+          "tags": [
+            [
+              "teal",
+              "long"
+            ]
+          ]
         },
         {
           "id": "b26",
           "title": "анблокинг-звонок как формат ответа на блоки",
-          "sub": "из blr-channel-content-analysis.md"
+          "sub": "из blr-channel-content-analysis.md",
+          "tags": [
+            [
+              "teal",
+              "long"
+            ]
+          ]
         },
         {
           "id": "b27",
           "title": "архив как ресурс: #библиотека с тегами",
-          "sub": "из community-building-research.md"
+          "sub": "из community-building-research.md",
+          "tags": [
+            [
+              "teal",
+              "long"
+            ]
+          ]
         },
         {
           "id": "b28",
           "title": "спецканалы: #практика, #ревью, #ивенты",
-          "sub": "из community-building-research.md"
+          "sub": "из community-building-research.md",
+          "tags": [
+            [
+              "teal",
+              "long"
+            ]
+          ]
         },
         {
           "id": "b29",
           "title": "система признания: бейджи, shoutout'ы",
-          "sub": "из community-building-research.md"
+          "sub": "из community-building-research.md",
+          "tags": [
+            [
+              "teal",
+              "long"
+            ]
+          ]
         }
       ]
     },
@@ -2963,47 +3157,101 @@
         {
           "id": "b30",
           "title": "3-дневный warmup перед спринтом",
-          "sub": "из blr-sprint-warmup-concept.md"
+          "sub": "из blr-sprint-warmup-concept.md",
+          "tags": [
+            [
+              "teal",
+              "long"
+            ]
+          ]
         },
         {
           "id": "b31",
           "title": "зеркало на старте: 5-7 дневный асинхронный цикл",
-          "sub": "из blr-newyear-format-idea.md"
+          "sub": "из blr-newyear-format-idea.md",
+          "tags": [
+            [
+              "teal",
+              "long"
+            ]
+          ]
         },
         {
           "id": "b32",
           "title": "микро-квесты для мета-навыков в спринте",
-          "sub": "из idea-gconf-metaskills-format.md"
+          "sub": "из idea-gconf-metaskills-format.md",
+          "tags": [
+            [
+              "teal",
+              "long"
+            ]
+          ]
         },
         {
           "id": "b33",
           "title": "анонимный опрос перед каждым спринтом",
-          "sub": "из blr-sprint-warmup-concept.md"
+          "sub": "из blr-sprint-warmup-concept.md",
+          "tags": [
+            [
+              "teal",
+              "long"
+            ]
+          ]
         },
         {
           "id": "b34",
           "title": "«X% из вас написали что...» — узнавание в других",
-          "sub": "из blr-sprint-warmup-concept.md"
+          "sub": "из blr-sprint-warmup-concept.md",
+          "tags": [
+            [
+              "teal",
+              "long"
+            ]
+          ]
         },
         {
           "id": "b35",
           "title": "коуч-промпт как письмо от себя-из-конца-спринта",
-          "sub": "из blr-sprint-warmup-concept.md"
+          "sub": "из blr-sprint-warmup-concept.md",
+          "tags": [
+            [
+              "teal",
+              "long"
+            ]
+          ]
         },
         {
           "id": "b36",
           "title": "артефакт вместо глубокого личного раскрытия",
-          "sub": "из blr-sprint-warmup-concept.md"
+          "sub": "из blr-sprint-warmup-concept.md",
+          "tags": [
+            [
+              "teal",
+              "long"
+            ]
+          ]
         },
         {
           "id": "b37",
           "title": "финальный пост — визитная карточка когорты",
-          "sub": "из blr-sprint-warmup-concept.md"
+          "sub": "из blr-sprint-warmup-concept.md",
+          "tags": [
+            [
+              "teal",
+              "long"
+            ]
+          ]
         },
         {
           "id": "b38",
           "title": "отдельный трек мета-навыков внутри спринта",
-          "sub": "из idea-gconf-metaskills-format.md"
+          "sub": "из idea-gconf-metaskills-format.md",
+          "tags": [
+            [
+              "teal",
+              "long"
+            ]
+          ]
         }
       ]
     },
@@ -3013,37 +3261,52 @@
         {
           "id": "b39",
           "title": "стартер-пак «от нуля до единицы» для людей без GConf",
-          "sub": "из blr-positioning.md"
+          "sub": "из blr-positioning.md",
+          "tags": [
+            [
+              "teal",
+              "long"
+            ]
+          ]
         },
         {
           "id": "b40",
           "title": "явное позиционирование: BLR ≠ GConf",
-          "sub": "из blr-value-gap.md"
+          "sub": "из blr-value-gap.md",
+          "tags": [
+            [
+              "teal",
+              "long"
+            ]
+          ]
         },
         {
           "id": "b41",
           "title": "сегментация на входе: готовый vs новичок",
-          "sub": "из blr-positioning.md"
+          "sub": "из blr-positioning.md",
+          "tags": [
+            [
+              "teal",
+              "long"
+            ]
+          ]
         },
         {
           "id": "b42",
           "title": "опрос ожиданий через 2 недели после входа (не на старте)",
-          "sub": "из Trello Backlog"
+          "sub": "из Trello Backlog",
+          "tags": [
+            [
+              "teal",
+              "long"
+            ]
+          ]
         },
         {
           "id": "b72",
           "title": "Публичный сайт BLR / knowledge base — спринты, протагонисты, артефакты, календарь. По образцу AI Mindset. Юля начнёт, Ксения складывает едино",
           "priority": "long",
-          "done": false,
-          "tags": [
-            "long"
-          ]
-        },
-        {
-          "id": "b73",
-          "title": "Weekly публичные демо от лица комьюнити — внешние спикеры, 3 слота по 15-20 мин, кейсы → воронка acquisition",
-          "priority": "long",
-          "done": false,
+          "done": true,
           "tags": [
             "long"
           ]
@@ -3059,7 +3322,7 @@
         },
         {
           "id": "b75",
-          "title": "Командный дашборд для Димы и команды — статистика, метрики",
+          "title": "Командный дашборд для Димы — статистика, метрики [связано с задачей Юли пн: первые метрики]",
           "priority": "long",
           "done": false,
           "tags": [
@@ -3069,22 +3332,41 @@
         {
           "id": "b76",
           "title": "CTA-футер на каждый пост @brainloveandrobots — три постоянные ссылки (как у @gptlovers): подать заявку, подробности, ближайший эфир",
-          "sub": "signals/gconf-funnel-pattern.md"
+          "sub": "signals/gconf-funnel-pattern.md",
+          "tags": [
+            [
+              "teal",
+              "long"
+            ]
+          ]
         },
         {
           "id": "b77",
           "title": "Бесплатный открытый эфир как воронка в BLR — Zoom/Luma, открытый для незнакомой аудитории (у GCONF 576 регистраций на один)",
-          "sub": "signals/gconf-funnel-pattern.md"
+          "sub": "signals/gconf-funnel-pattern.md",
+          "tags": [
+            [
+              "teal",
+              "long"
+            ]
+          ]
         },
         {
           "id": "b78",
           "title": "Три тира участия: базовый (GConf-уровень / новички) + текущий BLR — разные точки входа, одна среда",
-          "sub": "signals/gconf-funnel-pattern.md"
+          "sub": "signals/gconf-funnel-pattern.md",
+          "tags": [
+            [
+              "teal",
+              "long"
+            ]
+          ]
         },
         {
           "id": "b79",
           "title": "Публичный канал — решить стратегически: оставить витриной или строить как самостоятельную точку роста (сейчас трафик только с личного бренда Димы)",
-          "sub": "signals/channel-is-showcase.md"
+          "sub": "signals/channel-is-showcase.md",
+          "done": true
         }
       ]
     },
@@ -3351,7 +3633,12 @@
       "sub": "методология, структура, что нужно от Ксении. после — Ксения проектирует."
     }
   ],
-  "waiting": [],
+  "waiting": [
+    {
+      "from": "юля",
+      "title": "Weekly публичные демо — внешние спикеры, 3 слота по 15 мин, воронка acquisition"
+    }
+  ],
   "metrics": [
     {
       "label": "churn сейчас",
