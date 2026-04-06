@@ -1,6 +1,6 @@
 {
-  "updated": "2026-04-03",
-  "updated_at": "2026-04-03T12:00:00+03:00",
+  "updated": "2026-04-06",
+  "updated_at": "2026-04-06T09:00:00+03:00",
   "last_collected_ids": {
     "-1003478224837": 129,
     "-1003590719886": 1436,
@@ -1804,6 +1804,12 @@
       "action": "updated",
       "id": "t132",
       "title": "переименован из t115: Анонс чекина Димы 6 апр — запланировать в планировщике"
+    },
+    {
+      "date": "2026-04-06",
+      "action": "added",
+      "id": "t133",
+      "title": "Обновить скиллы /broadcast и /announce: объединить broadcast+schedule, исправить API формат, добавить правила UTC и токена"
     }
   ],
   "inbox": [],
@@ -2271,6 +2277,23 @@
             [
               "amber",
               "3 апреля"
+            ]
+          ],
+          "done": false
+        },
+        {
+          "id": "t133",
+          "title": "Обновить скиллы /broadcast и /announce: объединить broadcast+schedule, исправить API формат, добавить правила UTC и токена",
+          "sub": "1) /broadcast поглощает /schedule — одно сообщение сейчас или по времени через scheduler API (никогда cron). 2) /announce — исправить API: поля hour_text/three_min_text (не reminders[]). 3) Везде: токен из Railway vars, сервер UTC мск=UTC+3. 4) Удалить schedule.md из ~/.claude/commands/",
+          "priority": "mid",
+          "tags": [
+            [
+              "teal",
+              "эта неделя"
+            ],
+            [
+              "gray",
+              "бот"
             ]
           ],
           "done": false
