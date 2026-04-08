@@ -1,6 +1,6 @@
 {
   "updated": "2026-04-08",
-  "updated_at": "2026-04-08T16:26:55",
+  "updated_at": "2026-04-08T18:04:37",
   "last_collected_ids": {
     "-1003478224837": 129,
     "-1003590719886": 1436,
@@ -2888,6 +2888,16 @@
           ],
           "done": false,
           "priority": "mid"
+        },
+        {
+          "id": "t158",
+          "title": "Артефакт Макс Янукович — contact-without-belief.md | путь: Projects/06_BLR/Raw/video-recordings/2026-04-08_max-yanukovich/ | формат: md + инструкция для AI, 7 разделов пошагово, работает в claude/chatgpt/любом AI | шаблон для будущих звонков",
+          "priority": "medium",
+          "done": true,
+          "tags": [
+            "контент",
+            "артефакт"
+          ]
         }
       ]
     },
