@@ -10,6 +10,7 @@ import json
 import logging
 from collections import defaultdict
 from datetime import datetime, timedelta
+import time
 
 import gspread
 from google.oauth2.service_account import Credentials
@@ -51,6 +52,7 @@ FIELD_TO_COL = {field: idx + 1 for idx, (_, field) in enumerate(COLUMNS)}
 
 FOLLOWUP_DAYS = 4  # Applied + N days without response = needs_followup
 MAX_SHEET_CELL_CHARS = 49000
+CACHE_TTL_SECONDS = 60
 
 HEADER_ALIASES: dict[str, list[str]] = {
     "role": ["Title", "Job Title"],
@@ -142,6 +144,7 @@ class SheetsService:
     def __init__(self):
         self._cache: list[Job] = []
         self._cache_valid = False
+        self._cache_loaded_at = 0.0
 
     @staticmethod
     def _resolve_field_columns(headers: list[str]) -> dict[str, int]:
@@ -155,9 +158,11 @@ class SheetsService:
 
     def invalidate_cache(self):
         self._cache_valid = False
+        self._cache_loaded_at = 0.0
 
     def get_all_jobs(self) -> list[Job]:
-        if self._cache_valid:
+        cache_age = time.monotonic() - self._cache_loaded_at if self._cache_loaded_at else None
+        if self._cache_valid and cache_age is not None and cache_age < CACHE_TTL_SECONDS:
             return self._cache
 
         ws = _get_worksheet()
@@ -203,6 +208,7 @@ class SheetsService:
 
         self._cache = jobs
         self._cache_valid = True
+        self._cache_loaded_at = time.monotonic()
         return jobs
 
     def get_job_by_row(self, row_num: int) -> Job | None:
