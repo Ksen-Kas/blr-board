@@ -1,6 +1,6 @@
 {
   "updated": "2026-04-09",
-  "updated_at": "2026-04-09T17:55:00",
+  "updated_at": "2026-04-09T18:05:00",
   "last_collected_ids": {
     "-1003478224837": 129,
     "-1003590719886": 1436,
@@ -9,6 +9,24 @@
     "brainloveandrobots": 31
   },
   "log": [
+    {
+      "date": "2026-04-09",
+      "action": "done",
+      "id": "t152",
+      "title": ""
+    },
+    {
+      "date": "2026-04-09",
+      "action": "done",
+      "id": "t154",
+      "title": ""
+    },
+    {
+      "date": "2026-04-09",
+      "action": "done",
+      "id": "f20",
+      "title": ""
+    },
     {
       "date": "2026-04-08",
       "action": "done",
@@ -2564,7 +2582,7 @@
           "tribute"
         ]
       ],
-      "done": false
+      "done": true
     },
     {
       "id": "f21",
@@ -2794,7 +2812,7 @@
           "title": "Бот: доступ к материалам для участников с истёкшей подпиской",
           "sub": "нужно для @maria_bespalchenko и @aterebilina — разблокирует waiting",
           "priority": "mid",
-          "done": false
+          "done": true
         },
         {
           "id": 161,
@@ -3256,7 +3274,7 @@
           "id": "t152",
           "title": "Дайджест недели — первый сегодня, дальше по понедельникам",
           "priority": "fire",
-          "done": false
+          "done": true
         },
         {
           "id": "t153",
@@ -3301,7 +3319,7 @@
               "протагонисты"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "fire"
         },
         {
@@ -3355,7 +3373,12 @@
           "id": "t161",
           "title": "💌 Рассылка про подписки: связаться с 5 кому не дошло через бот",
           "sub": "@Antizerskaya, @justvitta, @strategist_mind, @yuliadankopekdag, @akulitski (уже написали лично 09.04). Бот заблокирован — написать в личку через @Ksen_Kas",
-          "tags": [["amber", "эта неделя"]],
+          "tags": [
+            [
+              "amber",
+              "эта неделя"
+            ]
+          ],
           "done": false,
           "priority": "high"
         },
