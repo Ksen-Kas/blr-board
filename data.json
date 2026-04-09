@@ -1,6 +1,6 @@
 {
   "updated": "2026-04-09",
-  "updated_at": "2026-04-09T13:16:48",
+  "updated_at": "2026-04-09T13:29:44",
   "last_collected_ids": {
     "-1003478224837": 129,
     "-1003590719886": 1436,
@@ -2771,6 +2771,16 @@
           "sub": "нужно для @maria_bespalchenko и @aterebilina — разблокирует waiting",
           "priority": "mid",
           "done": false
+        },
+        {
+          "id": 161,
+          "title": "MCP стабильность: добавить healthcheck — алерт если сервис упал до начала сессии Claude",
+          "priority": "mid",
+          "done": false,
+          "tags": [
+            "infra",
+            "mcp"
+          ]
         }
       ]
     },
