@@ -1,6 +1,6 @@
 {
-  "updated": "2026-04-09",
-  "updated_at": "2026-04-09T21:30:00",
+  "updated": "2026-04-10",
+  "updated_at": "2026-04-10T12:00:00",
   "last_collected_ids": {
     "-1003478224837": 129,
     "-1003590719886": 1436,
@@ -9,6 +9,12 @@
     "brainloveandrobots": 31
   },
   "log": [
+    {
+      "date": "2026-04-10",
+      "action": "added",
+      "id": "t162",
+      "title": "База знаний BLR задеплоена на Railway: https://blr-knowledge-base-production.up.railway.app"
+    },
     {
       "date": "2026-04-09",
       "action": "done",
@@ -3189,6 +3195,17 @@
           "title": "Стратегия для 114 участников которые не запустили бота",
           "done": false,
           "priority": "high"
+        },
+        {
+          "id": "t162",
+          "title": "База знаний BLR — показать Юле, согласовать до 13.04",
+          "sub": "Задеплоена на Railway: https://blr-knowledge-base-production.up.railway.app · GitHub: Ksen-Kas/blr-knowledge-base · Лендинг + KB со sidebar, связаны кнопкой «база знаний»",
+          "priority": "high",
+          "done": false,
+          "tags": [
+            ["red", "горит"],
+            ["teal", "KB"]
+          ]
         },
         {
           "id": "t157",
