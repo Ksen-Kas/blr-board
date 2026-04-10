@@ -1,6 +1,6 @@
 {
   "updated": "2026-04-10",
-  "updated_at": "2026-04-10T16:20:00",
+  "updated_at": "2026-04-10T18:00:00",
   "last_collected_ids": {
     "-1003478224837": 129,
     "-1003590719886": 1436,
@@ -9,6 +9,12 @@
     "brainloveandrobots": 31
   },
   "log": [
+    {
+      "date": "2026-04-10",
+      "action": "done",
+      "id": "t165",
+      "title": "Удалён Ksen-Kas/blr-dashboard"
+    },
     {
       "date": "2026-04-10",
       "action": "added",
@@ -3030,7 +3036,7 @@
           "title": "Удалить старый репо Ksen-Kas/blr-dashboard — код переехал в matsako/blr-lms/dashboard/",
           "sub": "Railway и local remote уже обновлены. Осталось: удалить Ksen-Kas/blr-dashboard на GitHub",
           "priority": "low",
-          "done": false
+          "done": true
         }
       ]
     },
