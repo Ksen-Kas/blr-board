@@ -1,6 +1,6 @@
 {
-  "updated": "2026-04-10",
-  "updated_at": "2026-04-10T21:09:34",
+  "updated": "2026-04-11",
+  "updated_at": "2026-04-11T12:00:00",
   "last_collected_ids": {
     "-1003478224837": 129,
     "-1003590719886": 1436,
@@ -9,6 +9,18 @@
     "brainloveandrobots": 31
   },
   "log": [
+    {
+      "date": "2026-04-11",
+      "action": "done",
+      "id": "t162",
+      "title": "База знаний BLR — показать Юле, согласовать до 13.04"
+    },
+    {
+      "date": "2026-04-11",
+      "action": "added",
+      "id": "t178-t179",
+      "title": "Alumni доступ (миграция БД) + KB артефакты из private TG"
+    },
     {
       "date": "2026-04-10",
       "action": "added",
@@ -3427,17 +3439,29 @@
           "title": "База знаний BLR — показать Юле, согласовать до 13.04",
           "sub": "Задеплоена на Railway: https://blr-knowledge-base-production.up.railway.app · GitHub: Ksen-Kas/blr-knowledge-base · Лендинг + KB со sidebar, связаны кнопкой «база знаний»",
           "priority": "high",
-          "done": false,
+          "done": true,
           "tags": [
-            [
-              "red",
-              "горит"
-            ],
             [
               "teal",
               "KB"
             ]
           ]
+        },
+        {
+          "id": "t178",
+          "title": "Alumni доступ — запустить миграцию БД в Railway",
+          "sub": "Код задеплоен 11.04. Нужно: Railway → Variables → DATABASE_URL → npx tsx scripts/migrate-alumni.ts. Добавляет community_alumni + subscription_ended_at в bot_users",
+          "priority": "high",
+          "done": false,
+          "tags": [["teal", "KB"], ["amber", "ручное действие"]]
+        },
+        {
+          "id": "t179",
+          "title": "KB: артефакты из private TG → публичные страницы",
+          "sub": "Звонки Health OS: артефакты сейчас ссылаются на закрытый TG-канал. Нужно создать публичные страницы в KB с описаниями артефактов (Automoy skill Тони, medical OS Маши и др.)",
+          "priority": "mid",
+          "done": false,
+          "tags": [["teal", "KB"]]
         },
         {
           "id": "t157",
