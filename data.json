@@ -1,6 +1,6 @@
 {
   "updated": "2026-04-11",
-  "updated_at": "2026-04-11T12:23:55",
+  "updated_at": "2026-04-11T14:10:00",
   "last_collected_ids": {
     "-1003478224837": 129,
     "-1003590719886": 1436,
@@ -2835,6 +2835,23 @@
         [
           "red",
           "горит"
+        ]
+      ],
+      "done": false,
+      "priority": "fire"
+    },
+    {
+      "id": "f36",
+      "title": "📖 Прочитать: AI Mindset — коммуникационный разбор (кейсы, структура, engagement)",
+      "sub": "Synthesis/ecosystem/ai-mindset-comms-analysis.md. Ключевое: их кейсы = часть анонсов (CTA), не отдельный формат. Зазор BLR: голос участника + смысл в финале вместо ссылки.",
+      "tags": [
+        [
+          "red",
+          "горит"
+        ],
+        [
+          "teal",
+          "COMMS OS"
         ]
       ],
       "done": false,
