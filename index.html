@@ -363,6 +363,64 @@
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px;
   }
+
+  .pulse-accent {
+    border-top: 2px solid;
+    border-image: linear-gradient(90deg, var(--purple), var(--teal)) 1;
+    padding-top: 12px;
+  }
+  .pulse-highlight {
+    background: var(--bg2);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin-bottom: 4px;
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.5;
+  }
+  .pulse-highlight::before {
+    content: '·';
+    margin-right: 8px;
+    color: var(--muted);
+    font-weight: 700;
+  }
+  .trend-bar-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    margin-bottom: 4px;
+  }
+  .trend-bar-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+  }
+  .trend-bar {
+    height: 24px;
+    border-radius: 3px;
+    background: var(--teal);
+    opacity: 0.6;
+    transition: width 0.3s;
+  }
+  .trend-bar.current {
+    background: var(--purple);
+    opacity: 1;
+  }
+  .trend-bar-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-align: center;
+  }
+  .trend-bar-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text);
+    text-align: center;
+  }
 </style>
 </head>
 <body>
@@ -384,6 +442,7 @@
   <button class="tab" onclick="switchTab('backlog')">бэклог</button>
   <button class="tab" onclick="switchTab('goals')">юля</button>
   <button class="tab" onclick="switchTab('status')">статус</button>
+  <button class="tab" onclick="switchTab('pulse')">📊 пульс</button>
 </div>
 
 <div class="content" id="content-blr">
@@ -416,6 +475,9 @@
     <div class="section-label">горизонты</div>
     <div id="horizons-list"></div>
   </div>
+  <div class="view" id="view-pulse">
+    <div id="pulse-content"></div>
+  </div>
 </div>
 
 <div class="content" id="content-cvlab" style="display:none;">
@@ -442,6 +504,9 @@
   </button>
   <button class="nav-item" onclick="switchTab('status')" id="nav-status">
     <span class="nav-icon">≡</span>статус
+  </button>
+  <button class="nav-item" onclick="switchTab('pulse')" id="nav-pulse">
+    <span class="nav-icon">📊</span>пульс
   </button>
 </nav>
 
@@ -610,6 +675,67 @@ function renderBacklog() {
     </div>`).join('');
 }
 
+function renderPulse() {
+  const pulse = DATA.pulse;
+  if (!pulse) { document.getElementById('pulse-content').innerHTML = '<div class="loading">нет данных pulse</div>'; return; }
+  const cur = pulse.current;
+  const weeks = pulse.weeks || [];
+
+  // Block 1: metrics
+  const metricsHTML = `
+    <div class="section-label">неделя в цифрах</div>
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-label">просмотры канала</div>
+        <div class="metric-val" style="color:var(--teal)">${cur.views}</div>
+        <div class="metric-sub">среднее за неделю</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">активность чата</div>
+        <div class="metric-val" style="color:var(--amber)">${cur.chat_authors}</div>
+        <div class="metric-sub">${cur.chat_messages} сообщений</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">события</div>
+        <div class="metric-val" style="color:var(--purple)">${cur.events ? cur.events.length : 0}</div>
+        <div class="metric-sub">${cur.events && cur.events.length ? cur.events.join(', ') : 'нет событий'}</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">churn-риск</div>
+        <div class="metric-val" style="color:var(--red)">${cur.churn_risk || '—'}</div>
+        <div class="metric-sub">человек в зоне</div>
+      </div>
+    </div>`;
+
+  // Block 2: highlights
+  const highlightsHTML = `
+    <div class="section-label">что было</div>
+    ${cur.highlights.map(h => `<div class="pulse-highlight">${h}</div>`).join('')}`;
+
+  // Block 3: trend
+  const allWeeks = [...weeks, cur];
+  const maxViews = Math.max(...allWeeks.map(w => w.views));
+  const trendBars = allWeeks.map((w, i) => {
+    const pct = maxViews > 0 ? Math.round(w.views / maxViews * 100) : 0;
+    const isCurrent = i === allWeeks.length - 1;
+    return `
+      <div class="trend-bar-col">
+        <div class="trend-bar-val">${w.views}</div>
+        <div class="trend-bar ${isCurrent ? 'current' : ''}" style="width:${pct}%;min-width:4px;"></div>
+        <div class="trend-bar-label">${w.label}</div>
+      </div>`;
+  }).join('');
+
+  const trendHTML = `
+    <div class="section-label">тренд просмотров</div>
+    <div class="goal-card" style="padding:14px 12px;">
+      <div class="trend-bar-row">${trendBars}</div>
+    </div>`;
+
+  document.getElementById('pulse-content').innerHTML =
+    '<div class="pulse-accent">' + metricsHTML + highlightsHTML + trendHTML + '</div>';
+}
+
 function renderCvlab() {
   const cats = DATA.cvlab || [];
   const clients = cats.find(c => c.category === 'активные клиенты');
@@ -656,7 +782,7 @@ function switchProject(proj) {
 }
 
 function render() {
-  renderInbox(); renderFire(); renderTasks(); renderBacklog(); renderCvlab(); renderGoals(); renderStatus(); syncBadge();
+  renderInbox(); renderFire(); renderTasks(); renderBacklog(); renderCvlab(); renderGoals(); renderStatus(); renderPulse(); syncBadge();
   const d = DATA.updated_at || DATA.updated;
   if (d && d.includes('T')) {
     const dt = new Date(d);

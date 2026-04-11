@@ -4953,6 +4953,72 @@
       ]
     }
   ],
+  "pulse": {
+    "current_week": "2026-04-07",
+    "weeks": [
+      {
+        "label": "W1",
+        "start": "2026-02-03",
+        "end": "2026-02-09",
+        "views": 150,
+        "chat_authors": 3,
+        "chat_messages": 40,
+        "events": [],
+        "event_regs": 0,
+        "highlights": ["подготовка к открытию спринта Health OS"]
+      },
+      {
+        "label": "W2",
+        "start": "2026-02-10",
+        "end": "2026-02-16",
+        "views": 160,
+        "chat_authors": 5,
+        "chat_messages": 55,
+        "events": ["открытие Health Sprint"],
+        "event_regs": 26,
+        "highlights": ["старт Health Sprint", "26 регистраций на открытие"]
+      },
+      {
+        "label": "W3",
+        "start": "2026-02-17",
+        "end": "2026-02-23",
+        "views": 140,
+        "chat_authors": 4,
+        "chat_messages": 45,
+        "events": ["Влад Куклев WHOOP+AI", "костёр с Сашей"],
+        "event_regs": 36,
+        "highlights": ["Влад показал WHOOP+AI, 22 рег", "костёр с Сашей, 14 рег"]
+      },
+      {
+        "label": "W4",
+        "start": "2026-02-24",
+        "end": "2026-02-28",
+        "views": 120,
+        "chat_authors": 3,
+        "chat_messages": 35,
+        "events": ["Маша+Тоня: Второй мозг", "костёр"],
+        "event_regs": 33,
+        "highlights": ["\"Второй мозг\" тема зацепила, 22 рег", "views падают — конец месяца"]
+      }
+    ],
+    "current": {
+      "label": "сейчас",
+      "start": "2026-04-07",
+      "end": "2026-04-13",
+      "views": 55,
+      "chat_authors": 4,
+      "chat_messages": 30,
+      "events": ["костёр Саша 10.04", "эфир Макс 08.04"],
+      "event_regs": 0,
+      "churn_risk": 19,
+      "highlights": [
+        "запуск Knowledge Base",
+        "аналитика AI Mindset Sprint",
+        "Radical Alignment идёт",
+        "views низкие — нужен контентный push"
+      ]
+    }
+  },
   "cvlab": [
     {
       "category": "активные клиенты",
