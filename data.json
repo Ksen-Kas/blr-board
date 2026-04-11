@@ -1,6 +1,6 @@
 {
   "updated": "2026-04-11",
-  "updated_at": "2026-04-11T21:30:00",
+  "updated_at": "2026-04-11T22:00:00",
   "last_collected_ids": {
     "-1003478224837": 129,
     "-1003590719886": 1436,
@@ -3490,6 +3490,17 @@
               "amber",
               "ручное действие"
             ]
+          ]
+        },
+        {
+          "id": "t180",
+          "title": "Запросить у Юли Tribute API Key (Creator Dashboard → Settings → API Keys)",
+          "sub": "Нужен для автосбора данных в dashboard. Ксения — менеджер, не владелец. Владелец Tribute — Юля. Запросить пн 14.04.",
+          "priority": "high",
+          "done": false,
+          "tags": [
+            ["purple", "автоматизация"],
+            ["amber", "ждёт Юлю"]
           ]
         },
         {
