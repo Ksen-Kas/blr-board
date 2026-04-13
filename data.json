@@ -11,6 +11,10 @@
   "log": [
     {
       "date": "2026-04-13",
+      "entry": "crew ИТОГИ БОЛЬШОЙ СЕССИИ: Фазы 0-4 прото-align (welcome-improvements → main), накатка на prod Supabase + миграции + backfill 80 юзеров, UX итерации по тестированию (S1 button, S6 simplify, hub page, menu button «blr хаб», reply keyboard как sales bot, weekly news flow, community welcome flow с оператор-нотификацией + deep link, ToV правила: без жаргона, короткие тире). Коммиты 86df134..5a9bba7. Прод активен."
+    },
+    {
+      "date": "2026-04-13",
       "entry": "crew НАКАТКА ЗАВЕРШЕНА: welcome-improvements → main, Railway prod SUCCESS. Миграции: calendar + onboarding_completed_at + changelog_seen_at. Backfill 80 существующих community. Все mini app routes HTTP 200."
     },
     {
@@ -3200,6 +3204,70 @@
             [
               "red",
               "безопасность"
+            ],
+            [
+              "purple",
+              "бот"
+            ]
+          ]
+        },
+        {
+          "id": "t187",
+          "title": "Hub page / + menu button «blr хаб»",
+          "sub": "Новая hub страница на root `/` — title, статус спринта, weekly news banner, 3 карточки (календарь/артефакты/чат и канал). Menu button Telegram выставлен на type=web_app text=«blr хаб». Reply keyboard (S6/S17b) — 4 nav кнопки, без дублирования. Все тексты бота с короткими тире по новому ToV правилу. [done 2026-04-13, commits 3e32ea3..5a9bba7]",
+          "priority": "med",
+          "done": true,
+          "tags": [
+            [
+              "purple",
+              "бот"
+            ],
+            [
+              "orange",
+              "прототип"
+            ]
+          ]
+        },
+        {
+          "id": "t188",
+          "title": "Weekly news: форвард из канала + карточка",
+          "sub": "Оператор форвардит пост из @brainloveandrobots (приватный) → бот сохраняет в weekly_news → карточка с баннером monday-start.png отображается в hub и calendar miniapp. Fallback команда /news <url> если forward не проходит. Deactivate prev + insert new. [done 2026-04-13, commits 4d36975, 432e0c0]",
+          "priority": "med",
+          "done": true,
+          "tags": [
+            [
+              "purple",
+              "бот"
+            ]
+          ]
+        },
+        {
+          "id": "t189",
+          "title": "Community payment welcome flow",
+          "sub": "Tribute community webhook теперь (1) шлёт auto welcome через sales bot с deep link, (2) best-effort DM через participant bot, (3) уведомление в оператор-группу -5105250695 с готовым текстом в <pre> блоке для copy-paste. Шаблон в lib/welcome-templates.ts. Deep link https://t.me/brainloverobotsbot?start=welcome. [done 2026-04-13, commits 9a325e6..5a9bba7]",
+          "priority": "high",
+          "done": true,
+          "tags": [
+            [
+              "purple",
+              "бот"
+            ],
+            [
+              "blue",
+              "тексты"
+            ]
+          ]
+        },
+        {
+          "id": "t190",
+          "title": "Hotfix: onboarding_progress missing columns",
+          "sub": "При первом тестировании S1 welcome на prod бот молчал — в БД не хватало started_at, day1/2/3_sent_at колонок (были в schema.ts но никогда не мигрировали). ALTER TABLE добавлено через railway run ручной миграцией. Срочный фикс по ходу тестирования. [done 2026-04-13]",
+          "priority": "high",
+          "done": true,
+          "tags": [
+            [
+              "red",
+              "хотфикс"
             ],
             [
               "purple",
