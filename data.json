@@ -11,6 +11,10 @@
   "log": [
     {
       "date": "2026-04-13",
+      "entry": "crew НАКАТКА ЗАВЕРШЕНА: welcome-improvements → main, Railway prod SUCCESS. Миграции: calendar + onboarding_completed_at + changelog_seen_at. Backfill 80 существующих community. Все mini app routes HTTP 200."
+    },
+    {
+      "date": "2026-04-13",
       "entry": "crew закрытие сессии: Фазы 0-4 бот готовы к накатке (commit 8a30d33), compliance audit 16/18 match (S8 AI-коуч 3-я карточка flagged), прототип HTML наведён (sidebar 6 групп, S11/S14 в архив, порядок flow, S1 → \"0. Welcome чат\"). Оператор накатывает сам."
     },
     {
@@ -3172,9 +3176,9 @@
         {
           "id": "t185",
           "title": "Фаза 5: деплой welcome-improvements на прод",
-          "sub": "Merge welcome-improvements → main. Railway vars: LUMA_API_KEY. Миграции: migrate-calendar.ts + onboarding_completed_at + changelog_seen_at. Smoke tests: /test_community, /test_lab, /events, новый S1→онбординг→S5 флоу. Чеклист в blr-bot/DEPLOY.md. [2026-04-13: код готов на welcome-improvements (6 коммитов: 86df134, efbec63, b73ae7c, 01ed8a5, 8a30d33), compliance audit 16/18 match, прототип наведён. Оператор делает merge + Railway vars + миграции + backfill руками.]",
+          "sub": "Merge welcome-improvements → main. Railway vars: LUMA_API_KEY. Миграции: migrate-calendar.ts + onboarding_completed_at + changelog_seen_at. Smoke tests: /test_community, /test_lab, /events, новый S1→онбординг→S5 флоу. Чеклист в blr-bot/DEPLOY.md. [2026-04-13: код готов на welcome-improvements (6 коммитов: 86df134, efbec63, b73ae7c, 01ed8a5, 8a30d33), compliance audit 16/18 match, прототип наведён. Оператор делает merge + Railway vars + миграции + backfill руками.] [ACCRUED 2026-04-13: Railway LUMA vars set, 3 миграции + backfill 80 rows прогнан, merge commit 2b44f21, push origin main, Railway SUCCESS, /onboarding/calendar/artifacts HTTP 200]",
           "priority": "high",
-          "done": false,
+          "done": true,
           "tags": [
             [
               "purple",
