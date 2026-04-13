@@ -1,6 +1,6 @@
 {
   "updated": "2026-04-13",
-  "updated_at": "2026-04-13T11:29:06+00:00",
+  "updated_at": "2026-04-13",
   "last_collected_ids": {
     "-1003478224837": 129,
     "-1003590719886": 1436,
@@ -9,6 +9,10 @@
     "brainloveandrobots": 31
   },
   "log": [
+    {
+      "date": "2026-04-13",
+      "entry": "crew ФИНАЛ БОЛЬШОЙ СЕССИИ: Phase 2.1 метрики бота (bot_events + live dashboard + alumni date-gated access) + welcome flow URL hotfix + финальная документация. blr-bot коммиты 688b416, 3d99c83 + dashboard e1d0039. Prod работает. Сессия закрыта."
+    },
     {
       "date": "2026-04-13",
       "action": "added",
@@ -3309,6 +3313,40 @@
           "id": "t190",
           "title": "Hotfix: onboarding_progress missing columns",
           "sub": "При первом тестировании S1 welcome на prod бот молчал — в БД не хватало started_at, day1/2/3_sent_at колонок (были в schema.ts но никогда не мигрировали). ALTER TABLE добавлено через railway run ручной миграцией. Срочный фикс по ходу тестирования. [done 2026-04-13]",
+          "priority": "high",
+          "done": true,
+          "tags": [
+            [
+              "red",
+              "хотфикс"
+            ],
+            [
+              "purple",
+              "бот"
+            ]
+          ]
+        },
+        {
+          "id": "t191",
+          "title": "Phase 2.1: bot_events + live dashboard + alumni access",
+          "sub": "Фаза метрик бота: новая таблица bot_events (migration применена), logBotEvent helper, инструментация ~10 мест в webhook. Dashboard: getLiveOnboardingFunnel + getBotUsageStats в stats.ts, /dashboard/onboarding → live воронка, /dashboard/pulse → новая секция Bot Usage. Alumni access: date-gated фильтрация артефактов по периоду подписки (overlap с cohort period). Фикс welcome flow URL bug (топик-ссылки заменены на invite link после отзыва an_shup). blr-bot commits 3d99c83, 688b416. blr-lms commit e1d0039. ВСЁ НА PROD.",
+          "priority": "high",
+          "done": true,
+          "tags": [
+            [
+              "purple",
+              "бот"
+            ],
+            [
+              "green",
+              "дашборд"
+            ]
+          ]
+        },
+        {
+          "id": "t192",
+          "title": "Welcome flow URL bug hotfix",
+          "sub": "Корень: прямые t.me/c/<chatid>/<topic>/<msg> не работают у новых юзеров без членства в чате. Фикс: везде заменены на invite link https://t.me/+xltqgeopLh8xNWRi. Места: sendS17b, /help, onboarding step 3/5/S13. Прототип тоже обновлён. Reported by @an_shup. blr-bot 3d99c83.",
           "priority": "high",
           "done": true,
           "tags": [
