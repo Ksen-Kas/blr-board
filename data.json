@@ -1,6 +1,6 @@
 {
   "updated": "2026-04-13",
-  "updated_at": "2026-04-13T14:03:01+00:00",
+  "updated_at": "2026-04-13T11:06:02+00:00",
   "last_collected_ids": {
     "-1003478224837": 129,
     "-1003590719886": 1436,
@@ -9,6 +9,12 @@
     "brainloveandrobots": 31
   },
   "log": [
+    {
+      "date": "2026-04-13",
+      "action": "done",
+      "id": "f34",
+      "title": "Написать Мико Яну — добавить в протагонисты, чатик"
+    },
     {
       "date": "2026-04-13",
       "entry": "crew ИТОГИ БОЛЬШОЙ СЕССИИ: Фазы 0-4 прото-align (welcome-improvements → main), накатка на prod Supabase + миграции + backfill 80 юзеров, UX итерации по тестированию (S1 button, S6 simplify, hub page, menu button «blr хаб», reply keyboard как sales bot, weekly news flow, community welcome flow с оператор-нотификацией + deep link, ToV правила: без жаргона, короткие тире). Коммиты 86df134..5a9bba7. Прод активен."
@@ -2872,7 +2878,7 @@
           "горит"
         ]
       ],
-      "done": false,
+      "done": true,
       "priority": "fire"
     },
     {
