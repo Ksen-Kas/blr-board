@@ -1,6 +1,6 @@
 {
   "updated": "2026-04-13",
-  "updated_at": "2026-04-13T11:06:02+00:00",
+  "updated_at": "2026-04-13T14:06:57+00:00",
   "last_collected_ids": {
     "-1003478224837": 129,
     "-1003590719886": 1436,
@@ -5174,6 +5174,10 @@
     {
       "from": "бот",
       "title": "Вернуться к @maria_bespalchenko и @aterebilina — когда бот даст доступ к материалам для тех у кого истекла подписка"
+    },
+    {
+      "from": "дашборд",
+      "title": "Оплата не получена — 5 чел: @elena_bolotnikova 04 апр · @danya_pil 06 апр · @polisskaya 07 апр · @brakheem 11 апр · @kondrinfo 11 апр"
     }
   ],
   "metrics": [
