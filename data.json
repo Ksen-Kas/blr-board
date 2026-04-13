@@ -11,6 +11,10 @@
   "log": [
     {
       "date": "2026-04-13",
+      "entry": "crew Фаза 2 бот: полная сверка с прототипом — онбординг 5 шагов (S2-S12), новый S6 main menu, S10 alumni, S17/S17b changelog tour, S12 \"→ куда дальше\" кнопка, calendar back кнопка, TabBar убран. Коммит b73ae7c."
+    },
+    {
+      "date": "2026-04-13",
       "entry": "crew Фаза 0+1 бот: Luma Calendar, KB кнопки off, S1 welcome + онбординг-хендшейк → S5, новый isFirstStart через onboarding_completed_at. Коммиты 86df134 + efbec63 на welcome-improvements, не смёржено."
     },
     {
@@ -3122,9 +3126,9 @@
         {
           "id": "t183",
           "title": "Фаза 2/3: синк текстов онбординга S2-S4b + welcome S6/S7/S10/S0",
-          "sub": "Тексты онбординг-шагов (S2 Radical Alignment, S3 календарь, S4 коуч-промпт, S4b AI-стек) и welcome-экранов по прототипу. S2 хардкод — текст Ксении про апрельский спринт. Убрать KB из body текстов. Перед исполнением — /blr-texts для финального OK.",
+          "sub": "Тексты онбординг-шагов (S2 Radical Alignment, S3 календарь, S4 коуч-промпт, S4b AI-стек) и welcome-экранов по прототипу. S2 хардкод — текст Ксении про апрельский спринт. Убрать KB из body текстов. Перед исполнением — /blr-texts для финального OK. [done 2026-04-13, commit b73ae7c]",
           "priority": "med",
-          "done": false,
+          "done": true,
           "tags": [
             [
               "purple",
