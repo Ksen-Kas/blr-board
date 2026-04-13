@@ -1,6 +1,6 @@
 {
-  "updated": "2026-04-12",
-  "updated_at": "2026-04-12T22:30:00+03:00",
+  "updated": "2026-04-13",
+  "updated_at": "2026-04-13",
   "last_collected_ids": {
     "-1003478224837": 129,
     "-1003590719886": 1436,
@@ -9,6 +9,10 @@
     "brainloveandrobots": 31
   },
   "log": [
+    {
+      "date": "2026-04-13",
+      "entry": "crew Фаза 0+1 бот: Luma Calendar, KB кнопки off, S1 welcome + онбординг-хендшейк → S5, новый isFirstStart через onboarding_completed_at. Коммиты 86df134 + efbec63 на welcome-improvements, не смёржено."
+    },
     {
       "date": "2026-04-12",
       "action": "added",
@@ -2910,8 +2914,14 @@
           "priority": "low",
           "done": false,
           "tags": [
-            ["purple", "автоматизация"],
-            ["gray", "позже"]
+            [
+              "purple",
+              "автоматизация"
+            ],
+            [
+              "gray",
+              "позже"
+            ]
           ]
         },
         {
@@ -3091,6 +3101,95 @@
           ],
           "done": false,
           "priority": "mid"
+        },
+        {
+          "id": "t182",
+          "title": "Фаза 1: S1 welcome + хендшейк mini app → S5",
+          "sub": "Новый экран S1 в webhook/route.ts с кнопкой «→ давай начнём» открывающей онбординг mini app. Хендшейк /api/onboarding/finish: при завершении mini app бот шлёт S5 «я здесь» в чат. Новый isFirstStart через onboarding_completed_at вместо created_at<30s. Делегация Codex CLI. Миграция bot_users.onboarding_completed_at. [done 2026-04-13, commit efbec63, коммит Фазы 0: 86df134]",
+          "priority": "high",
+          "done": true,
+          "tags": [
+            [
+              "purple",
+              "бот"
+            ],
+            [
+              "orange",
+              "прототип"
+            ]
+          ]
+        },
+        {
+          "id": "t183",
+          "title": "Фаза 2/3: синк текстов онбординга S2-S4b + welcome S6/S7/S10/S0",
+          "sub": "Тексты онбординг-шагов (S2 Radical Alignment, S3 календарь, S4 коуч-промпт, S4b AI-стек) и welcome-экранов по прототипу. S2 хардкод — текст Ксении про апрельский спринт. Убрать KB из body текстов. Перед исполнением — /blr-texts для финального OK.",
+          "priority": "med",
+          "done": false,
+          "tags": [
+            [
+              "purple",
+              "бот"
+            ],
+            [
+              "orange",
+              "прототип"
+            ],
+            [
+              "blue",
+              "тексты"
+            ]
+          ]
+        },
+        {
+          "id": "t184",
+          "title": "Фаза 4: новые экраны S7a/S7b/S8/S12/S17/S17b",
+          "sub": "S7a Radical Alignment с карточками звонков (кейсы из github.com/matsako/brain-love-and-robots), S7b Health OS, S8 промпты, S12 «познакомься с участниками», S17/S17b экскурсия для existing через changelog_seen_at. Миграция bot_users.changelog_seen_at. Делегация Codex параллельно.",
+          "priority": "med",
+          "done": false,
+          "tags": [
+            [
+              "purple",
+              "бот"
+            ],
+            [
+              "orange",
+              "прототип"
+            ]
+          ]
+        },
+        {
+          "id": "t185",
+          "title": "Фаза 5: деплой welcome-improvements на прод",
+          "sub": "Merge welcome-improvements → main. Railway vars: LUMA_API_KEY. Миграции: migrate-calendar.ts + onboarding_completed_at + changelog_seen_at. Smoke tests: /test_community, /test_lab, /events, новый S1→онбординг→S5 флоу. Чеклист в blr-bot/DEPLOY.md.",
+          "priority": "high",
+          "done": false,
+          "tags": [
+            [
+              "purple",
+              "бот"
+            ],
+            [
+              "red",
+              "деплой"
+            ]
+          ]
+        },
+        {
+          "id": "t186",
+          "title": "Ротация SALES_BOT_TOKEN + OPS_BOT_TOKEN в BotFather",
+          "sub": "После деплоя welcome-improvements. Утекли в git history (коммиты e3a964f, 49acd35, ae95be2). @BotFather → /token → revoke/regenerate для @matskevichaibot и @blr_ops_bot. Обновить в Railway Variables (prod + staging). Переустановить webhook.",
+          "priority": "high",
+          "done": false,
+          "tags": [
+            [
+              "red",
+              "безопасность"
+            ],
+            [
+              "purple",
+              "бот"
+            ]
+          ]
         }
       ]
     },
@@ -4256,6 +4355,23 @@
             [
               "teal",
               "long"
+            ]
+          ]
+        },
+        {
+          "id": "b85",
+          "title": "Видео-welcome для S1 прототипа",
+          "sub": "Короткое видео-note для welcome-экрана S1 (первый /start после оплаты). Поле WELCOME_VIDEO_NOTE_FILE_ID в .env бота. Нужно: записать видео, загрузить, достать file_id, положить в Railway env.",
+          "priority": "low",
+          "done": false,
+          "tags": [
+            [
+              "orange",
+              "прототип"
+            ],
+            [
+              "purple",
+              "бот"
             ]
           ]
         }
