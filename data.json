@@ -11,6 +11,10 @@
   "log": [
     {
       "date": "2026-04-13",
+      "entry": "crew Фаза 4 бот: artifacts mini app (lib/artifacts-data.ts, /artifacts route), S7/S7a/S7b/S8 state views, Health OS данные из github matsako/brain-love-and-robots (Влад/Тоня+Маша/Лёша/Катя + промпты), S13 skip flow, backfill-existing-users.ts. Коммит 01ed8a5. Smoke test — tsc чистый, все пути трассированы."
+    },
+    {
+      "date": "2026-04-13",
       "entry": "crew Фаза 2 бот: полная сверка с прототипом — онбординг 5 шагов (S2-S12), новый S6 main menu, S10 alumni, S17/S17b changelog tour, S12 \"→ куда дальше\" кнопка, calendar back кнопка, TabBar убран. Коммит b73ae7c."
     },
     {
@@ -3147,9 +3151,9 @@
         {
           "id": "t184",
           "title": "Фаза 4: новые экраны S7a/S7b/S8/S12/S17/S17b",
-          "sub": "S7a Radical Alignment с карточками звонков (кейсы из github.com/matsako/brain-love-and-robots), S7b Health OS, S8 промпты, S12 «познакомься с участниками», S17/S17b экскурсия для existing через changelog_seen_at. Миграция bot_users.changelog_seen_at. Делегация Codex параллельно.",
+          "sub": "S7a Radical Alignment с карточками звонков (кейсы из github.com/matsako/brain-love-and-robots), S7b Health OS, S8 промпты, S12 «познакомься с участниками», S17/S17b экскурсия для existing через changelog_seen_at. Миграция bot_users.changelog_seen_at. Делегация Codex параллельно. [done 2026-04-13, commit 01ed8a5, + backfill для existing users]",
           "priority": "med",
-          "done": false,
+          "done": true,
           "tags": [
             [
               "purple",
