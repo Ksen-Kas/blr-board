@@ -1,6 +1,6 @@
 {
   "updated": "2026-04-13",
-  "updated_at": "2026-04-13T12:00:00+03:00",
+  "updated_at": "2026-04-13T20:30:00+03:00",
   "last_collected_ids": {
     "-1003478224837": 129,
     "-1003590719886": 1436,
@@ -9,6 +9,10 @@
     "brainloveandrobots": 31
   },
   "log": [
+    {
+      "date": "2026-04-13",
+      "entry": "crew вечер: hotfixes в blr-bot — back-кнопка на главных экранах calendar/artifacts возвращает в hub (не закрывает mini app); все ссылки Health OS и RA на закрытый канал c/3478224837; welcome-текст обновлён под новый hub; fix фильтра календаря (limit Luma 20→100). Добавлена t200 — аналитика кликов внутри mini app (делаем завтра со свежей головой)."
+    },
     {
       "date": "2026-04-13",
       "entry": "crew: после встречи Ксении с Надин (13.04) добавлены задачи по боту (t193-t197) + стратегическая b95 про фокус «жизнь + AI». Фиксим 3 критичных бага (GitHub 404, Мика Ян+opening call, промпты disclaimer) прямо сейчас."
@@ -3473,6 +3477,23 @@
             [
               "purple",
               "бот"
+            ]
+          ]
+        },
+        {
+          "id": "t200",
+          "title": "Аналитика кликов внутри mini app (hub + разделы)",
+          "sub": "Инфраструктура готова: таблица bot_events + logBotEvent + POST /api/bot-events. Логируются только серверные события (webhook бота, callback-кнопки, команды). НЕ логируется что происходит ВНУТРИ mini app: hub / → какие разделы открывают, artifacts → какие звонки кликают (RA/Health OS/Prompts), calendar → кто открыл/сделал RSVP, course/[id] → кто открыл. Шаги: (1) 15 мин подумать какие вопросы задаём данным (churn? какие разделы живут? кто доходит до Health OS?); (2) клиентский helper lib/track.ts → POST /api/bot-events с initData; (3) инструментация: hub_open + section_click, artifact_view_change + artifact_click, calendar_open + rsvp_click, course_open; (4) простой dashboard-запрос в Supabase. Делаем со свежей головой 2026-04-14.",
+          "priority": "high",
+          "done": false,
+          "tags": [
+            [
+              "purple",
+              "бот"
+            ],
+            [
+              "amber",
+              "завтра"
             ]
           ]
         }
