@@ -1,6 +1,6 @@
 {
   "updated": "2026-04-14",
-  "updated_at": "2026-04-14T15:30:00+03:00",
+  "updated_at": "2026-04-14T17:00:00+03:00",
   "last_collected_ids": {
     "-1003478224837": 129,
     "-1003590719886": 1436,
@@ -9,6 +9,18 @@
     "brainloveandrobots": 31
   },
   "log": [
+    {
+      "date": "2026-04-14",
+      "action": "added",
+      "id": "f41",
+      "title": "Cases-ритм: запустить регулярный разбор кейсов участников — SESSION_cases готова"
+    },
+    {
+      "date": "2026-04-14",
+      "action": "done",
+      "id": "t173",
+      "title": "Встреча Юля+Дима+Ксения → понедельник 14:00 МСК (18:00 VN / 19:00 Кипр)"
+    },
     {
       "date": "2026-04-14",
       "entry": "crew f25 CV-LAB Андрей: проверены 4 ссылки от Андрея (10-14.04) в чате CV-LAB·Andrey, в pipeline ни одна не была. Выполнен gap-анализ эталон Canonical Resume INTL v1.2 vs 3 JD (V1 Falcon/KSA, V2 Sofomation/Harshit Lead RE, V3 Sofomation/Anand EOR). Подготовлен пакет откликов OUTREACH_PACKAGE_2026-04-14.md: CV базовый + 3 письма + 2 LinkedIn connect notes. V3 построено через gap-bridge (clientsпросил, но JD противоречит [NORTH_STAR] — unconventional). Canonical CV скопирован в Projects/05_CV-LAB/andrey_kasyanov/. Добавлена cv4 — стратег-разговор про реактивный режим."
@@ -3038,6 +3050,15 @@
       ],
       "done": false,
       "priority": "high"
+    },
+    {
+      "id": "f41",
+      "title": "Cases-ритм: запустить регулярный разбор кейсов участников — SESSION_cases готова",
+      "sub": "SESSION_cases.md в Projects/06_BLR/ — структура готова, запускаем ритм",
+      "tags": [],
+      "done": false,
+      "priority": "fire",
+      "when": "2026-04-15"
     }
   ],
   "tasks": [
@@ -4068,7 +4089,7 @@
           "title": "Встреча Юля+Дима+Ксения → понедельник 14:00 МСК (18:00 VN / 19:00 Кипр)",
           "sub": "звонок 10.04. Перенос регулярного слота. Ксения сдвигает понедельничную встречу",
           "tags": [],
-          "done": false,
+          "done": true,
           "priority": "mid"
         },
         {
