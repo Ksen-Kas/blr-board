@@ -1,6 +1,6 @@
 {
   "updated": "2026-04-14",
-  "updated_at": "2026-04-14T09:00:00+03:00",
+  "updated_at": "2026-04-14T15:30:00+03:00",
   "last_collected_ids": {
     "-1003478224837": 129,
     "-1003590719886": 1436,
@@ -9,6 +9,10 @@
     "brainloveandrobots": 31
   },
   "log": [
+    {
+      "date": "2026-04-14",
+      "entry": "crew f25 CV-LAB Андрей: проверены 4 ссылки от Андрея (10-14.04) в чате CV-LAB·Andrey, в pipeline ни одна не была. Выполнен gap-анализ эталон Canonical Resume INTL v1.2 vs 3 JD (V1 Falcon/KSA, V2 Sofomation/Harshit Lead RE, V3 Sofomation/Anand EOR). Подготовлен пакет откликов OUTREACH_PACKAGE_2026-04-14.md: CV базовый + 3 письма + 2 LinkedIn connect notes. V3 построено через gap-bridge (clientsпросил, но JD противоречит [NORTH_STAR] — unconventional). Canonical CV скопирован в Projects/05_CV-LAB/andrey_kasyanov/. Добавлена cv4 — стратег-разговор про реактивный режим."
+    },
     {
       "date": "2026-04-14",
       "entry": "crew: KB задеплоена на GitHub Pages — кейсы с формулой Юли (ситуация→AI→результат), реальные имена участников, for-whom секция, протагонисты убраны как отдельная секция. kb.html: YouTube-ссылки на звонки, лейблы обновлены. https://ksen-kas.github.io/blr-knowledge-base/ — готово к встрече 14:00 МСК."
@@ -5681,6 +5685,18 @@
           "id": "cv11",
           "title": "список материалов JOE + CV-LAB",
           "sub": "файл list-joe-cvlab-materials.md уже есть"
+        },
+        {
+          "id": "cv4",
+          "title": "Андрей: стратег-разговор — реактивный режим vs 70% direct outreach",
+          "sub": "Повод: 10-14.04 принёс 4 ссылки из агентств/LinkedIn feed, ни одна напрямую к оператору. Противоречит Job Search Strategy (70% direct outreach к hiring managers ADNOC/Aramco/QatarEnergy). Провести отдельный разговор после закрытия текущей пачки откликов: пересобрать weekly action plan, включить в ритм Monday research + Tuesday outreach, объяснить паттерн.",
+          "tags": [
+            [
+              "red",
+              "стратегия"
+            ]
+          ],
+          "priority": "high"
         }
       ]
     }
