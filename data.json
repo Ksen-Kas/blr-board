@@ -3150,8 +3150,9 @@
           "горит"
         ]
       ],
-      "done": false,
-      "priority": "fire"
+      "done": true,
+      "priority": "fire",
+      "date": "2026-04-16"
     },
     {
       "id": "f39",
