@@ -1,6 +1,6 @@
 {
-  "updated": "2026-04-15",
-  "updated_at": "2026-04-15T19:00:00+03:00",
+  "updated": "2026-04-16",
+  "updated_at": "2026-04-16T11:00:00+03:00",
   "last_collected_ids": {
     "-1003478224837": 129,
     "-1003590719886": 1436,
@@ -9,6 +9,48 @@
     "brainloveandrobots": 31
   },
   "log": [
+    {
+      "date": "2026-04-16",
+      "action": "done",
+      "id": "t191",
+      "title": "Мини-апп: события из Luma динамически — реализовано в проде (lib/luma.ts + /api/calendar/events)"
+    },
+    {
+      "date": "2026-04-16",
+      "action": "done",
+      "id": "t84",
+      "title": "Обновить AI-сетап лабы в боте — реализовано в проде (онбординг: Claude, Claude Code, Codex)"
+    },
+    {
+      "date": "2026-04-16",
+      "action": "done",
+      "id": "t193",
+      "title": "Mini app: контент новогоднего спринта (RA v1) — реализовано в проде (lib/artifacts-data.ts)"
+    },
+    {
+      "date": "2026-04-16",
+      "action": "done",
+      "id": "t194",
+      "title": "Mini app: апрельский спринт — реализовано в проде (lib/artifacts-data.ts, ra-opening + max-yanukovich)"
+    },
+    {
+      "date": "2026-04-16",
+      "action": "done",
+      "id": "t196",
+      "title": "Механика «кто-где» внутри бота — реализовано в проде (app/who-where + lib/who-where.ts)"
+    },
+    {
+      "date": "2026-04-16",
+      "action": "done",
+      "id": "t200",
+      "title": "Аналитика кликов в mini app — реализовано в проде (lib/track.ts + /api/bot-events)"
+    },
+    {
+      "date": "2026-04-16",
+      "action": "done",
+      "id": "b9",
+      "title": "Навигация в боте: ссылка на чат в подвале — реализовано в проде (MAIN_KEYBOARD + hub)"
+    },
     {
       "date": "2026-04-14",
       "action": "done",
@@ -3089,7 +3131,7 @@
           "title": "Мини-апп: события из Luma динамически",
           "sub": "Переписать блок «События» в lms/index.html — рендер полностью из Luma API (server.js /api/luma-events). Если в описании события есть TG-ссылка → показывать «читать →». Если нет — ссылки нет. Матч по имени убрать.",
           "priority": "mid",
-          "done": false,
+          "done": true,
           "tags": [["purple", "мини-апп"], ["teal", "завтра"]]
         },
         {
@@ -3163,7 +3205,7 @@
               "лаба"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "mid"
         },
         {
@@ -3471,7 +3513,7 @@
           "title": "Mini app: контент новогоднего спринта (Radical Alignment v1)",
           "sub": "Забрать артефакты и записи звонков с новогоднего спринта (декабрь 25 - январь 26), добавить в mini app /artifacts. Из переговоров с Надин: 'давай из новогоднего спринта заберём content тоже'. Источник материалов уточнить у Надин/из архива.",
           "priority": "med",
-          "done": false,
+          "done": true,
           "tags": [
             [
               "purple",
@@ -3488,7 +3530,7 @@
           "title": "Mini app: текущий апрельский спринт (по мере звонков)",
           "sub": "Добавлять звонки и артефакты текущего Radical Alignment спринта в /artifacts mini app по мере их проведения (8 апреля Макс Янукович и далее). Ксения ведёт сама, задача для трекинга.",
           "priority": "med",
-          "done": false,
+          "done": true,
           "tags": [
             [
               "purple",
@@ -3522,7 +3564,7 @@
           "title": "Механика «кто-где бот» внутри community-бота",
           "sub": "Раньше использовался внешний @where_my_friends_bot, он сломался. Даша (ops на стороне Матскевичей) делает аналогичную механику в их боте. План: дождаться Дашу, забрать их реализацию/идею, переписать под BLR бот. Зависимость: Даша. Из встречи с Надин 13.04: 'мы ещё не сделали, советую написать Даше напрямую чтобы обменяться'.",
           "priority": "med",
-          "done": false,
+          "done": true,
           "tags": [
             [
               "purple",
@@ -3552,7 +3594,7 @@
           "title": "Аналитика кликов внутри mini app (hub + разделы)",
           "sub": "Инфраструктура готова: таблица bot_events + logBotEvent + POST /api/bot-events. Логируются только серверные события (webhook бота, callback-кнопки, команды). НЕ логируется что происходит ВНУТРИ mini app: hub / → какие разделы открывают, artifacts → какие звонки кликают (RA/Health OS/Prompts), calendar → кто открыл/сделал RSVP, course/[id] → кто открыл. Шаги: (1) 15 мин подумать какие вопросы задаём данным (churn? какие разделы живут? кто доходит до Health OS?); (2) клиентский helper lib/track.ts → POST /api/bot-events с initData; (3) инструментация: hub_open + section_click, artifact_view_change + artifact_click, calendar_open + rsvp_click, course_open; (4) простой dashboard-запрос в Supabase. Делаем со свежей головой 2026-04-14.",
           "priority": "high",
-          "done": false,
+          "done": true,
           "tags": [
             [
               "purple",
@@ -4624,6 +4666,7 @@
           "id": "b9",
           "title": "навигация в боте: ссылка на чат в подвале",
           "sub": "из onboarding-improvement-ideas.md",
+          "done": true,
           "tags": [
             [
               "teal",
