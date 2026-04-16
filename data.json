@@ -1,6 +1,6 @@
 {
   "updated": "2026-04-16",
-  "updated_at": "2026-04-16T17:00:00+03:00",
+  "updated_at": "2026-04-16T12:33:20.972285+00:00",
   "last_collected_ids": {
     "-1003478224837": 129,
     "-1003590719886": 1436,
@@ -9,6 +9,12 @@
     "brainloveandrobots": 31
   },
   "log": [
+    {
+      "date": "2026-04-16",
+      "action": "done",
+      "id": "t186",
+      "title": "Ротация SALES_BOT_TOKEN — новый токен в Railway prod, webhook переустановлен"
+    },
     {
       "date": "2026-04-16",
       "action": "added",
@@ -3441,9 +3447,9 @@
         {
           "id": "t186",
           "title": "Ротация SALES_BOT_TOKEN + OPS_BOT_TOKEN в BotFather",
-          "sub": "После деплоя welcome-improvements. Утекли в git history (коммиты e3a964f, 49acd35, ae95be2). @BotFather → /token → revoke/regenerate для @matskevichaibot и @blr_ops_bot. Обновить в Railway Variables (prod + staging). Переустановить webhook.",
+          "sub": "После деплоя welcome-improvements. Утекли в git history (коммиты e3a964f, 49acd35, ae95be2). @BotFather → /token → revoke/regenerate для @matskevichaibot и @blr_ops_bot. Обновить в Railway Variables (prod + staging). Переустановить webhook. ✅ 16.04: новый SALES_BOT_TOKEN установлен в Railway prod, webhook переустановлен (ok:true, pending:0).",
           "priority": "high",
-          "done": false,
+          "done": true,
           "tags": [
             [
               "red",
