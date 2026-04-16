@@ -4136,7 +4136,7 @@
           "title": "Alumni доступ — запустить миграцию БД в Railway",
           "sub": "Код задеплоен 11.04. Нужно: Railway → Variables → DATABASE_URL → npx tsx scripts/migrate-alumni.ts. Добавляет community_alumni + subscription_ended_at в bot_users",
           "priority": "high",
-          "done": false,
+          "done": true,
           "tags": [
             [
               "teal",
