@@ -23,6 +23,12 @@
     },
     {
       "date": "2026-04-16",
+      "action": "added",
+      "id": "t219",
+      "title": "DO-сервер: broadcast в бот через scheduler — горит, Codex задача на утро 17.04"
+    },
+    {
+      "date": "2026-04-16",
       "action": "done",
       "id": "f38",
       "title": "Пост про артефакт в ветку практики — было 14 апр"
@@ -3693,6 +3699,23 @@
           ],
           "done": false,
           "priority": "high"
+        },
+        {
+          "id": "t219",
+          "title": "DO-сервер: добавить broadcast в бот (community/all) через scheduler API",
+          "sub": "Сейчас broadcast.sh только с ноутбука через Railway API. Нужно: добавить в blr-scheduler возможность слать broadcast (личные сообщения через бота) по расписанию. Шаги: (1) Codex синхронизирует staging бота с prod (2) пишет код broadcast на DO (3) тестируем на staging боте (4) деплоим. Горит — без этого напоминалки в бот зависят от открытой сессии.",
+          "tags": [
+            [
+              "red",
+              "горит"
+            ],
+            [
+              "teal",
+              "бот"
+            ]
+          ],
+          "done": false,
+          "priority": "fire"
         },
         {
           "id": "t202",
