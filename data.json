@@ -1,6 +1,6 @@
 {
   "updated": "2026-04-18",
-  "updated_at": "2026-04-18T20:44:15.851791+03:00",
+  "updated_at": "2026-04-18T23:52:41.946700+03:00",
   "last_collected_ids": {
     "-1003478224837": 129,
     "-1003590719886": 1436,
@@ -3034,6 +3034,12 @@
     {
       "date": "2026-04-18",
       "entry": "crew Mia Shaly: сбор правок к каталогу из TG (Design+Media+личный), транскрипция голосовых (mlx-whisper). Новая вводная: выставка в Неаполе — нужна презентация до конца апреля. SUMMARY.md сохранён в Projects/15_MIA-SHALY/voice_transcripts/"
+    },
+    {
+      "date": "2026-04-18",
+      "action": "progress",
+      "id": "f44",
+      "title": "Mia Shaly каталог: Exhibition Years +2025 и private collection убраны через Figma plugin. Текстовые страницы + размеры остались."
     }
   ],
   "inbox": [],
@@ -3058,7 +3064,7 @@
     {
       "id": "f44",
       "title": "📖 Mia Shaly каталог — финальные правки перед печатью",
-      "sub": "Правки из голосовых 18.04: 1) текстовые страницы постранично (About Artist / Exhibitions / Mission — с картинками с сайта), 2) добавить 5 выставок 2025 года, 3) проверить размеры картин (ширина/высота переставлены). Передать Ане финальную версию.",
+      "sub": "Правки из голосовых 18.04: ✅ Exhibition Years +2025 (5 выставок) — добавлено через Figma plugin. ✅ «In private collection» — убрано через Figma plugin. ⏳ Текстовые страницы (About Artist / Exhibitions / Mission с картинками) — не сделано. ⏳ Размеры картин (ширина/высота) — не проверено. Финальный PDF от Марины: drive.google.com/drive/folders/1eXUH84bDZxxJOm2bFOKBrjsMaEWFsiOl (407 МБ). Передать Ане финальную версию.",
       "done": false,
       "priority": "fire",
       "tags": [
