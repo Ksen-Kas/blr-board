@@ -1,6 +1,6 @@
 {
   "updated": "2026-04-18",
-  "updated_at": "2026-04-18T20:34:47.573218+03:00",
+  "updated_at": "2026-04-18T20:35:59+03:00",
   "last_collected_ids": {
     "-1003478224837": 129,
     "-1003590719886": 1436,
@@ -2988,6 +2988,36 @@
       "action": "added",
       "id": "th1",
       "title": "Заглушка под идеи v4"
+    },
+    {
+      "date": "2026-04-18",
+      "action": "added",
+      "id": "t222",
+      "title": "Follow-ups sweep 18.04"
+    },
+    {
+      "date": "2026-04-18",
+      "action": "added",
+      "id": "t223",
+      "title": "4 без бота — написать лично"
+    },
+    {
+      "date": "2026-04-18",
+      "action": "added",
+      "id": "t224",
+      "title": "@le0bash — 2 бесплатных месяца"
+    },
+    {
+      "date": "2026-04-18",
+      "action": "added",
+      "id": "t225",
+      "title": "Юля: вопрос про плюшки отписавшимся"
+    },
+    {
+      "date": "2026-04-18",
+      "action": "updated",
+      "id": "t155",
+      "title": "Добавлен note про трибьют + 2 месяца"
     }
   ],
   "inbox": [],
@@ -4633,6 +4663,33 @@
           ],
           "done": false,
           "priority": "mid"
+        },
+        {
+          "id": "t222",
+          "title": "Follow-ups sweep 18.04 — отработать список: @architecht0r (RA доступ), @styanchenko (трибьют), @aterebilina, @Olyyyya, @nautolan, @maria_bespalchenko",
+          "note": "Файл: Projects/06_BLR/follow-ups-FULL-2026-04-18.md | Приоритет: @architecht0r и @styanchenko — ждут >7 дней",
+          "done": false,
+          "created_at": "2026-04-18T20:35:59+03:00"
+        },
+        {
+          "id": "t223",
+          "title": "4 без бота — написать лично: @bat_yu, @justvitta, @strategist_mind, @yuliadankopekdag",
+          "note": "Без аутрич-скрипта. Короткое личное касание. Отдельно: id6697274682 (@vladvasil3) — новый 13.04, без онбординга",
+          "done": false,
+          "created_at": "2026-04-18T20:35:59+03:00"
+        },
+        {
+          "id": "t224",
+          "title": "@le0bash — уточнить условия 2 бесплатных месяцев в лабе. Обещание было в разговоре 14.04",
+          "done": false,
+          "created_at": "2026-04-18T20:35:59+03:00"
+        },
+        {
+          "id": "t225",
+          "title": "Юля: ответить на вопрос из чата 15.04 — «тем кто отписался но хочет вернуться — никаких плюшек не даём?»",
+          "note": "Ответ влияет на follow-ups с alumni (@Tarabeen888, @alisique и др.)",
+          "done": false,
+          "created_at": "2026-04-18T20:35:59+03:00"
         }
       ]
     },
@@ -4791,7 +4848,8 @@
             ]
           ],
           "done": false,
-          "priority": "high"
+          "priority": "high",
+          "note": "Трибьют-вопрос висит с 16.04: обещала разобраться и вернуться. + 2 месяца бесплатно — уточнить детали."
         },
         {
           "id": "t156",
