@@ -1,6 +1,6 @@
 {
-  "updated": "2026-04-17",
-  "updated_at": "2026-04-17T15:30:00.000000+00:00",
+  "updated": "2026-04-18",
+  "updated_at": "2026-04-18T13:44:37.108875+03:00",
   "last_collected_ids": {
     "-1003478224837": 129,
     "-1003590719886": 1436,
@@ -2946,6 +2946,12 @@
       "action": "added",
       "id": "t199",
       "title": "Написать Юле про KB домен"
+    },
+    {
+      "date": "2026-04-18",
+      "action": "added",
+      "id": "schema-v3",
+      "title": "data.json: секции blocks/think/experiment/personal/deep_research добавлены для Осьминог v3"
     }
   ],
   "inbox": [],
@@ -2954,7 +2960,16 @@
       "id": "f40",
       "title": "Автофидбэк после мероприятий — отправлять вопрос участникам через +15 мин после события",
       "sub": "Через бот. Нужно: триггер по времени события + список участников (RSVP или все community). Горит — первые события 20-23 апр. Сделать до пн 20.04.",
-      "tags": [["red", "горит"], ["teal", "бот"]],
+      "tags": [
+        [
+          "red",
+          "горит"
+        ],
+        [
+          "teal",
+          "бот"
+        ]
+      ],
       "done": false,
       "priority": "fire"
     },
@@ -5829,6 +5844,11 @@
       "sub": "звонок 10.04. Не просто 'видос про тулы'. Формат несёт: записанное видео + пример + интеграция → контент"
     }
   ],
+  "blocks": [],
+  "think": [],
+  "experiment": [],
+  "personal": [],
+  "deep_research": [],
   "playbook": [
     {
       "id": "p1",
@@ -5914,6 +5934,95 @@
       "id": "p17",
       "title": "Стандарт: каждый протагонист записывает кружочек для анонса эфира",
       "sub": "практика-процесс, не задача. Применять при добавлении нового протагониста в расписание."
+    }
+  ],
+  "cvlab": [
+    {
+      "category": "активные клиенты",
+      "items": [
+        {
+          "id": "cv1",
+          "title": "Алёна Шуста",
+          "sub": "Extraction — слой 2. Следующий шаг: живая сессия → кейсы.",
+          "tags": [
+            [
+              "amber",
+              "в работе"
+            ]
+          ],
+          "priority": "high"
+        },
+        {
+          "id": "cv2",
+          "title": "Катя Шашина",
+          "sub": "Extraction — ждём ответов. Следующий шаг: ответы → Facts Base → JD анализ.",
+          "tags": [
+            [
+              "purple",
+              "ждём"
+            ]
+          ],
+          "priority": "mid"
+        },
+        {
+          "id": "cv3",
+          "title": "Алексей Авдуевский",
+          "sub": "Ранняя фаза. По запросу.",
+          "tags": [
+            [
+              "gray",
+              "пауза"
+            ],
+            "pause"
+          ],
+          "priority": "pause",
+          "done": true
+        }
+      ]
+    },
+    {
+      "category": "личное",
+      "items": [
+        {
+          "id": "cv12",
+          "title": "Юлиана Гармаш — AI-инструмент по медданным щитовидки",
+          "sub": "Подруга. Узелки + возможный аутоиммунный тиреоидит, эндокринолог сказал удалять без анализов. Ждём её файлы (обещала 10.04) → запустить Машин health-dashboard-playbook + Тонин deep-research-skill. SESSION: SESSION_yulianna-health-tool.md",
+          "tags": [
+            [
+              "teal",
+              "ждём файлы"
+            ]
+          ],
+          "priority": "mid"
+        }
+      ]
+    },
+    {
+      "category": "идеи и развитие",
+      "items": [
+        {
+          "id": "cv10",
+          "title": "методология vs Даша — анализ",
+          "sub": "файл cvlab_method_vs_dasha_analysis.md уже есть"
+        },
+        {
+          "id": "cv11",
+          "title": "список материалов JOE + CV-LAB",
+          "sub": "файл list-joe-cvlab-materials.md уже есть"
+        },
+        {
+          "id": "cv4",
+          "title": "Андрей: стратег-разговор — реактивный режим vs 70% direct outreach",
+          "sub": "Повод: 10-14.04 принёс 4 ссылки из агентств/LinkedIn feed, ни одна напрямую к оператору. Противоречит Job Search Strategy (70% direct outreach к hiring managers ADNOC/Aramco/QatarEnergy). Провести отдельный разговор после закрытия текущей пачки откликов: пересобрать weekly action plan, включить в ритм Monday research + Tuesday outreach, объяснить паттерн.",
+          "tags": [
+            [
+              "red",
+              "стратегия"
+            ]
+          ],
+          "priority": "high"
+        }
+      ]
     }
   ],
   "goals": [
@@ -6105,94 +6214,5 @@
         "views низкие — нужен контентный push"
       ]
     }
-  },
-  "cvlab": [
-    {
-      "category": "активные клиенты",
-      "items": [
-        {
-          "id": "cv1",
-          "title": "Алёна Шуста",
-          "sub": "Extraction — слой 2. Следующий шаг: живая сессия → кейсы.",
-          "tags": [
-            [
-              "amber",
-              "в работе"
-            ]
-          ],
-          "priority": "high"
-        },
-        {
-          "id": "cv2",
-          "title": "Катя Шашина",
-          "sub": "Extraction — ждём ответов. Следующий шаг: ответы → Facts Base → JD анализ.",
-          "tags": [
-            [
-              "purple",
-              "ждём"
-            ]
-          ],
-          "priority": "mid"
-        },
-        {
-          "id": "cv3",
-          "title": "Алексей Авдуевский",
-          "sub": "Ранняя фаза. По запросу.",
-          "tags": [
-            [
-              "gray",
-              "пауза"
-            ],
-            "pause"
-          ],
-          "priority": "pause",
-          "done": true
-        }
-      ]
-    },
-    {
-      "category": "личное",
-      "items": [
-        {
-          "id": "cv12",
-          "title": "Юлиана Гармаш — AI-инструмент по медданным щитовидки",
-          "sub": "Подруга. Узелки + возможный аутоиммунный тиреоидит, эндокринолог сказал удалять без анализов. Ждём её файлы (обещала 10.04) → запустить Машин health-dashboard-playbook + Тонин deep-research-skill. SESSION: SESSION_yulianna-health-tool.md",
-          "tags": [
-            [
-              "teal",
-              "ждём файлы"
-            ]
-          ],
-          "priority": "mid"
-        }
-      ]
-    },
-    {
-      "category": "идеи и развитие",
-      "items": [
-        {
-          "id": "cv10",
-          "title": "методология vs Даша — анализ",
-          "sub": "файл cvlab_method_vs_dasha_analysis.md уже есть"
-        },
-        {
-          "id": "cv11",
-          "title": "список материалов JOE + CV-LAB",
-          "sub": "файл list-joe-cvlab-materials.md уже есть"
-        },
-        {
-          "id": "cv4",
-          "title": "Андрей: стратег-разговор — реактивный режим vs 70% direct outreach",
-          "sub": "Повод: 10-14.04 принёс 4 ссылки из агентств/LinkedIn feed, ни одна напрямую к оператору. Противоречит Job Search Strategy (70% direct outreach к hiring managers ADNOC/Aramco/QatarEnergy). Провести отдельный разговор после закрытия текущей пачки откликов: пересобрать weekly action plan, включить в ритм Monday research + Tuesday outreach, объяснить паттерн.",
-          "tags": [
-            [
-              "red",
-              "стратегия"
-            ]
-          ],
-          "priority": "high"
-        }
-      ]
-    }
-  ]
+  }
 }

@@ -52,6 +52,11 @@ blr-board/
 | `fire` | Горящие: сегодня/завтра, макс 7 шт | `f1-f99` |
 | `tasks` | Активные задачи по категориям с приоритетами | `t1-t999` |
 | `backlog` | Идеи, бэклог, долгоиграющие проекты | `b1-b999` |
+| `blocks` | Крупные задачи с подзадачами (не точечные) | `bl1-bl99` |
+| `think` | Подумать / не действие | `th1-th99` |
+| `experiment` | Экспериментальные идеи | `ex1-ex99` |
+| `personal` | Личное (не BLR/CV-LAB) | `ps1-ps99` |
+| `deep_research` | Глубокая аналитика, хранится | `dr1-dr99` |
 | `playbook` | OPS Playbook — процессы (справочник) | `p1-p99` |
 | `cvlab` | CV-LAB клиенты и идеи | `cv1-cv999` |
 | `goals` | Цели Юли | — |
@@ -78,6 +83,16 @@ blr-board/
 **backlog:**
 ```json
 { "id": "b1", "title": "...", "sub": "источник" }
+```
+
+**blocks:**
+```json
+{ "id": "bl1", "title": "...", "sub": "...", "sub_tasks": ["t1","t2"], "status": "active|paused|done" }
+```
+
+**think / experiment / personal / deep_research (одинаковый формат):**
+```json
+{ "id": "th1", "title": "...", "sub": "...", "added": "YYYY-MM-DD" }
 ```
 
 **log (append-only):**
