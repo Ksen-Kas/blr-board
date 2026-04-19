@@ -1,6 +1,6 @@
 {
   "updated": "2026-04-19",
-  "updated_at": "2026-04-19T12:09:23+03:00",
+  "updated_at": "2026-04-19T12:53:49+03:00",
   "last_collected_ids": {
     "-1003478224837": 129,
     "-1003590719886": 1436,
@@ -20,6 +20,12 @@
       "action": "done",
       "id": "f39",
       "title": "Анонс playground Алёны 20.04 — кружочек + текст опубликованы в канале"
+    },
+    {
+      "date": "2026-04-19",
+      "action": "done",
+      "id": "t221",
+      "title": "Веб-UI для blr-scheduler: crontab очищен, proxy.js + notif schedule в dashboard"
     },
     {
       "date": "2026-04-19",
@@ -4111,7 +4117,7 @@
               "scheduler"
             ]
           ],
-          "done": false,
+          "done": true,
           "priority": "mid",
           "project": "BLR"
         }
