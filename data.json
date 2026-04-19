@@ -1,6 +1,6 @@
 {
   "updated": "2026-04-19",
-  "updated_at": "2026-04-19T16:27:38+03:00",
+  "updated_at": "2026-04-19T18:43:26+03:00",
   "last_collected_ids": {
     "-1003478224837": 129,
     "-1003590719886": 1436,
@@ -3088,6 +3088,10 @@
       "action": "progress",
       "id": "f44",
       "title": "Mia Shaly каталог: Exhibition Years +2025 и private collection убраны через Figma plugin. Текстовые страницы + размеры остались."
+    },
+    {
+      "date": "2026-04-19",
+      "entry": "MacBook lid-close config: pmset -c disablesleep 1 done (AC sleep disabled). SSH Remote Login still Off — включить через GUI: System Settings → General → Sharing → Remote Login"
     }
   ],
   "inbox": [],
