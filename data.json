@@ -1,6 +1,6 @@
 {
   "updated": "2026-04-19",
-  "updated_at": "2026-04-19T19:07:29+03:00",
+  "updated_at": "2026-04-19T22:43:01+03:00",
   "last_collected_ids": {
     "-1003478224837": 129,
     "-1003590719886": 1436,
@@ -9,6 +9,12 @@
     "brainloveandrobots": 31
   },
   "log": [
+    {
+      "date": "2026-04-19",
+      "action": "closed",
+      "id": "f47",
+      "title": "Figma Bridge MVP — 8 операций (scan/set_text/delete/create_text/create_frame/move/resize/reparent/set_fills), 3 текстовых слайда каталога MIA собраны end-to-end через bridge, найдена ошибка размера Blue Lagoon 50x70→70x50, в бэклог: preview + lineHeight/letterSpacing в set_text"
+    },
     {
       "date": "2026-04-19",
       "action": "added",
@@ -3173,7 +3179,7 @@
       "id": "f47",
       "title": "🔌 Figma Bridge — плагин+локальный сервер для автоправок презентаций",
       "sub": "Универсальный инструмент для правок Figma-файлов без MCP. Я пишу команды в JSON → Ксения жмёт Run в плагине → правки применяются. Пилот на MIA Shaly (презентация Неаполь f43, каталог f44). Figma Free, Desktop. MVP: scan/set_text/duplicate_frame/set_image/export_pdf. Путь: RUNTIME/figma-bridge/",
-      "done": false,
+      "done": true,
       "priority": "fire",
       "tags": [
         [
