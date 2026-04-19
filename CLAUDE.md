@@ -70,6 +70,12 @@ blr-board/
 
 ### Форматы
 
+**fire / tasks / blocks / think / experiment / personal / deep_research / cvlab:**
+поле `project` (обязательное для новых):
+```json
+"project": "BLR" | "CV-LAB" | "MIA" | "OCTOPUS" | "CONTENT-LAB" | "PERSONAL"
+```
+
 **fire / tasks:**
 ```json
 { "id": "t22", "title": "...", "sub": "...", "tags": [["red","горит"]], "done": false, "priority": "fire|high|mid|low" }

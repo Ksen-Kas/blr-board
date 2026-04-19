@@ -1,6 +1,6 @@
 {
-  "updated": "2026-04-18",
-  "updated_at": "2026-04-18T23:52:41.946700+03:00",
+  "updated": "2026-04-19",
+  "updated_at": "2026-04-19T09:50:00+03:00",
   "last_collected_ids": {
     "-1003478224837": 129,
     "-1003590719886": 1436,
@@ -9,6 +9,30 @@
     "brainloveandrobots": 31
   },
   "log": [
+    {
+      "date": "2026-04-19",
+      "action": "added",
+      "id": "f45",
+      "title": "🎨 Настроить Claude Design → Claude Code Local agent — пилот на MIA дизайн"
+    },
+    {
+      "date": "2026-04-19",
+      "action": "tagged",
+      "id": "f43,f44",
+      "title": "MIA задачи помечены тегом design"
+    },
+    {
+      "date": "2026-04-19",
+      "action": "migrated",
+      "id": "ps1",
+      "title": "project: PERSONAL → CONTENT-LAB (исправление миграции)"
+    },
+    {
+      "date": "2026-04-19",
+      "action": "migrated",
+      "id": "all-active",
+      "title": "Добавлено поле project во все 261 задач (6 вкладок: BLR/CV-LAB/MIA/OCTOPUS/CONTENT-LAB/PERSONAL)"
+    },
     {
       "date": "2026-04-18",
       "action": "added",
@@ -3058,8 +3082,13 @@
         [
           "teal",
           "Mia Shaly"
+        ],
+        [
+          "pink",
+          "design"
         ]
-      ]
+      ],
+      "project": "MIA"
     },
     {
       "id": "f44",
@@ -3075,8 +3104,36 @@
         [
           "teal",
           "Mia Shaly"
+        ],
+        [
+          "pink",
+          "design"
         ]
-      ]
+      ],
+      "project": "MIA"
+    },
+    {
+      "id": "f45",
+      "title": "🎨 Настроить Claude Design → Claude Code Local agent — пилот на MIA дизайн",
+      "sub": "Memory: reference_claude_design_handoff.md. Шаги: (1) claude.ai/design подключить репо Mia Shaly (Projects/15_MIA-SHALY); (2) Export → Hand off to Claude Code → Local agent; (3) скопировать промпт → claude '<bundle-url>...' в терминале проекта; (4) прогнать пилот на f44 (каталог: текстовые страницы About Artist / Exhibitions / Mission) или f43 (презентация Неаполь). Цель: единый design-pipeline Figma/Design → код → печатный артефакт.",
+      "done": false,
+      "priority": "fire",
+      "tags": [
+        [
+          "red",
+          "горит"
+        ],
+        [
+          "pink",
+          "design"
+        ],
+        [
+          "teal",
+          "Mia Shaly"
+        ]
+      ],
+      "project": "MIA",
+      "created_at": "2026-04-19T09:50:00+03:00"
     },
     {
       "id": "f1",
@@ -3089,7 +3146,8 @@
           "red",
           "горит"
         ]
-      ]
+      ],
+      "project": "OCTOPUS"
     },
     {
       "id": "f40",
@@ -3106,7 +3164,8 @@
         ]
       ],
       "done": false,
-      "priority": "fire"
+      "priority": "fire",
+      "project": "BLR"
     },
     {
       "id": "f15",
@@ -3122,7 +3181,8 @@
           "апрель"
         ]
       ],
-      "done": false
+      "done": false,
+      "project": "BLR"
     },
     {
       "id": "f20",
@@ -3138,56 +3198,65 @@
           "tribute"
         ]
       ],
-      "done": true
+      "done": true,
+      "project": "BLR"
     },
     {
       "id": "f21",
       "title": "💌 Написать участникам джорналинга — ответили на опрос (кроме скип): «стартанули протокол, нужна ли помощь?»",
       "done": true,
-      "priority": "fire"
+      "priority": "fire",
+      "project": "BLR"
     },
     {
       "id": "f22",
       "title": "Анонс Макса 8 апр — рассылка по боту + пост с кружочком в чат. Условие: 20 чел в Luma до конца дня",
       "done": true,
-      "priority": "fire"
+      "priority": "fire",
+      "project": "BLR"
     },
     {
       "id": "f23",
       "title": "💌 Провести встречу с @wrmrrr (Алёна) 20 апреля — re-engagement, churn-риск",
       "sub": "пробная практика 20 апр",
-      "done": true
+      "done": true,
+      "project": "BLR"
     },
     {
       "id": "f24",
       "title": "Костёр Саша 10 апр — написать анонс сегодня (пост в канал + чат)",
-      "done": true
+      "done": true,
+      "project": "BLR"
     },
     {
       "id": "f25",
       "title": "CV-LAB Андрей — откликнуться на 2-3 вакансии сегодня",
       "sub": "вакансии найдены, нужен отклик",
       "done": false,
-      "priority": "fire"
+      "priority": "fire",
+      "project": "CV-LAB"
     },
     {
       "id": "f26",
       "title": "Вопрос 4 джорналинга — опубликовать сегодня в ветку (текст готов)",
       "sub": "что хочешь больше. не из головы, а из состояния. что хочешь взять в следующие 3 месяца. + не закрываем, шэринг приветствуется",
       "done": true,
-      "priority": "fire"
+      "priority": "fire",
+      "project": "BLR"
     },
     {
       "id": "f27",
       "title": "Опрос «как продвигается практика» — завтра 9 апр в ветку джорналинга",
       "sub": "варианты: прошёл все 4 / ещё в процессе / только начинаю / наблюдаю. По образцу опроса намерений из новогоднего цикла",
-      "done": true
+      "done": true,
+      "project": "BLR"
     },
     {
       "id": "f28",
       "title": "Пост про артефакт + инструкция — пятница 11 апр",
       "sub": "после вопроса 4: как собрать артефакт из 4 дней джорналинга с AI. Позиционирование по образцу новогоднего: 'выходной артефакт цикла'",
-      "done": true
+      "done": true,
+      "project": "BLR"
     },
     {
       "id": "f30",
@@ -3204,7 +3273,8 @@
         ]
       ],
       "done": true,
-      "priority": "fire"
+      "priority": "fire",
+      "project": "BLR"
     },
     {
       "id": "f31",
@@ -3217,7 +3287,8 @@
         ]
       ],
       "done": true,
-      "priority": "fire"
+      "priority": "fire",
+      "project": "BLR"
     },
     {
       "id": "f32",
@@ -3230,7 +3301,8 @@
         ]
       ],
       "done": false,
-      "priority": "mid"
+      "priority": "mid",
+      "project": "BLR"
     },
     {
       "id": "f33",
@@ -3243,7 +3315,8 @@
         ]
       ],
       "done": false,
-      "priority": "mid"
+      "priority": "mid",
+      "project": "BLR"
     },
     {
       "id": "f34",
@@ -3256,7 +3329,8 @@
         ]
       ],
       "done": true,
-      "priority": "fire"
+      "priority": "fire",
+      "project": "BLR"
     },
     {
       "id": "f35",
@@ -3269,7 +3343,8 @@
         ]
       ],
       "done": true,
-      "priority": "fire"
+      "priority": "fire",
+      "project": "BLR"
     },
     {
       "id": "f37",
@@ -3286,7 +3361,8 @@
         ]
       ],
       "done": true,
-      "priority": "fire"
+      "priority": "fire",
+      "project": "BLR"
     },
     {
       "id": "f36",
@@ -3303,7 +3379,8 @@
         ]
       ],
       "done": true,
-      "priority": "fire"
+      "priority": "fire",
+      "project": "BLR"
     },
     {
       "id": "f38",
@@ -3320,7 +3397,8 @@
         ]
       ],
       "done": true,
-      "priority": "fire"
+      "priority": "fire",
+      "project": "BLR"
     },
     {
       "id": "f40",
@@ -3334,7 +3412,8 @@
       ],
       "done": true,
       "priority": "fire",
-      "date": "2026-04-16"
+      "date": "2026-04-16",
+      "project": "BLR"
     },
     {
       "id": "f39",
@@ -3347,7 +3426,8 @@
         ]
       ],
       "done": true,
-      "priority": "high"
+      "priority": "high",
+      "project": "BLR"
     },
     {
       "id": "f41",
@@ -3356,7 +3436,8 @@
       "tags": [],
       "done": false,
       "priority": "fire",
-      "when": "2026-04-15"
+      "when": "2026-04-15",
+      "project": "BLR"
     },
     {
       "id": "f42",
@@ -3374,7 +3455,8 @@
       ],
       "done": false,
       "priority": "fire",
-      "when": "2026-04-15"
+      "when": "2026-04-15",
+      "project": "BLR"
     }
   ],
   "tasks": [
@@ -3396,7 +3478,8 @@
               "teal",
               "завтра"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "t181",
@@ -3413,13 +3496,15 @@
               "gray",
               "позже"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "t145",
           "title": "Написать в чат: GitHub не дублируем — всё в боте",
           "done": false,
-          "priority": "high"
+          "priority": "high",
+          "project": "BLR"
         },
         {
           "id": "t74",
@@ -3436,7 +3521,8 @@
             ]
           ],
           "done": false,
-          "priority": "high"
+          "priority": "high",
+          "project": "BLR"
         },
         {
           "id": "t75",
@@ -3453,7 +3539,8 @@
             ]
           ],
           "done": false,
-          "priority": "high"
+          "priority": "high",
+          "project": "BLR"
         },
         {
           "id": "t84",
@@ -3470,7 +3557,8 @@
             ]
           ],
           "done": true,
-          "priority": "mid"
+          "priority": "mid",
+          "project": "OCTOPUS"
         },
         {
           "id": "t115",
@@ -3487,7 +3575,8 @@
             ]
           ],
           "done": false,
-          "priority": "mid"
+          "priority": "mid",
+          "project": "BLR"
         },
         {
           "id": "t116",
@@ -3500,7 +3589,8 @@
               "бот"
             ]
           ],
-          "done": true
+          "done": true,
+          "project": "BLR"
         },
         {
           "id": "t117",
@@ -3516,38 +3606,44 @@
               "бот"
             ]
           ],
-          "done": false
+          "done": false,
+          "project": "BLR"
         },
         {
           "id": "t140",
           "title": "Добавить кнопки RSVP в рассылки бота: «буду на звонке / не буду»",
           "done": false,
-          "priority": "mid"
+          "priority": "mid",
+          "project": "BLR"
         },
         {
           "id": "t148",
           "title": "Настроить сборщик кейсов из BLR чата → Raw/cases/ (Telethon на сервере, cron раз в 2 дня)",
           "priority": "mid",
-          "done": false
+          "done": false,
+          "project": "BLR"
         },
         {
           "id": "t149",
           "title": "Фоновые субагенты: тексты пишутся фоном, скиллы запускаются без команды — настроить архитектуру",
           "priority": "mid",
-          "done": false
+          "done": false,
+          "project": "BLR"
         },
         {
           "id": "t150",
           "title": "Подключить второй TG-аккаунт к серверу: оба аккаунта работают с участниками (сейчас только один)",
           "priority": "mid",
-          "done": false
+          "done": false,
+          "project": "BLR"
         },
         {
           "id": "t154",
           "title": "Бот: доступ к материалам для участников с истёкшей подпиской",
           "sub": "нужно для @maria_bespalchenko и @aterebilina — разблокирует waiting",
           "priority": "mid",
-          "done": true
+          "done": true,
+          "project": "BLR"
         },
         {
           "id": 161,
@@ -3557,7 +3653,8 @@
           "tags": [
             "infra",
             "mcp"
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "t174",
@@ -3570,7 +3667,8 @@
             ]
           ],
           "done": false,
-          "priority": "mid"
+          "priority": "mid",
+          "project": "BLR"
         },
         {
           "id": "t175",
@@ -3583,7 +3681,8 @@
             ]
           ],
           "done": true,
-          "priority": "mid"
+          "priority": "mid",
+          "project": "BLR"
         },
         {
           "id": "t182",
@@ -3600,7 +3699,8 @@
               "orange",
               "прототип"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "t183",
@@ -3621,7 +3721,8 @@
               "blue",
               "тексты"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "t184",
@@ -3638,7 +3739,8 @@
               "orange",
               "прототип"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "t185",
@@ -3655,7 +3757,8 @@
               "red",
               "деплой"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "t186",
@@ -3672,7 +3775,8 @@
               "purple",
               "бот"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "t187",
@@ -3689,7 +3793,8 @@
               "orange",
               "прототип"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "t188",
@@ -3702,7 +3807,8 @@
               "purple",
               "бот"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "t189",
@@ -3719,7 +3825,8 @@
               "blue",
               "тексты"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "t190",
@@ -3736,7 +3843,8 @@
               "purple",
               "бот"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "t191",
@@ -3753,7 +3861,8 @@
               "green",
               "дашборд"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "t192",
@@ -3770,7 +3879,8 @@
               "purple",
               "бот"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "t193",
@@ -3787,7 +3897,8 @@
               "orange",
               "контент"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "t194",
@@ -3804,7 +3915,8 @@
               "orange",
               "контент"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "t195",
@@ -3821,7 +3933,8 @@
               "green",
               "инфра"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "t196",
@@ -3838,7 +3951,8 @@
               "blue",
               "зависимость"
             ]
-          ]
+          ],
+          "project": "CV-LAB"
         },
         {
           "id": "t197",
@@ -3851,7 +3965,8 @@
               "purple",
               "бот"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "t200",
@@ -3868,7 +3983,8 @@
               "amber",
               "завтра"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "t201",
@@ -3881,7 +3997,8 @@
             ]
           ],
           "done": false,
-          "priority": "high"
+          "priority": "high",
+          "project": "BLR"
         },
         {
           "id": "t219",
@@ -3898,7 +4015,8 @@
             ]
           ],
           "done": true,
-          "priority": "fire"
+          "priority": "fire",
+          "project": "BLR"
         },
         {
           "id": "t202",
@@ -3911,7 +4029,8 @@
             ]
           ],
           "done": false,
-          "priority": "mid"
+          "priority": "mid",
+          "project": "BLR"
         },
         {
           "id": "t203",
@@ -3924,7 +4043,8 @@
             ]
           ],
           "done": false,
-          "priority": "high"
+          "priority": "high",
+          "project": "BLR"
         },
         {
           "id": "t204",
@@ -3937,7 +4057,8 @@
             ]
           ],
           "done": false,
-          "priority": "mid"
+          "priority": "mid",
+          "project": "BLR"
         },
         {
           "id": "t221",
@@ -3954,7 +4075,8 @@
             ]
           ],
           "done": false,
-          "priority": "mid"
+          "priority": "mid",
+          "project": "BLR"
         }
       ]
     },
@@ -3972,7 +4094,8 @@
             ]
           ],
           "done": false,
-          "priority": "high"
+          "priority": "high",
+          "project": "BLR"
         },
         {
           "id": "t10",
@@ -3985,7 +4108,8 @@
             ]
           ],
           "done": false,
-          "priority": "low"
+          "priority": "low",
+          "project": "BLR"
         },
         {
           "id": "t23",
@@ -3998,7 +4122,8 @@
             ]
           ],
           "done": false,
-          "priority": "high"
+          "priority": "high",
+          "project": "BLR"
         },
         {
           "id": "t48",
@@ -4015,7 +4140,8 @@
             ]
           ],
           "done": true,
-          "priority": "high"
+          "priority": "high",
+          "project": "BLR"
         },
         {
           "id": "t76",
@@ -4032,27 +4158,31 @@
             ]
           ],
           "done": true,
-          "priority": "high"
+          "priority": "high",
+          "project": "BLR"
         },
         {
           "id": "t134",
           "title": "Добавить ветку «знакомимся» в чат BLR + онбординг шаг: довести до написания интро",
           "sub": "12.04: прототип Screen 12 готов (blr-prototype-combined.html) — шаг 5 из 5 в онбординге, deep link в ветку. Осталось: создать ветку в чате + задеплоить в бот.",
           "done": false,
-          "priority": "high"
+          "priority": "high",
+          "project": "BLR"
         },
         {
           "id": "t135",
           "title": "Посмотреть интро-чат GConf — взять как референс для ветки знакомимся",
           "sub": "12.04: исследовано. GConf: ветка «от 0 до 1» — шаблон «расскажи о себе за минуту», снижает барьер. В BLR взяли этот принцип — шаг 5 онбординга.",
           "done": true,
-          "priority": "high"
+          "priority": "high",
+          "project": "BLR"
         },
         {
           "id": "t136",
           "title": "Попросить Алёну записать кружочек для ветки «знакомимся»",
           "done": false,
-          "priority": "mid"
+          "priority": "mid",
+          "project": "BLR"
         },
         {
           "id": 160,
@@ -4068,7 +4198,8 @@
             "t113",
             "t137",
             "t77"
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "t169",
@@ -4081,7 +4212,8 @@
             ]
           ],
           "done": false,
-          "priority": "mid"
+          "priority": "mid",
+          "project": "BLR"
         }
       ]
     },
@@ -4099,7 +4231,8 @@
             ]
           ],
           "done": false,
-          "priority": "mid"
+          "priority": "mid",
+          "project": "BLR"
         },
         {
           "id": "t77",
@@ -4116,7 +4249,8 @@
             ]
           ],
           "done": false,
-          "priority": "high"
+          "priority": "high",
+          "project": "BLR"
         },
         {
           "id": "t131",
@@ -4128,32 +4262,37 @@
               "red",
               "горит"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "t151",
           "title": "💌 написать @maria_bespalchenko — чувствует себя деревней, хочет выйти. Юля передала контакт. Помочь с материалами по здоровью",
           "priority": "high",
-          "done": true
+          "done": true,
+          "project": "BLR"
         },
         {
           "id": "t163",
           "title": "Собрать юзкейсы участников с артефактами → отдать Юле сегодня (маркетинг для Лабы 27 апр)",
           "priority": "high",
-          "done": true
+          "done": true,
+          "project": "BLR"
         },
         {
           "id": "t164",
           "title": "Найти материалы от участницы (Маша / Тоня?) которые она прислала — переслать Юле для подготовки Лабы",
           "priority": "high",
-          "done": true
+          "done": true,
+          "project": "BLR"
         },
         {
           "id": "t165",
           "title": "Удалить старый репо Ksen-Kas/blr-dashboard — код переехал в matsako/blr-lms/dashboard/",
           "sub": "Railway и local remote уже обновлены. Осталось: удалить Ksen-Kas/blr-dashboard на GitHub",
           "priority": "low",
-          "done": true
+          "done": true,
+          "project": "BLR"
         }
       ]
     },
@@ -4175,7 +4314,8 @@
             ]
           ],
           "done": false,
-          "priority": "high"
+          "priority": "high",
+          "project": "BLR"
         },
         {
           "id": "t123",
@@ -4192,7 +4332,8 @@
             ]
           ],
           "done": false,
-          "priority": "mid"
+          "priority": "mid",
+          "project": "BLR"
         },
         {
           "id": "t158",
@@ -4202,7 +4343,8 @@
           "tags": [
             "контент",
             "артефакт"
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "t166",
@@ -4219,7 +4361,8 @@
             ]
           ],
           "done": false,
-          "priority": "mid"
+          "priority": "mid",
+          "project": "BLR"
         },
         {
           "id": "t176",
@@ -4232,7 +4375,8 @@
             ]
           ],
           "done": false,
-          "priority": "high"
+          "priority": "high",
+          "project": "BLR"
         },
         {
           "id": "t210",
@@ -4245,7 +4389,8 @@
             ]
           ],
           "done": false,
-          "priority": "high"
+          "priority": "high",
+          "project": "BLR"
         },
         {
           "id": "t211",
@@ -4258,7 +4403,8 @@
             ]
           ],
           "done": false,
-          "priority": "high"
+          "priority": "high",
+          "project": "BLR"
         },
         {
           "id": "t213",
@@ -4271,7 +4417,8 @@
             ]
           ],
           "done": false,
-          "priority": "high"
+          "priority": "high",
+          "project": "BLR"
         }
       ]
     },
@@ -4293,7 +4440,8 @@
             ]
           ],
           "done": false,
-          "priority": "high"
+          "priority": "high",
+          "project": "BLR"
         },
         {
           "id": "t97",
@@ -4310,7 +4458,8 @@
               "teal",
               "позиционирование"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "t111",
@@ -4323,13 +4472,15 @@
               "⚡ стратегия"
             ]
           ],
-          "sub": "звонок 10.04: понедельник 14:00 МСК. Ксения сдвигает. См. t173"
+          "sub": "звонок 10.04: понедельник 14:00 МСК. Ксения сдвигает. См. t173",
+          "project": "BLR"
         },
         {
           "id": "t143",
           "title": "Написать план на неделю в чат — открытие недели (пн)",
           "done": false,
-          "priority": "fire"
+          "priority": "fire",
+          "project": "BLR"
         },
         {
           "id": "t51",
@@ -4346,19 +4497,22 @@
             ]
           ],
           "done": false,
-          "priority": "high"
+          "priority": "high",
+          "project": "BLR"
         },
         {
           "id": "t107",
           "title": "10 апр: пост про артефакт (видео Юли ❓) + анонс костра",
           "priority": "high",
-          "done": true
+          "done": true,
+          "project": "BLR"
         },
         {
           "id": "t108",
           "title": "Узнать дату майского чекина с Димой — закрытие цикла RA",
           "priority": "mid",
-          "done": false
+          "done": false,
+          "project": "BLR"
         },
         {
           "id": "t113",
@@ -4370,44 +4524,51 @@
               "апрель"
             ]
           ],
-          "done": false
+          "done": false,
+          "project": "BLR"
         },
         {
           "id": "t126",
           "title": "[бот] воронка статусов оплаты — воронка: статусы оплатила/не оплатила для Ксении — добавит в таблицу",
           "priority": "mid",
-          "done": true
+          "done": true,
+          "project": "BLR"
         },
         {
           "id": "t127",
           "title": "Ежедневный мониторинг чата — внедрить в ритм [рядом со статистикой]",
           "priority": "high",
-          "done": false
+          "done": false,
+          "project": "BLR"
         },
         {
           "id": "t128",
           "title": "Подключить внешние метрики к каналам — детали к задаче статистики чата [пн]",
           "priority": "high",
-          "done": false
+          "done": false,
+          "project": "BLR"
         },
         {
           "id": "t129",
           "title": "Еженедельная аналитика участников: канал + чат — детали к задаче статистики чата [пн]",
           "priority": "high",
-          "done": false
+          "done": false,
+          "project": "BLR"
         },
         {
           "id": "t137",
           "title": "Нарисовать схему текущего флоу бота — хранить у Ксении и Юли",
           "done": false,
-          "priority": "high"
+          "priority": "high",
+          "project": "BLR"
         },
         {
           "id": "t138",
           "title": "Стратегия для 114 участников которые не запустили бота",
           "done": true,
           "sub": "Исследовано 16.04: все 58 активных подписчиков из Tribute уже в боте (массовый онбординг при запуске 18.02). 12 незаплативших из заявок — не боты, просто не оплатили. Слепых пятен среди действующих подписчиков нет.",
-          "priority": "high"
+          "priority": "high",
+          "project": "BLR"
         },
         {
           "id": "t162",
@@ -4420,7 +4581,8 @@
               "teal",
               "KB"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "t178",
@@ -4437,7 +4599,8 @@
               "amber",
               "ручное действие"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "t180",
@@ -4454,7 +4617,8 @@
               "amber",
               "ждёт Юлю"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "t179",
@@ -4467,7 +4631,8 @@
               "teal",
               "KB"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "t157",
@@ -4476,7 +4641,8 @@
           "done": false,
           "tags": [
             "week:next"
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "t167",
@@ -4489,7 +4655,8 @@
             ]
           ],
           "done": false,
-          "priority": "high"
+          "priority": "high",
+          "project": "BLR"
         },
         {
           "id": "t168",
@@ -4502,7 +4669,8 @@
             ]
           ],
           "done": false,
-          "priority": "mid"
+          "priority": "mid",
+          "project": "BLR"
         },
         {
           "id": "t170",
@@ -4515,7 +4683,8 @@
             ]
           ],
           "done": false,
-          "priority": "high"
+          "priority": "high",
+          "project": "BLR"
         },
         {
           "id": "t171",
@@ -4528,7 +4697,8 @@
             ]
           ],
           "done": false,
-          "priority": "high"
+          "priority": "high",
+          "project": "BLR"
         },
         {
           "id": "t172",
@@ -4541,7 +4711,8 @@
             ]
           ],
           "done": false,
-          "priority": "high"
+          "priority": "high",
+          "project": "BLR"
         },
         {
           "id": "t173",
@@ -4549,7 +4720,8 @@
           "sub": "звонок 10.04. Перенос регулярного слота. Ксения сдвигает понедельничную встречу",
           "tags": [],
           "done": true,
-          "priority": "mid"
+          "priority": "mid",
+          "project": "BLR"
         },
         {
           "id": "t198",
@@ -4562,7 +4734,8 @@
             ]
           ],
           "done": false,
-          "priority": "mid"
+          "priority": "mid",
+          "project": "BLR"
         },
         {
           "id": "t199",
@@ -4575,7 +4748,8 @@
             ]
           ],
           "done": false,
-          "priority": "mid"
+          "priority": "mid",
+          "project": "BLR"
         },
         {
           "id": "t205",
@@ -4588,7 +4762,8 @@
             ]
           ],
           "done": false,
-          "priority": "fire"
+          "priority": "fire",
+          "project": "BLR"
         },
         {
           "id": "t206",
@@ -4601,7 +4776,8 @@
             ]
           ],
           "done": false,
-          "priority": "mid"
+          "priority": "mid",
+          "project": "BLR"
         },
         {
           "id": "t207",
@@ -4614,7 +4790,8 @@
             ]
           ],
           "done": false,
-          "priority": "fire"
+          "priority": "fire",
+          "project": "BLR"
         },
         {
           "id": "t208",
@@ -4627,7 +4804,8 @@
             ]
           ],
           "done": false,
-          "priority": "mid"
+          "priority": "mid",
+          "project": "BLR"
         },
         {
           "id": "t209",
@@ -4640,7 +4818,8 @@
             ]
           ],
           "done": false,
-          "priority": "mid"
+          "priority": "mid",
+          "project": "BLR"
         },
         {
           "id": "t214",
@@ -4653,7 +4832,8 @@
             ]
           ],
           "done": true,
-          "priority": "mid"
+          "priority": "mid",
+          "project": "BLR"
         },
         {
           "id": "t215",
@@ -4666,7 +4846,8 @@
             ]
           ],
           "done": true,
-          "priority": "fire"
+          "priority": "fire",
+          "project": "BLR"
         },
         {
           "id": "t216",
@@ -4679,7 +4860,8 @@
             ]
           ],
           "done": true,
-          "priority": "fire"
+          "priority": "fire",
+          "project": "BLR"
         },
         {
           "id": "t217",
@@ -4692,7 +4874,8 @@
             ]
           ],
           "done": true,
-          "priority": "high"
+          "priority": "high",
+          "project": "BLR"
         },
         {
           "id": "t218",
@@ -4705,7 +4888,8 @@
             ]
           ],
           "done": true,
-          "priority": "fire"
+          "priority": "fire",
+          "project": "BLR"
         },
         {
           "id": "t220",
@@ -4718,34 +4902,39 @@
             ]
           ],
           "done": false,
-          "priority": "mid"
+          "priority": "mid",
+          "project": "BLR"
         },
         {
           "id": "t222",
           "title": "Follow-ups sweep 18.04 — отработать список: @architecht0r (RA доступ), @styanchenko (трибьют), @aterebilina, @Olyyyya, @nautolan, @maria_bespalchenko",
           "note": "Файл: Projects/06_BLR/follow-ups-FULL-2026-04-18.md | Приоритет: @architecht0r и @styanchenko — ждут >7 дней",
           "done": false,
-          "created_at": "2026-04-18T20:35:59+03:00"
+          "created_at": "2026-04-18T20:35:59+03:00",
+          "project": "BLR"
         },
         {
           "id": "t223",
           "title": "4 без бота — написать лично: @bat_yu, @justvitta, @strategist_mind, @yuliadankopekdag",
           "note": "Без аутрич-скрипта. Короткое личное касание. Отдельно: id6697274682 (@vladvasil3) — новый 13.04, без онбординга",
           "done": false,
-          "created_at": "2026-04-18T20:35:59+03:00"
+          "created_at": "2026-04-18T20:35:59+03:00",
+          "project": "BLR"
         },
         {
           "id": "t224",
           "title": "@le0bash — уточнить условия 2 бесплатных месяцев в лабе. Обещание было в разговоре 14.04",
           "done": false,
-          "created_at": "2026-04-18T20:35:59+03:00"
+          "created_at": "2026-04-18T20:35:59+03:00",
+          "project": "BLR"
         },
         {
           "id": "t225",
           "title": "Юля: ответить на вопрос из чата 15.04 — «тем кто отписался но хочет вернуться — никаких плюшек не даём?»",
           "note": "Ответ влияет на follow-ups с alumni (@Tarabeen888, @alisique и др.)",
           "done": false,
-          "created_at": "2026-04-18T20:35:59+03:00"
+          "created_at": "2026-04-18T20:35:59+03:00",
+          "project": "BLR"
         }
       ]
     },
@@ -4767,7 +4956,8 @@
             ]
           ],
           "done": false,
-          "priority": "high"
+          "priority": "high",
+          "project": "BLR"
         },
         {
           "id": "t50",
@@ -4784,7 +4974,8 @@
             ]
           ],
           "done": false,
-          "priority": "high"
+          "priority": "high",
+          "project": "BLR"
         },
         {
           "id": "t73",
@@ -4801,7 +4992,8 @@
             ]
           ],
           "done": false,
-          "priority": "high"
+          "priority": "high",
+          "project": "BLR"
         },
         {
           "id": "t38",
@@ -4818,7 +5010,8 @@
             ]
           ],
           "done": false,
-          "priority": "high"
+          "priority": "high",
+          "project": "BLR"
         },
         {
           "id": "t60",
@@ -4835,25 +5028,29 @@
             ]
           ],
           "done": false,
-          "priority": "high"
+          "priority": "high",
+          "project": "BLR"
         },
         {
           "id": "t152",
           "title": "Дайджест недели — первый сегодня, дальше по понедельникам",
           "priority": "fire",
-          "done": true
+          "done": true,
+          "project": "BLR"
         },
         {
           "id": "t153",
           "title": "💌 Обойти людей с месячной подпиской (3-4 чел) — выяснить автопродление, предложить перейти на 3 мес",
           "priority": "high",
-          "done": true
+          "done": true,
+          "project": "BLR"
         },
         {
           "id": "t98",
           "title": "Уточнить у Юли: форму для Севы Устинова делаю я или она берёт на себя?",
           "priority": "mid",
-          "done": true
+          "done": true,
+          "project": "BLR"
         },
         {
           "id": "t124",
@@ -4870,7 +5067,8 @@
             ]
           ],
           "done": false,
-          "priority": "mid"
+          "priority": "mid",
+          "project": "BLR"
         },
         {
           "id": "t154",
@@ -4887,7 +5085,8 @@
             ]
           ],
           "done": true,
-          "priority": "fire"
+          "priority": "fire",
+          "project": "BLR"
         },
         {
           "id": "t155",
@@ -4905,7 +5104,8 @@
           ],
           "done": false,
           "priority": "high",
-          "note": "Трибьют-вопрос висит с 16.04: обещала разобраться и вернуться. + 2 месяца бесплатно — уточнить детали."
+          "note": "Трибьют-вопрос висит с 16.04: обещала разобраться и вернуться. + 2 месяца бесплатно — уточнить детали.",
+          "project": "BLR"
         },
         {
           "id": "t156",
@@ -4918,7 +5118,8 @@
             ]
           ],
           "done": false,
-          "priority": "high"
+          "priority": "high",
+          "project": "BLR"
         },
         {
           "id": "t159",
@@ -4935,7 +5136,8 @@
             ]
           ],
           "done": false,
-          "priority": "high"
+          "priority": "high",
+          "project": "BLR"
         },
         {
           "id": "t161",
@@ -4948,7 +5150,8 @@
             ]
           ],
           "done": false,
-          "priority": "high"
+          "priority": "high",
+          "project": "BLR"
         },
         {
           "id": "t160",
@@ -4961,7 +5164,8 @@
             ]
           ],
           "done": false,
-          "priority": "mid"
+          "priority": "mid",
+          "project": "BLR"
         },
         {
           "id": "t177",
@@ -4974,7 +5178,8 @@
             ]
           ],
           "done": false,
-          "priority": "mid"
+          "priority": "mid",
+          "project": "BLR"
         }
       ]
     }
@@ -4994,7 +5199,8 @@
             ]
           ],
           "priority": "high",
-          "done": false
+          "done": false,
+          "project": "BLR"
         },
         {
           "id": "b72",
@@ -5007,7 +5213,8 @@
             ]
           ],
           "priority": "high",
-          "done": false
+          "done": false,
+          "project": "BLR"
         },
         {
           "id": "b73",
@@ -5020,7 +5227,8 @@
             ]
           ],
           "priority": "high",
-          "done": false
+          "done": false,
+          "project": "BLR"
         },
         {
           "id": "b74",
@@ -5033,7 +5241,8 @@
             ]
           ],
           "priority": "high",
-          "done": false
+          "done": false,
+          "project": "BLR"
         },
         {
           "id": "b75",
@@ -5046,7 +5255,8 @@
             ]
           ],
           "priority": "mid",
-          "done": false
+          "done": false,
+          "project": "BLR"
         },
         {
           "id": "b76",
@@ -5059,7 +5269,8 @@
             ]
           ],
           "priority": "mid",
-          "done": false
+          "done": false,
+          "project": "CV-LAB"
         },
         {
           "id": "b77",
@@ -5072,7 +5283,8 @@
             ]
           ],
           "priority": "mid",
-          "done": false
+          "done": false,
+          "project": "BLR"
         },
         {
           "id": "b78",
@@ -5085,7 +5297,8 @@
             ]
           ],
           "priority": "mid",
-          "done": false
+          "done": false,
+          "project": "BLR"
         },
         {
           "id": "b79",
@@ -5098,7 +5311,8 @@
             ]
           ],
           "priority": "mid",
-          "done": false
+          "done": false,
+          "project": "BLR"
         },
         {
           "id": "b80",
@@ -5111,7 +5325,8 @@
             ]
           ],
           "priority": "low",
-          "done": false
+          "done": false,
+          "project": "BLR"
         },
         {
           "id": "b95",
@@ -5128,27 +5343,32 @@
               "blue",
               "спринты"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b96",
           "title": "Следующий спринт: Creative OS — про креативность/хобби, не 'контент для контент-мейкеров'",
-          "sub": "Юля согласует с Димой. После Creative OS — возможно Family. Звонок 16.04"
+          "sub": "Юля согласует с Димой. После Creative OS — возможно Family. Звонок 16.04",
+          "project": "BLR"
         },
         {
           "id": "b97",
           "title": "Продуктовый дашборд — road map по составляющим продукта + milestones",
-          "sub": "Юля хочет видеть прогресс, обновлять в SEO Daily. Для Юли+Димы. Звонок 16.04"
+          "sub": "Юля хочет видеть прогресс, обновлять в SEO Daily. Для Юли+Димы. Звонок 16.04",
+          "project": "BLR"
         },
         {
           "id": "b98",
           "title": "Фидбэк-клубы через бота: анонс → иду/не иду → ценный фидбэк после звонка",
-          "sub": "Не лайк-дизлайк, а содержательный фидбэк. Процесс вокруг ивентов. Звонок 16.04"
+          "sub": "Не лайк-дизлайк, а содержательный фидбэк. Процесс вокруг ивентов. Звонок 16.04",
+          "project": "BLR"
         },
         {
           "id": "b99",
           "title": "Broadcast API: добавить аудиторию channel (закрытый канал BLR)",
-          "sub": "Сейчас /api/broadcast только личные сообщения. Добавить audience=channel → пост в -1003478224837. Staging готов, DO scheduler работает. Делать после стабилизации текущего."
+          "sub": "Сейчас /api/broadcast только личные сообщения. Добавить audience=channel → пост в -1003478224837. Staging готов, DO scheduler работает. Делать после стабилизации текущего.",
+          "project": "BLR"
         }
       ]
     },
@@ -5164,7 +5384,8 @@
               "teal",
               "long"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b2",
@@ -5175,7 +5396,8 @@
               "teal",
               "long"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b3",
@@ -5186,7 +5408,8 @@
               "teal",
               "long"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b4",
@@ -5197,7 +5420,8 @@
               "teal",
               "long"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b5",
@@ -5208,7 +5432,8 @@
               "teal",
               "long"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b6",
@@ -5219,7 +5444,8 @@
               "teal",
               "long"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b7",
@@ -5230,7 +5456,8 @@
               "teal",
               "long"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b8",
@@ -5241,7 +5468,8 @@
               "teal",
               "long"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b9",
@@ -5253,7 +5481,8 @@
               "teal",
               "long"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b10",
@@ -5264,7 +5493,8 @@
               "teal",
               "long"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b11",
@@ -5275,7 +5505,8 @@
               "teal",
               "long"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b12",
@@ -5286,7 +5517,8 @@
               "teal",
               "long"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b13",
@@ -5297,7 +5529,8 @@
               "teal",
               "long"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b14",
@@ -5308,7 +5541,8 @@
               "teal",
               "long"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b15",
@@ -5319,7 +5553,8 @@
               "teal",
               "long"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b16",
@@ -5330,7 +5565,8 @@
               "teal",
               "long"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b17",
@@ -5341,7 +5577,8 @@
               "teal",
               "long"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b18",
@@ -5352,7 +5589,8 @@
               "teal",
               "long"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b19",
@@ -5363,7 +5601,8 @@
               "teal",
               "long"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b20",
@@ -5374,7 +5613,8 @@
               "teal",
               "long"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b84",
@@ -5385,7 +5625,8 @@
               "teal",
               "подумать"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b83",
@@ -5396,7 +5637,8 @@
               "teal",
               "long"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b85",
@@ -5413,7 +5655,8 @@
               "purple",
               "бот"
             ]
-          ]
+          ],
+          "project": "BLR"
         }
       ]
     },
@@ -5429,7 +5672,8 @@
               "teal",
               "long"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b22",
@@ -5440,7 +5684,8 @@
               "teal",
               "long"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b23",
@@ -5451,7 +5696,8 @@
               "teal",
               "long"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b24",
@@ -5462,7 +5708,8 @@
               "teal",
               "long"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b25",
@@ -5473,7 +5720,8 @@
               "teal",
               "long"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b26",
@@ -5484,7 +5732,8 @@
               "teal",
               "long"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b27",
@@ -5495,7 +5744,8 @@
               "teal",
               "long"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b28",
@@ -5506,7 +5756,8 @@
               "teal",
               "long"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b29",
@@ -5517,7 +5768,8 @@
               "teal",
               "long"
             ]
-          ]
+          ],
+          "project": "BLR"
         }
       ]
     },
@@ -5533,7 +5785,8 @@
               "teal",
               "long"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b31",
@@ -5544,7 +5797,8 @@
               "teal",
               "long"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b32",
@@ -5555,7 +5809,8 @@
               "teal",
               "long"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b33",
@@ -5566,7 +5821,8 @@
               "teal",
               "long"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b34",
@@ -5577,7 +5833,8 @@
               "teal",
               "long"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b35",
@@ -5588,7 +5845,8 @@
               "teal",
               "long"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b36",
@@ -5599,7 +5857,8 @@
               "teal",
               "long"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b37",
@@ -5610,7 +5869,8 @@
               "teal",
               "long"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b38",
@@ -5621,7 +5881,8 @@
               "teal",
               "long"
             ]
-          ]
+          ],
+          "project": "BLR"
         }
       ]
     },
@@ -5637,7 +5898,8 @@
               "teal",
               "long"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b40",
@@ -5648,7 +5910,8 @@
               "teal",
               "long"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b41",
@@ -5659,7 +5922,8 @@
               "teal",
               "long"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b42",
@@ -5670,7 +5934,8 @@
               "teal",
               "long"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b72",
@@ -5679,7 +5944,8 @@
           "done": true,
           "tags": [
             "long"
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b74",
@@ -5688,7 +5954,8 @@
           "done": true,
           "tags": [
             "long"
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b75",
@@ -5697,7 +5964,8 @@
           "done": false,
           "tags": [
             "long"
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b76",
@@ -5708,7 +5976,8 @@
               "teal",
               "long"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b77",
@@ -5719,7 +5988,8 @@
               "teal",
               "long"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b78",
@@ -5730,13 +6000,15 @@
               "teal",
               "long"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b79",
           "title": "Публичный канал — решить стратегически: оставить витриной или строить как самостоятельную точку роста (сейчас трафик только с личного бренда Димы)",
           "sub": "signals/channel-is-showcase.md",
-          "done": true
+          "done": true,
+          "project": "BLR"
         }
       ]
     },
@@ -5753,123 +6025,145 @@
               "подумать"
             ]
           ],
-          "priority": "low"
+          "priority": "low",
+          "project": "BLR"
         },
         {
           "id": "b81",
           "title": "Ночной агент на сервере: Claude Code CLI по крону, читает борд + Cases/ + SESSION-файлы, обновляет data.json, шлёт daily Юле",
-          "sub": "идея 08.04. Старт: только data.json + Cases/ без переноса всей базы. Потом: приватный репо для Projects/06_BLR/"
+          "sub": "идея 08.04. Старт: только data.json + Cases/ без переноса всей базы. Потом: приватный репо для Projects/06_BLR/",
+          "project": "BLR"
         },
         {
           "id": "b43",
           "title": "ежедневный мониторинг чата — внедрить в ритм",
           "sub": "из Trello Backlog",
-          "done": true
+          "done": true,
+          "project": "BLR"
         },
         {
           "id": "b44",
           "title": "написать 5-7 молчащим участникам",
           "sub": "из Trello Backlog",
-          "done": true
+          "done": true,
+          "project": "BLR"
         },
         {
           "id": "b45",
           "title": "разбор атомарных заметок из закрытого канала",
-          "sub": "из Trello Backlog"
+          "sub": "из Trello Backlog",
+          "project": "BLR"
         },
         {
           "id": "b46",
           "title": "HTML-карта: быстрые действия + блок GConf vs BLR",
-          "sub": "из Trello Backlog"
+          "sub": "из Trello Backlog",
+          "project": "BLR"
         },
         {
           "id": "b47",
           "title": "HTML-карта: блок GConf vs BLR",
           "sub": "из Trello Backlog",
-          "done": true
+          "done": true,
+          "project": "BLR"
         },
         {
           "id": "b48",
           "title": "дашборд v0 — план и реализация",
           "sub": "из Trello Backlog",
-          "done": true
+          "done": true,
+          "project": "BLR"
         },
         {
           "id": "b49",
           "title": "бот: чистка технических сообщений в канале",
-          "sub": "напоминания сгорают через 3 дня. из Trello Backlog"
+          "sub": "напоминания сгорают через 3 дня. из Trello Backlog",
+          "project": "BLR"
         },
         {
           "id": "b50",
           "title": "адаптировать упражнение метанавыки #2 для онбординга",
-          "sub": "из Trello Backlog"
+          "sub": "из Trello Backlog",
+          "project": "BLR"
         },
         {
           "id": "b51",
           "title": "адаптировать протокол Пеннибейкера → подготовка к обучению",
           "sub": "из Trello Backlog",
-          "done": true
+          "done": true,
+          "project": "BLR"
         },
         {
           "id": "b52",
           "title": "активнее вести выпускников GConf → комьюнити",
-          "sub": "из Trello Backlog"
+          "sub": "из Trello Backlog",
+          "project": "BLR"
         },
         {
           "id": "b53",
           "title": "делиться своими кейсами в комьюнити",
-          "sub": "из Trello Backlog"
+          "sub": "из Trello Backlog",
+          "project": "BLR"
         },
         {
           "id": "b54",
           "title": "подключить внешние метрики к каналам (найти инструмент)",
           "sub": "из Trello Backlog",
-          "done": true
+          "done": true,
+          "project": "BLR"
         },
         {
           "id": "b55",
           "title": "еженедельная аналитика участников: канал + чат (снапшот)",
           "sub": "раз в неделю снимать снапшот участников канала и чата. из Trello Backlog",
-          "done": true
+          "done": true,
+          "project": "OCTOPUS"
         },
         {
           "id": "b56",
           "title": "три пиллара: аналитика → методология → автоматизация",
-          "sub": "система пилларов Enabled → Capable → Empowered. из Trello Backlog"
+          "sub": "система пилларов Enabled → Capable → Empowered. из Trello Backlog",
+          "project": "CV-LAB"
         },
         {
           "id": "b57",
           "title": "автоматический bot-welcoming новых участников",
           "sub": "из community-building-research.md",
-          "done": true
+          "done": true,
+          "project": "BLR"
         },
         {
           "id": "b58",
           "title": "бот: писать в чат и отправлять персональный фидбэк после звонков",
-          "sub": "бэклог после созвона 30.03. Нужен автоматизированный post-call контур сопровождения."
+          "sub": "бэклог после созвона 30.03. Нужен автоматизированный post-call контур сопровождения.",
+          "project": "BLR"
         },
         {
           "id": "b59",
           "title": "собрать телеграм-дашборды для Димы",
           "sub": "бэклог после созвона 30.03. Регулярные метрики и сигналы в TG-формате для Димы.",
-          "done": true
+          "done": true,
+          "project": "BLR"
         },
         {
           "id": "b60",
           "title": "сформулировать файл-базу для практики апреля (протокол Пеннибейкера)",
           "sub": "бэклог после созвона 30.03. Общий референс-файл для механики «файл-база → AI → результат».",
-          "done": true
+          "done": true,
+          "project": "BLR"
         },
         {
           "id": "b61",
           "title": "вернуться к Алёне (@wrmrrr) до конца недели с конкретным предложением",
           "sub": "бэклог после созвона 30.03. Высокий риск оттока, нужен персональный follow-up.",
-          "done": true
+          "done": true,
+          "project": "BLR"
         },
         {
           "id": "b62",
           "title": "сделать таблицу контактов участников в Google Sheets",
-          "sub": "бэклог после созвона 30.03. Единая рабочая таблица аутрича и статусов ответов."
+          "sub": "бэклог после созвона 30.03. Единая рабочая таблица аутрича и статусов ответов.",
+          "project": "BLR"
         },
         {
           "id": "b63",
@@ -5880,13 +6174,15 @@
               "teal",
               "long"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b64",
           "title": "Создать отдельный TG-аккаунт/SIM для комьюнити-саппорта",
           "sub": "ksenia :: inbox, 30.03. По аналогии с G-Konf Support — выделенный аккаунт саппорта для участников.",
-          "done": true
+          "done": true,
+          "project": "BLR"
         },
         {
           "id": "b65",
@@ -5897,50 +6193,59 @@
               "teal",
               "long"
             ]
-          ]
+          ],
+          "project": "BLR"
         },
         {
           "id": "b66",
           "title": "@easylecturebot — посмотреть для вдохновения",
-          "sub": "ksenia :: inbox, 31.03."
+          "sub": "ksenia :: inbox, 31.03.",
+          "project": "BLR"
         },
         {
           "id": "b67",
           "title": "@alyonatikhonova — повторно спросить о вступлении после 20 апреля",
-          "sub": "ksenia :: inbox, 31.03. Не раньше 20 апреля."
+          "sub": "ksenia :: inbox, 31.03. Не раньше 20 апреля.",
+          "project": "BLR"
         },
         {
           "id": "b68",
           "title": "Открыть чат Лабы после критической массы оплативших + подготовить AI-сетап (Claude Code + Cursor)",
-          "done": true
+          "done": true,
+          "project": "BLR"
         },
         {
           "id": "b69",
           "title": "Ввести стандарт: каждый протагонист записывает кружочек для анонса эфира",
-          "done": true
+          "done": true,
+          "project": "BLR"
         },
         {
           "id": "b68",
           "title": "Видео от Юли: подход к привычкам (Atomic Habits), CLD/коуч-промт, как выбирать инструменты",
           "sub": "ksenia inbox 31.03. Первое видео нужно на следующей неделе (начало спринта). Остальные — не горят.",
-          "done": true
+          "done": true,
+          "project": "BLR"
         },
         {
           "id": "b69",
           "title": "Открытие чата Лабы — ждём критмассу оплативших, первое что будет — AI-сетап",
           "sub": "ksenia inbox 31.03. Не открывать сейчас. Юля: 'нам надо сразу подготовить AI-сетап'.",
-          "done": true
+          "done": true,
+          "project": "BLR"
         },
         {
           "id": "b70",
           "title": "Автодайджест активностей комьюнити для новых участников при вступлении",
           "sub": "jmatsako + ksenia :: inbox 01.04. Юля: 'хочу чтобы когда новый чел попадает в комьюнити ему выпадал дайджест активностей'. Идея: бот автоматически присылает подборку последних кейсов/ивентов.",
-          "done": true
+          "done": true,
+          "project": "BLR"
         },
         {
           "id": "b71",
           "title": "Авто-проверка заявок через Claude API — только подозрительных показывать вручную",
-          "sub": "jmatsako 02.04. Лёша предложил: настроить авто-ровер через Claude API для скорости, только подозрительные заявки требуют ручного одобрения. Планирует в начале недели."
+          "sub": "jmatsako 02.04. Лёша предложил: настроить авто-ровер через Claude API для скорости, только подозрительные заявки требуют ручного одобрения. Планирует в начале недели.",
+          "project": "BLR"
         }
       ]
     },
@@ -6013,13 +6318,15 @@
       "id": "th1",
       "title": "Идеи v4 (будут сформулированы позже)",
       "sub": "после того как v3 поработает несколько дней, Ксения сформулирует что дальше",
-      "added": "2026-04-18"
+      "added": "2026-04-18",
+      "project": "BLR"
     },
     {
       "id": "th2",
       "title": "CV-LAB пилот — стратегия выхода на рынок",
       "sub": "ICP: активный поиск + видит боль (откликается, нет ответов). Канал: Instagram + личный нетворк 1:1. Цена: аналитика 150$, полный путь 250$. Без BLR. Stories готовы — ждут обновлённого ToV.",
-      "added": "2026-04-18"
+      "added": "2026-04-18",
+      "project": "CV-LAB"
     }
   ],
   "experiment": [],
@@ -6028,7 +6335,8 @@
       "id": "ps1",
       "title": "Content-Lab: обновить personal_tov.md + переписать Instagram stories",
       "sub": "Найти REPL (описание тональностей Димы), GPT-логи, TG-беседы → обновить personal_tov.md → переписать stories про CV-LAB от первого лица. Текущий черновик stories есть в сессии 18.04.",
-      "added": "2026-04-18"
+      "added": "2026-04-18",
+      "project": "CONTENT-LAB"
     }
   ],
   "deep_research": [],
@@ -6133,7 +6441,8 @@
               "в работе"
             ]
           ],
-          "priority": "high"
+          "priority": "high",
+          "project": "CV-LAB"
         },
         {
           "id": "cv2",
@@ -6145,7 +6454,8 @@
               "ждём"
             ]
           ],
-          "priority": "mid"
+          "priority": "mid",
+          "project": "CV-LAB"
         },
         {
           "id": "cv3",
@@ -6159,7 +6469,8 @@
             "pause"
           ],
           "priority": "pause",
-          "done": true
+          "done": true,
+          "project": "CV-LAB"
         }
       ]
     },
@@ -6176,7 +6487,8 @@
               "ждём файлы"
             ]
           ],
-          "priority": "mid"
+          "priority": "mid",
+          "project": "CV-LAB"
         }
       ]
     },
@@ -6186,17 +6498,20 @@
         {
           "id": "cv10",
           "title": "методология vs Даша — анализ",
-          "sub": "файл cvlab_method_vs_dasha_analysis.md уже есть"
+          "sub": "файл cvlab_method_vs_dasha_analysis.md уже есть",
+          "project": "CV-LAB"
         },
         {
           "id": "cv11",
           "title": "список материалов JOE + CV-LAB",
-          "sub": "файл list-joe-cvlab-materials.md уже есть"
+          "sub": "файл list-joe-cvlab-materials.md уже есть",
+          "project": "CV-LAB"
         },
         {
           "id": "cv13",
           "title": "Виктория Самохина — тестовый кейс 18.04",
-          "sub": "Не клиент. Инсайты: ICP = активный поиск + видит боль. Рынок инженеров-конструкторов говорит функциями (0 метрик в 4 JD). Методология применима с адаптацией extraction-вопросов. Аналитика фазы 1 сделана."
+          "sub": "Не клиент. Инсайты: ICP = активный поиск + видит боль. Рынок инженеров-конструкторов говорит функциями (0 метрик в 4 JD). Методология применима с адаптацией extraction-вопросов. Аналитика фазы 1 сделана.",
+          "project": "CV-LAB"
         },
         {
           "id": "cv4",
@@ -6208,7 +6523,8 @@
               "стратегия"
             ]
           ],
-          "priority": "high"
+          "priority": "high",
+          "project": "CV-LAB"
         }
       ]
     }
