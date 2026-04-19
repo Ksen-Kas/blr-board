@@ -73,8 +73,16 @@ blr-board/
 **fire / tasks / blocks / think / experiment / personal / deep_research / cvlab:**
 поле `project` (обязательное для новых):
 ```json
-"project": "BLR" | "CV-LAB" | "MIA" | "OCTOPUS" | "CONTENT-LAB" | "PERSONAL"
+"project": "BLR" | "CV-LAB" | "MIA" | "OCTOPUS" | "CONTENT-LAB"
 ```
+
+Где:
+- `BLR` — рабочий проект в команде с Юлей (BLR community, бот, dashboard, аутрич, кейсы, онбординг, Health OS подпроект)
+- Остальные (CV-LAB, MIA, OCTOPUS, CONTENT-LAB, FLOW-LAB) — **личные проекты Ксении** (метка `personal: true` в `PROJECTS` dashboard).
+
+Отдельной вкладки `PERSONAL` нет — личные проекты и так помечены на уровне `PROJECTS`.
+
+Тег `["pink", "design"]` в `tags` — маркер дизайн-задач (например MIA каталог/презентация). Независим от проекта.
 
 **fire / tasks:**
 ```json
