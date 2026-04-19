@@ -1,6 +1,6 @@
 {
   "updated": "2026-04-19",
-  "updated_at": "2026-04-19T09:50:00+03:00",
+  "updated_at": "2026-04-19T10:05:00+03:00",
   "last_collected_ids": {
     "-1003478224837": 129,
     "-1003590719886": 1436,
@@ -9,6 +9,12 @@
     "brainloveandrobots": 31
   },
   "log": [
+    {
+      "date": "2026-04-19",
+      "action": "added",
+      "id": "b90",
+      "title": "Связать calendar.json ↔ blr-dashboard/rhythm как единый источник"
+    },
     {
       "date": "2026-04-19",
       "action": "added",
@@ -6015,6 +6021,21 @@
     {
       "category": "задачи: бэклог",
       "items": [
+        {
+          "id": "b90",
+          "title": "Связать calendar.json ↔ blr-dashboard/rhythm как единый источник истины",
+          "sub": "Сейчас: Octopus dashboard «📅 Ближайшие» читает calendar.json (recurring + events), а blr-dashboard/rhythm — отдельная страница на Railway. Ритм — истина для ближайшего, но сейчас редактируется в двух местах. Цель: один источник, вся автоматика ходит туда. Варианты: (A) calendar.json как SSOT, rhythm страница читает его; (B) rhythm API → calendar.json через sync-скрипт. Пока работает как виджет — не срочно, ставим в бэклог.",
+          "tags": [
+            [
+              "purple",
+              "инфра"
+            ]
+          ],
+          "priority": "low",
+          "done": false,
+          "project": "OCTOPUS",
+          "created_at": "2026-04-19T10:05:00+03:00"
+        },
         {
           "id": "b82",
           "title": "SPOF чата: передать операционку от Юли к Ксюше так чтобы чат жил 2 недели без Юли — и без того чтобы Ксения стала новой точкой отказа",
