@@ -1,6 +1,6 @@
 {
-  "updated": "2026-04-19",
-  "updated_at": "2026-04-19T23:00:38+03:00",
+  "updated": "2026-04-20",
+  "updated_at": "2026-04-20T08:45:40.186221+03:00",
   "last_collected_ids": {
     "-1003478224837": 129,
     "-1003590719886": 1436,
@@ -3110,6 +3110,18 @@
     {
       "date": "2026-04-19",
       "entry": "MacBook lid-close config: pmset -c disablesleep 1 done (AC sleep disabled). SSH Remote Login still Off — включить через GUI: System Settings → General → Sharing → Remote Login"
+    },
+    {
+      "date": "2026-04-20",
+      "action": "added",
+      "id": "f48",
+      "title": "CV-LAB Андрей: блок 6 ссылок 10-19.04 — финальный пакет"
+    },
+    {
+      "date": "2026-04-20",
+      "action": "done",
+      "id": "f46",
+      "title": "Бот напоминалки Алёна 20.04 — за час и за 3 мин"
     }
   ],
   "inbox": [],
@@ -3512,7 +3524,7 @@
           "бот"
         ]
       ],
-      "done": false,
+      "done": true,
       "priority": "fire",
       "when": "2026-04-20",
       "project": "BLR"
@@ -3545,6 +3557,16 @@
       "priority": "fire",
       "when": "2026-04-15",
       "project": "BLR"
+    },
+    {
+      "id": "f48",
+      "title": "🔥 CV-LAB Андрей — разобрать блок 6 ссылок (10-19.04): Aramco direct, Falcon, 2×Sofomation, Glassdoor, LinkedIn 19.04 — финальный пакет на отправку сегодня",
+      "sub": "пакет 14.04 покрывает 3/6: V1 Falcon (имя рекрутера ❌), V2 Harshit готов, V3 Anand готов. Не покрыто: ① Aramco direct (top, KSA), ⑤ Glassdoor (против [NORTH_STAR]), ⑥ LinkedIn 4344657669 (Андрей: «вроде уже было», проверить дубль). Решения по каждой + написать недостающие письма + Ксения отправляет.",
+      "done": false,
+      "priority": "fire",
+      "project": "CV-LAB",
+      "created": "2026-04-20",
+      "updated": "2026-04-20"
     }
   ],
   "tasks": [
