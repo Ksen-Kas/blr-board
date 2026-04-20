@@ -3162,6 +3162,12 @@
       "action": "added",
       "id": "t225",
       "title": "Дайджест BLR — собрать и написать"
+    },
+    {
+      "date": "2026-04-20",
+      "action": "closed",
+      "id": "f49",
+      "title": "Railway bot broadcast — root cause resolved, done:true подтверждён"
     }
   ],
   "inbox": [],
