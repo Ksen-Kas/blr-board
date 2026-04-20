@@ -1,6 +1,6 @@
 {
   "updated": "2026-04-20",
-  "updated_at": "2026-04-20T20:20:00+03:00",
+  "updated_at": "2026-04-20T20:56:06.491810+03:00",
   "last_collected_ids": {
     "-1003478224837": 129,
     "-1003590719886": 1436,
@@ -3182,6 +3182,24 @@
       "action": "updated",
       "id": "t225",
       "title": "Дайджест BLR — решение по формату: AI-новости отдельно, правило трёх"
+    },
+    {
+      "date": "2026-04-20",
+      "action": "updated",
+      "id": "f42",
+      "title": "мужской круг — обновлён sub: флоу готов, завтра deeplink + анонс"
+    },
+    {
+      "date": "2026-04-20",
+      "action": "added",
+      "id": "t227",
+      "title": "мужской круг — упростить deeplink payload"
+    },
+    {
+      "date": "2026-04-20",
+      "action": "added",
+      "id": "t228",
+      "title": "мужской круг — написать анонс + запустить /event_invite"
     }
   ],
   "inbox": [],
@@ -3602,7 +3620,7 @@
     {
       "id": "f42",
       "title": "🔥 Запустить руку «мужской круг 24.04» — читать SESSION + Synthesis, пинг Сашу",
-      "sub": "СТАРТ-ПАКЕТ (40 мин): (1) SESSION_mens-circle.md — блок WAKE-UP + решения звонка 14.04; (2) Synthesis/mens-circle-v1.md — TL;DR + разделы 2, 7, 9, 11; (3) канал @emotionaltantra посты 180-182, 217-223, 335-340 глазами. Потом: пинг Саши (wording протокола + пул вопросов по принадлежности + подтверждение дня 24.04), параллельно — финализировать application-форму. Анонсы пишем когда придёт wording от Саши. Ветка автономная — crew продолжает работу как только Ксения даст ОК.",
+      "sub": "Регистрационный флоу готов (бот @brainloverobotsbot). Завтра: упростить deeplink payload, написать анонс с ссылкой, пинг Саши на wording. Запустить /event_invite после анонса.",
       "tags": [
         [
           "red",
@@ -3616,7 +3634,8 @@
       "done": false,
       "priority": "fire",
       "when": "2026-04-15",
-      "project": "BLR"
+      "project": "BLR",
+      "updated_at": "2026-04-20T20:56:06.491810+03:00"
     },
     {
       "id": "f48",
@@ -5497,6 +5516,38 @@
       ],
       "project": "BLR",
       "updated": "2026-04-20"
+    },
+    {
+      "id": "t227",
+      "title": "Мужской круг — упростить deeplink payload (сейчас event_mens_circle → что-то короткое)",
+      "sub": "Поменять в webhook route.ts + задеплоить. Потом вставить ссылку в анонс.",
+      "tags": [
+        [
+          "blue",
+          "dev"
+        ]
+      ],
+      "done": false,
+      "priority": "task",
+      "when": "2026-04-21",
+      "project": "BLR",
+      "updated_at": "2026-04-20T20:56:06.491810+03:00"
+    },
+    {
+      "id": "t228",
+      "title": "Мужской круг — написать анонс с deeplink и запустить /event_invite",
+      "sub": "Текст анонса + ссылка t.me/brainloverobotsbot?start=XXX. После — /event_invite в боте.",
+      "tags": [
+        [
+          "pink",
+          "comm"
+        ]
+      ],
+      "done": false,
+      "priority": "task",
+      "when": "2026-04-21",
+      "project": "BLR",
+      "updated_at": "2026-04-20T20:56:06.491810+03:00"
     }
   ],
   "backlog": [
