@@ -3589,7 +3589,7 @@
     {
       "id": "f49",
       "title": "🔧 Разобраться с Railway bot broadcast — chat not found при рассылке community",
-      "sub": "ID 9 упал с 'Bad Request: chat not found'. Scheduler отработал правильно, проблема на стороне Railway/бота. Смотреть Railway logs для blr-bot-production.",
+      "sub": "ID 9 упал с 'Bad Request: chat not found'. Scheduler отработал правильно, проблема на стороне Railway/бота. Смотреть Railway logs для blr-bot-production. ✅ 2026-04-20: root cause — старый scheduler.js на DO без bot-branch вызывал sendMessage(\"bot\") напрямую в Telegram → chat not found. Исправлено: задеплоен новый scheduler.js с Railway broadcast.",
       "tags": [
         [
           "orange",
@@ -3600,7 +3600,7 @@
           "бот"
         ]
       ],
-      "done": false,
+      "done": true,
       "priority": "fire",
       "when": "после мероприятия 20.04",
       "project": "BLR"
