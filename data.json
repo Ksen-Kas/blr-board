@@ -11,6 +11,10 @@
   "log": [
     {
       "date": "2026-04-20",
+      "action": "crew: добавлена f50 — Спринт май Creative OS. Исследование завершено, синтез в Synthesis/."
+    },
+    {
+      "date": "2026-04-20",
       "action": "added",
       "id": "t222",
       "title": "DO сервер недоступен: spawnSync /bin/sh ETIMEDOUT — blr-scheduler упал"
@@ -3604,6 +3608,41 @@
       "priority": "fire",
       "when": "после мероприятия 20.04",
       "project": "BLR"
+    },
+    {
+      "id": "f50",
+      "title": "Спринт май — Creative OS: подтвердить тему, договориться с Лёшей Ивановым + Вадимом Чулаковым, анонс 28-30.04",
+      "project": "BLR",
+      "tags": [
+        "sprint",
+        "content",
+        "creativity"
+      ],
+      "updated": "2026-04-20",
+      "done": false,
+      "sub": [
+        {
+          "text": "Подтвердить тему с Юлей (контент vs творчество)",
+          "done": false
+        },
+        {
+          "text": "Договориться с Лёшей Ивановым (IFS) — неделя 1",
+          "done": false
+        },
+        {
+          "text": "Подтвердить Вадима Чулакова — неделя 3",
+          "done": false
+        },
+        {
+          "text": "Найти кейс-участника из BLR — неделя 2",
+          "done": false
+        },
+        {
+          "text": "Анонс в канале 28-30.04",
+          "done": false
+        }
+      ],
+      "note": "Исследование: Synthesis/2026-04-20_may-sprint-creativity-research.md"
     }
   ],
   "tasks": [
