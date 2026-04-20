@@ -1,6 +1,6 @@
 {
   "updated": "2026-04-20",
-  "updated_at": "2026-04-20T09:13:29.516037+03:00",
+  "updated_at": "2026-04-20T11:39:51+03:00",
   "last_collected_ids": {
     "-1003478224837": 129,
     "-1003590719886": 1436,
@@ -9,6 +9,12 @@
     "brainloveandrobots": 31
   },
   "log": [
+    {
+      "date": "2026-04-20",
+      "action": "added",
+      "id": "t222",
+      "title": "DO сервер недоступен: spawnSync /bin/sh ETIMEDOUT — blr-scheduler упал"
+    },
     {
       "date": "2026-04-19",
       "action": "session",
@@ -3128,6 +3134,12 @@
       "action": "added",
       "id": "f49",
       "title": "Railway bot broadcast — разобраться после мероприятия"
+    },
+    {
+      "date": "2026-04-20",
+      "action": "progress",
+      "id": "f48",
+      "title": "Plan B карта собрана — Tier 1 (7) + Tier 2 (6) + Tier 3 monitor; Notion обновлён; ждём sprint 1 зелёный"
     }
   ],
   "inbox": [],
@@ -3567,7 +3579,7 @@
     {
       "id": "f48",
       "title": "🔥 CV-LAB Андрей — разобрать блок 6 ссылок (10-19.04): Aramco direct, Falcon, 2×Sofomation, Glassdoor, LinkedIn 19.04 — финальный пакет на отправку сегодня",
-      "sub": "пакет 14.04 покрывает 3/6: V1 Falcon (имя рекрутера ❌), V2 Harshit готов, V3 Anand готов. Не покрыто: ① Aramco direct (top, KSA), ⑤ Glassdoor (против [NORTH_STAR]), ⑥ LinkedIn 4344657669 (Андрей: «вроде уже было», проверить дубль). Решения по каждой + написать недостающие письма + Ксения отправляет.",
+      "sub": "Plan B v2 разведка → Notion (348b30f3ed3e81009364ed910f81107e). Tier 1: Wood PLC PMC RE (Abu Dhabi 100% match), RFDyn Belgrade, BP CCUS remote, Energean Athens, Aramco CCUS, ADNOC digital twin, QatarEnergy CCS. Tier 2 cold: DGM/CMG/KAPPA/Mubadala/KBR/Penspen. Sprint 1 = 5 писем (Wood/RFDyn/BP/Energean/Aramco) ждёт зелёный.",
       "done": false,
       "priority": "fire",
       "project": "CV-LAB",
@@ -4211,6 +4223,24 @@
           ],
           "done": true,
           "priority": "mid",
+          "project": "BLR"
+        },
+        {
+          "id": "t222",
+          "title": "DO сервер недоступен: spawnSync /bin/sh ETIMEDOUT",
+          "sub": "20.04 утром: blr-scheduler на DO (104.248.33.250) упал с ошибкой spawnSync /bin/sh ETIMEDOUT. Нужно: зайти по SSH, проверить статус systemd-сервиса blr-scheduler, рестартовать, проверить логи.",
+          "tags": [
+            [
+              "red",
+              "горит"
+            ],
+            [
+              "teal",
+              "инфра"
+            ]
+          ],
+          "done": false,
+          "priority": "fire",
           "project": "BLR"
         }
       ]
