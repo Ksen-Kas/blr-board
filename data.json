@@ -1,6 +1,6 @@
 {
   "updated": "2026-04-20",
-  "updated_at": "2026-04-20T21:36:01.196183+03:00",
+  "updated_at": "2026-04-20T21:49:10.631266+03:00",
   "last_collected_ids": {
     "-1003478224837": 129,
     "-1003590719886": 1436,
@@ -3206,6 +3206,12 @@
       "action": "added",
       "id": "t229",
       "title": "Mini app — поправить страницу коуч-промпта (показать v1/v2/v3 + how-to)"
+    },
+    {
+      "date": "2026-04-20",
+      "action": "added",
+      "id": "t230",
+      "title": "Mini app RAv1 — разобраться почему GitHub-ссылки не открываются"
     }
   ],
   "inbox": [],
@@ -5569,6 +5575,16 @@
       "priority": "task",
       "project": "BLR",
       "updated_at": "2026-04-20T21:36:01.196183+03:00"
+    },
+    {
+      "id": "t230",
+      "title": "Mini app RAv1 — разобраться почему GitHub-ссылки не открываются",
+      "sub": "Кнопки → гайд на GitHub ведут на github.com/matsako/brain-love-and-robots/blob/main/cohorts/... — возможно файлы не запушены в репо. Проверить и либо запушить, либо заменить на TG-ссылки.",
+      "tags": [["blue", "dev"]],
+      "done": false,
+      "priority": "task",
+      "project": "BLR",
+      "updated_at": "2026-04-20T21:49:10.631266+03:00"
     }
   ],
   "backlog": [
