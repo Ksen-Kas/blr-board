@@ -1,6 +1,6 @@
 {
   "updated": "2026-04-21",
-  "updated_at": "2026-04-21T11:57:53+03:00",
+  "updated_at": "2026-04-21T14:54:57+03:00",
   "last_collected_ids": {
     "-1003478224837": 129,
     "-1003590719886": 1436,
@@ -9,6 +9,17 @@
     "brainloveandrobots": 31
   },
   "log": [
+    {
+      "date": "2026-04-21",
+      "action": "session",
+      "title": "диагностика: заявки мужского круга не пропадали — staging vs production. Прод жив, 5 заявок pending (jmatsako, drakulavich, mat12321tam, styanchenko, Ksen_Kas). Одобрить на борде."
+    },
+    {
+      "date": "2026-04-21",
+      "action": "done",
+      "id": "infra",
+      "title": "COMM-вкладка в Octopus: collapse по клику, кнопки clipboard, вправо, без blr sched ссылки"
+    },
     {
       "date": "2026-04-21",
       "action": "session",
