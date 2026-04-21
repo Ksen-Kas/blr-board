@@ -1,6 +1,6 @@
 {
   "updated": "2026-04-21",
-  "updated_at": "2026-04-21T15:02:22+03:00",
+  "updated_at": "2026-04-21T23:59:00+03:00",
   "last_collected_ids": {
     "-1003478224837": 129,
     "-1003590719886": 1436,
@@ -11,8 +11,14 @@
   "log": [
     {
       "date": "2026-04-21",
+      "action": "added",
+      "id": "t232",
+      "title": "Проверить @kondrinfo — оплата не подтверждена (has_community=true, has_lab=true, но оплата под вопросом)"
+    },
+    {
+      "date": "2026-04-21",
       "action": "session",
-      "title": "диагностика: заявки мужского круга не пропадали — staging vs production. Прод жив, 5 заявок pending (jmatsako, drakulavich, mat12321tam, styanchenko, Ksen_Kas). Одобрить на борде."
+      "title": "диагностика: заявки мужского круга не пропадали — staging vs production. Прод жив, 5 заявок pending (jmatsako, drakulavich, mat12321mat, styanchenko, Ksen_Kas). Одобрить на борде."
     },
     {
       "date": "2026-04-21",
@@ -5747,6 +5753,19 @@
       "project": "BLR",
       "created": "2026-04-21",
       "updated_at": "2026-04-21T15:02:22+03:00"
+    },
+    {
+      "id": "t232",
+      "title": "Проверить @kondrinfo — оплата не подтверждена",
+      "sub": "has_community=true, has_lab=true — доступ есть, но оплата гипотетически не оплачена. Проверить через TG-выгрузку участников чата и сверить с платёжными данными.",
+      "tags": [
+        ["amber", "проверить"]
+      ],
+      "done": false,
+      "priority": "tasks",
+      "project": "BLR",
+      "created": "2026-04-22",
+      "updated_at": "2026-04-21T00:00:00+03:00"
     }
   ],
   "backlog": [
