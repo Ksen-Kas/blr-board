@@ -1,6 +1,6 @@
 {
   "updated": "2026-04-21",
-  "updated_at": "2026-04-21T10:05:36+03:00",
+  "updated_at": "2026-04-21T10:17:59+03:00",
   "last_collected_ids": {
     "-1003478224837": 129,
     "-1003590719886": 1436,
@@ -3236,6 +3236,12 @@
       "action": "updated",
       "id": "f42",
       "title": "мужской круг: COMM-пакет готов — анонс, цепочка коммуникаций, личные A/B, форма, протокол EMTR"
+    },
+    {
+      "date": "2026-04-21",
+      "action": "added+done",
+      "id": "t231",
+      "title": "BLR Scheduler: фиксы + стабилизация Octopus"
     }
   ],
   "inbox": [],
@@ -4391,6 +4397,13 @@
           ],
           "done": false,
           "priority": "fire",
+          "project": "BLR"
+        },
+        {
+          "id": "t231",
+          "title": "BLR Scheduler: фиксы + стабилизация Octopus",
+          "sub": "f49 закрыт (DO бот-branch), scheduler.html — clipboard/STATUS_ICONS/audience/retry, proxy.js таймаут 30s, index.html iframe+cache-buster",
+          "done": true,
           "project": "BLR"
         }
       ]
