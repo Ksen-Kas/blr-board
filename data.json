@@ -1,6 +1,6 @@
 {
-  "updated": "2026-04-20",
-  "updated_at": "2026-04-20T22:06:58.777271+03:00",
+  "updated": "2026-04-21",
+  "updated_at": "2026-04-21T09:56:35.657275+03:00",
   "last_collected_ids": {
     "-1003478224837": 129,
     "-1003590719886": 1436,
@@ -3218,6 +3218,18 @@
       "action": "done",
       "id": "t197",
       "title": "Авто-публикация карточки нового участника в ветку «знакомимся»"
+    },
+    {
+      "date": "2026-04-21",
+      "action": "added",
+      "id": "fix",
+      "title": "BLR bot: consent колонка добавлена в прод БД, бот восстановлен после outage"
+    },
+    {
+      "date": "2026-04-21",
+      "action": "added",
+      "id": "fix",
+      "title": "BLR bot: DELETE endpoint добавлен, тестовая запись мужского круга удалена"
     }
   ],
   "inbox": [],
@@ -4235,11 +4247,10 @@
         },
         {
           "id": "t197",
-          "done": true,
+          "done": false,
           "title": "Авто-публикация карточки нового участника в ветку «знакомимся»",
           "sub": "Триггер: Tribute webhook (оплата) → has_community проставлен → бот берёт approved-заявку из applications по telegram_user_id → шлёт карточку в топик 1540. Формат: «привет, познакомьтесь 👋\\n\\nИмя · @username\\nГород · занятость\\n\\nчем занимается (свободный текст)». Без откуда узнал. Если approved-заявки нет — не шлём ничего. Файл: app/api/telegram/tribute-webhook/route.ts.",
           "priority": "high",
-          "done": false,
           "tags": [
             [
               "purple",
@@ -5587,7 +5598,12 @@
       "id": "t230",
       "title": "Mini app RAv1 — разобраться почему GitHub-ссылки не открываются",
       "sub": "Кнопки → гайд на GitHub ведут на github.com/matsako/brain-love-and-robots/blob/main/cohorts/... — возможно файлы не запушены в репо. Проверить и либо запушить, либо заменить на TG-ссылки.",
-      "tags": [["blue", "dev"]],
+      "tags": [
+        [
+          "blue",
+          "dev"
+        ]
+      ],
       "done": false,
       "priority": "task",
       "project": "BLR",
