@@ -1,6 +1,6 @@
 {
   "updated": "2026-04-22",
-  "updated_at": "2026-04-22T20:19:43+03:00",
+  "updated_at": "2026-04-22T20:36:00+03:00",
   "last_collected_ids": {
     "-1003478224837": 129,
     "-1003590719886": 1436,
@@ -3329,6 +3329,36 @@
       "action": "progress",
       "id": "f48",
       "title": "CV-LAB Андрей: Notion максимум — Plan B расширен «За пределами энергетики» (8 отраслей), создана Outreach tracker sub-page (6 ссылок + V1/V2/V3 письма), главная обновлена (статус артефактов + Key insight self-deprecation)"
+    },
+    {
+      "date": "2026-04-22",
+      "action": "added",
+      "id": "rhythm-notion-db",
+      "title": "Notion база «BLR Ритм · апрель-май 2026» создана (31 запись касаний 22-30.04, 9 колонок, иконки по типу, Ветка чата для общего чата)"
+    },
+    {
+      "date": "2026-04-22",
+      "action": "added",
+      "id": "rhythm-dash-live",
+      "title": "Dashboard /dashboard/rhythm переписан под Notion API: живой синк, навигация месяцев (?m=YYYY-MM), кнопка 🔄 обновить, сегодня-карточки, выравнивание клеток, цвета по событиям"
+    },
+    {
+      "date": "2026-04-22",
+      "action": "done",
+      "id": "notion-integration",
+      "title": "NOTION_TOKEN настроен в Railway blr-dashboard, база расшарена с Cursor AI integration, API 200 OK"
+    },
+    {
+      "date": "2026-04-22",
+      "action": "done",
+      "id": "f42-push-lesha-11-15",
+      "title": "Push Лёша 11:15 в бот отправлен (добор до 10 на Лёшу Иванова 23.04)"
+    },
+    {
+      "date": "2026-04-22",
+      "action": "moved",
+      "id": "anblokinga-anons",
+      "title": "Анонс Анблокинга перенесён с 22.04 на 23.04 утро (канал + бот)"
     }
   ],
   "inbox": [],
