@@ -1,6 +1,6 @@
 {
   "updated": "2026-04-23",
-  "updated_at": "2026-04-23T14:56:50+03:00",
+  "updated_at": "2026-04-23T17:55:53+03:00",
   "last_collected_ids": {
     "-1003478224837": 129,
     "-1003590719886": 1436,
@@ -3419,6 +3419,12 @@
       "action": "updated",
       "id": "f43",
       "title": "Mia Shaly Naples — execution-kit собран, задача активна (ждём данные от Марины)"
+    },
+    {
+      "date": "2026-04-23",
+      "action": "updated",
+      "id": "synthesis",
+      "title": "mens-circle-follow-up: @niku_alex удалён из P2 (неактивный, оплата не подтверждена)"
     }
   ],
   "inbox": [],
