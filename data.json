@@ -1,6 +1,6 @@
 {
   "updated": "2026-04-24",
-  "updated_at": "2026-04-24T15:29:06.697954+03:00",
+  "updated_at": "2026-04-24T17:35:26.711270+03:00",
   "last_collected_ids": {
     "-1003478224837": 129,
     "-1003590719886": 1436,
@@ -9,6 +9,18 @@
     "brainloveandrobots": 31
   },
   "log": [
+    {
+      "date": "2026-04-24",
+      "action": "done",
+      "id": "f65",
+      "title": "Пасс Кате Ковалевской — выдан"
+    },
+    {
+      "date": "2026-04-24",
+      "action": "done",
+      "id": "f66",
+      "title": "Месяц комьюнити Марии Беспальченко — выдан"
+    },
     {
       "date": "2026-04-24",
       "action": "done",
@@ -4401,7 +4413,7 @@
           "комьюнити"
         ]
       ],
-      "done": false,
+      "done": true,
       "priority": "fire",
       "project": "BLR"
     },
@@ -4415,7 +4427,7 @@
           "лаба"
         ]
       ],
-      "done": false,
+      "done": true,
       "priority": "fire",
       "project": "BLR"
     },
