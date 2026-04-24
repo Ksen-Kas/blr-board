@@ -1,6 +1,6 @@
 {
   "updated": "2026-04-24",
-  "updated_at": "2026-04-24T17:45:45.651153+03:00",
+  "updated_at": "2026-04-24T19:29:41.589794+03:00",
   "last_collected_ids": {
     "-1003478224837": 129,
     "-1003590719886": 1436,
@@ -3700,6 +3700,18 @@
       "action": "added",
       "id": "faq",
       "title": "FAQ BLR создан → 10-support/FAQ/public/FAQ_V1.md (~20 вопросов из chat export)"
+    },
+    {
+      "date": "2026-04-24",
+      "action": "done",
+      "id": "f51",
+      "title": "Мужской круг — флоу напоминалок запущен в прод"
+    },
+    {
+      "date": "2026-04-24",
+      "action": "added",
+      "id": "t249",
+      "title": "Проверить ENABLE_USER_BROADCAST на Railway (сейчас =true)"
     }
   ],
   "inbox": [],
@@ -3836,7 +3848,7 @@
       "id": "f51",
       "title": "🤖 Разобраться с анкетами: кому уходит уведомление в боевой бот",
       "sub": "Пришла анкета от @Annal.ondon (Анна, Лондон, топ-менеджер). Проверить: куда именно уходят уведомления о новых анкетах из sales bot — только ли в группу операторов (org) blr learning design (-5105250695), нет ли утечки в публичные чаты. Логика в app/api/sales-bot/webhook/.",
-      "done": false,
+      "done": true,
       "priority": "fire",
       "tags": [
         [
@@ -4361,7 +4373,7 @@
           "горит"
         ]
       ],
-      "done": false,
+      "done": true,
       "priority": "fire",
       "project": "BLR"
     },
@@ -6604,6 +6616,20 @@
       ],
       "done": false,
       "priority": "mid",
+      "project": "BLR"
+    },
+    {
+      "id": "t249",
+      "title": "Проверить ENABLE_USER_BROADCAST на Railway (сейчас =true)",
+      "sub": "Обнаружено при /close: ENABLE_USER_BROADCAST=true — риск случайной массовой рассылки",
+      "tags": [
+        [
+          "red",
+          "риск"
+        ]
+      ],
+      "done": false,
+      "priority": "high",
       "project": "BLR"
     }
   ],
