@@ -1,6 +1,6 @@
 {
   "updated": "2026-04-24",
-  "updated_at": "2026-04-24T14:26:18.762261+03:00",
+  "updated_at": "2026-04-24T14:31:51.477931+03:00",
   "last_collected_ids": {
     "-1003478224837": 129,
     "-1003590719886": 1436,
@@ -9,6 +9,30 @@
     "brainloveandrobots": 31
   },
   "log": [
+    {
+      "date": "2026-04-24",
+      "action": "moved",
+      "id": "f64",
+      "title": "→ tasks: не сегодня"
+    },
+    {
+      "date": "2026-04-24",
+      "action": "added",
+      "id": "t247",
+      "title": "Кейс Димы → tasks"
+    },
+    {
+      "date": "2026-04-24",
+      "action": "added",
+      "id": "f68",
+      "title": "Запись Лёши → fire"
+    },
+    {
+      "date": "2026-04-24",
+      "action": "added",
+      "id": "f69",
+      "title": "Написать Егору"
+    },
     {
       "date": "2026-04-24",
       "action": "added",
@@ -4334,7 +4358,7 @@
           "горит"
         ]
       ],
-      "done": false,
+      "done": true,
       "priority": "fire",
       "project": "BLR"
     },
@@ -4374,6 +4398,34 @@
         [
           "amber",
           "спринт"
+        ]
+      ],
+      "done": false,
+      "priority": "fire",
+      "project": "BLR"
+    },
+    {
+      "id": "f68",
+      "title": "🎙️ Выложить запись Лёши Иванова в Community",
+      "sub": "youtu.be/uO7fsR-pFWE — написать пост → Юле → публиковать. Файлы на Desktop.",
+      "tags": [
+        [
+          "red",
+          "горит"
+        ]
+      ],
+      "done": false,
+      "priority": "fire",
+      "project": "BLR"
+    },
+    {
+      "id": "f69",
+      "title": "✉️ Написать @egerev — пригласить в BLR (годовой пасс)",
+      "sub": "Инициатива Юли. Построить диалог: спросить про уровень в AI, потом пасс.",
+      "tags": [
+        [
+          "teal",
+          "аутрич"
         ]
       ],
       "done": false,
@@ -6471,6 +6523,14 @@
       "sub": "Юля решила: если Алёна проведёт вторую — дать проходку на лабу",
       "done": false,
       "priority": "low",
+      "project": "BLR"
+    },
+    {
+      "id": "t247",
+      "title": "Кейс Димы @Matskevich — выложить в Community (browser-first alpha)",
+      "sub": "Написать пост → Юле → публиковать. Не сегодня.",
+      "done": false,
+      "priority": "mid",
       "project": "BLR"
     }
   ],
