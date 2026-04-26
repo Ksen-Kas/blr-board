@@ -1,6 +1,6 @@
 {
   "updated": "2026-04-24",
-  "updated_at": "2026-04-25T21:41:34",
+  "updated_at": "2026-04-26T19:18:12",
   "last_collected_ids": {
     "-1003478224837": 129,
     "-1003590719886": 1436,
@@ -3712,6 +3712,23 @@
       "action": "added",
       "id": "t249",
       "title": "Проверить ENABLE_USER_BROADCAST на Railway (сейчас =true)"
+    },
+    {
+      "date": "2026-04-26",
+      "action": "done",
+      "id": "t236",
+      "title": "soul md от Лены — материалы получены и разобраны (Raw/lena_artefacts/)"
+    },
+    {
+      "date": "2026-04-26",
+      "action": "added",
+      "id": "t250",
+      "title": "Codex-сессия: интегрировать мокапы ритма (апрель/health/май) в dashboard/rhythm Next.js"
+    },
+    {
+      "date": "2026-04-26",
+      "action": "session",
+      "title": "ретро апреля + спринт Health OS + план мая, артефакты Лены, sourcing Creative OS, мокапы blr-rhythm.html"
     }
   ],
   "inbox": [],
@@ -6494,9 +6511,10 @@
         "content",
         "creative-os"
       ],
-      "done": false,
+      "done": true,
       "updated": "2026-04-24",
-      "note": "Soul MD пост и звонок Елены W2 — разные вещи. Пост — асинхронно для участников."
+      "note": "Soul MD пост и звонок Елены W2 — разные вещи. Пост — асинхронно для участников.",
+      "done_at": "2026-04-26"
     },
     {
       "id": "t237",
@@ -6635,6 +6653,14 @@
       "priority": "high",
       "project": "BLR",
       "done_at": "2026-04-25"
+    },
+    {
+      "id": "t250",
+      "title": "Codex-сессия: интегрировать мокапы ритма (апрель/health/май) в dashboard/rhythm Next.js",
+      "priority": "mid",
+      "kind": "codex",
+      "note": "ТЗ-исходники: blr-rhythm-mockup*.html в AI_LAB. Целевой проект: GitHub/blr-lms/dashboard (нестандартный Next.js, читать AGENTS.md). Источник данных пока статичный JSON, Notion вторым шагом.",
+      "created_at": "2026-04-26"
     }
   ],
   "backlog": [
