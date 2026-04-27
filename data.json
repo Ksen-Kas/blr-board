@@ -1,6 +1,6 @@
 {
-  "updated": "2026-04-24",
-  "updated_at": "2026-04-26T19:18:12",
+  "updated": "2026-04-27",
+  "updated_at": "2026-04-27T15:28:24Z",
   "last_collected_ids": {
     "-1003478224837": 129,
     "-1003590719886": 1436,
@@ -9,6 +9,132 @@
     "brainloveandrobots": 31
   },
   "log": [
+    {
+      "date": "2026-04-27",
+      "action": "done",
+      "id": "t255",
+      "title": "Анонс gmail-lab-extraction-skill в комьюнити"
+    },
+    {
+      "date": "2026-04-27",
+      "action": "done",
+      "id": "t253",
+      "title": "@Loutsker — постик после звонка (скрин + благодарность)"
+    },
+    {
+      "date": "2026-04-27",
+      "action": "done",
+      "id": "t258",
+      "title": "Демо-день со Славой @velvet_slava — наметить дату"
+    },
+    {
+      "date": "2026-04-27",
+      "action": "added",
+      "id": "t259",
+      "title": "Драфт анонса demo Слава 7.05 → Юле, публикация 30.04"
+    },
+    {
+      "date": "2026-04-27",
+      "action": "added",
+      "id": "t260",
+      "title": "Драфт анонса Opening Creative OS 11.05 → публикация 4.05 (−7д)"
+    },
+    {
+      "date": "2026-04-27",
+      "action": "added",
+      "id": "t261",
+      "title": "Драфт анонса чек-ин Дима 12.05 → публикация 5.05 (−7д)"
+    },
+    {
+      "date": "2026-04-27",
+      "action": "added",
+      "id": "t262",
+      "title": "Подтвердить @Loutsker, Мика Ян, Рома Кумар + кружочки от них до 1.05"
+    },
+    {
+      "date": "2026-04-27",
+      "action": "added",
+      "id": "t263",
+      "title": "Синк Ксения+Юля+Дима — 28.04 11:00 МСК"
+    },
+    {
+      "date": "2026-04-27",
+      "action": "added",
+      "id": "t264",
+      "title": "Ответить Славе в вопросах-ответах"
+    },
+    {
+      "date": "2026-04-27",
+      "action": "added",
+      "id": "t265",
+      "title": "Постик про эмпатию к агенту + источники"
+    },
+    {
+      "date": "2026-04-27",
+      "action": "added",
+      "id": "t258",
+      "title": "Демо-день со Славой @velvet_slava — наметить дату"
+    },
+    {
+      "date": "2026-04-27",
+      "action": "added",
+      "id": "t257",
+      "title": "text.zip vibecon скиллы → разобрать и запланировать"
+    },
+    {
+      "date": "2026-04-27",
+      "action": "added",
+      "id": "t256",
+      "title": "soul.md → публикация в Creative OS спринте"
+    },
+    {
+      "date": "2026-04-27",
+      "action": "added",
+      "id": "t255",
+      "title": "Анонс gmail-lab-extraction-skill в комьюнити"
+    },
+    {
+      "date": "2026-04-27",
+      "action": "added",
+      "id": "t254",
+      "title": "@Loutsker — markdown кейс"
+    },
+    {
+      "date": "2026-04-27",
+      "action": "added",
+      "id": "t253",
+      "title": "@Loutsker — постик после звонка (скрин + благодарность)"
+    },
+    {
+      "date": "2026-04-27",
+      "action": "added",
+      "id": "b101",
+      "title": "Егор @egoregerev — лумсик про superflow"
+    },
+    {
+      "date": "2026-04-27",
+      "action": "done",
+      "id": "f69",
+      "title": "приглашение @egerev"
+    },
+    {
+      "date": "2026-04-27",
+      "action": "done",
+      "id": "f1",
+      "title": "пост Octopus v2→v3"
+    },
+    {
+      "date": "2026-04-27",
+      "action": "done",
+      "id": "f48",
+      "title": "CV-LAB Андрей спринт"
+    },
+    {
+      "date": "2026-04-27",
+      "action": "done",
+      "id": "f56",
+      "title": "запись Гани"
+    },
     {
       "date": "2026-04-24",
       "action": "done",
@@ -3795,7 +3921,7 @@
       "id": "f56",
       "title": "🎙️ Подготовить запись звонка с протагонистом — Ганя Стофф (Спарта)",
       "sub": "Транскрипт готов (GMT20260423-091039_Recording.m4a.txt + .srt). Саммари сгенерировано. Следующий шаг: загрузить на YouTube (unlisted) и завершить content-workflow шаги 3-9.",
-      "done": false,
+      "done": true,
       "priority": "fire",
       "tags": [
         [
@@ -3974,7 +4100,7 @@
       "id": "f1",
       "title": "💌 Пост в BLR про переход Octopus v2 → v3",
       "sub": "мысль: «v2 собрал скиллы вокруг себя, v3 — общее пространство где я и Claude видим одно». + благодарность: CEO Daily Юли как источник идей (не копия), инструменты из ссылок ребят комьюнити (iTerm2 от Стаса, Kesha Voice Kit Антона, принцип «эмпатия к агентам» Юли). Скриншот рабочего пульта",
-      "done": false,
+      "done": true,
       "priority": "fire",
       "tags": [
         [
@@ -4320,7 +4446,7 @@
       "id": "f48",
       "title": "🔥 CV-LAB Андрей — разобрать блок 6 ссылок (10-19.04): Aramco direct, Falcon, 2×Sofomation, Glassdoor, LinkedIn 19.04 — финальный пакет на отправку сегодня",
       "sub": "Plan B v2 разведка → Notion (348b30f3ed3e81009364ed910f81107e). Tier 1: Wood PLC PMC RE (Abu Dhabi 100% match), RFDyn Belgrade, BP CCUS remote, Energean Athens, Aramco CCUS, ADNOC digital twin, QatarEnergy CCS. Tier 2 cold: DGM/CMG/KAPPA/Mubadala/KBR/Penspen. Sprint 1 = 5 писем (Wood/RFDyn/BP/Energean/Aramco) ждёт зелёный.",
-      "done": false,
+      "done": true,
       "priority": "fire",
       "project": "CV-LAB",
       "created": "2026-04-20",
@@ -4516,7 +4642,7 @@
           "аутрич"
         ]
       ],
-      "done": false,
+      "done": true,
       "priority": "fire",
       "project": "BLR"
     }
@@ -6661,6 +6787,247 @@
       "kind": "codex",
       "note": "ТЗ-исходники: blr-rhythm-mockup*.html в AI_LAB. Целевой проект: GitHub/blr-lms/dashboard (нестандартный Next.js, читать AGENTS.md). Источник данных пока статичный JSON, Notion вторым шагом.",
       "created_at": "2026-04-26"
+    },
+    {
+      "id": "t251",
+      "title": "Пост в чате знакомств — кто где бот работает",
+      "sub": "Личный пост от Ксении в чате знакомств BLR. В плане спринта Creative OS (неделя 1, 4–8 мая).",
+      "priority": "mid",
+      "done": false,
+      "tags": [
+        [
+          "amber",
+          "контент"
+        ],
+        [
+          "teal",
+          "спринт"
+        ]
+      ],
+      "project": "BLR",
+      "created_at": "2026-04-27T10:35:42Z"
+    },
+    {
+      "id": "t252",
+      "title": "Поделиться superflow в BLR чате",
+      "sub": "Open-source инструмент @egoregerev: github.com/egerev/superflow — фрейм 'нашли прикольный инструмент', не 'участник комьюнити'. Черновик согласован.",
+      "priority": "mid",
+      "done": false,
+      "tags": [
+        [
+          "amber",
+          "контент"
+        ],
+        [
+          "teal",
+          "инструменты"
+        ]
+      ],
+      "project": "BLR",
+      "created_at": "2026-04-27T10:35:42Z"
+    },
+    {
+      "id": "t253",
+      "title": "@Loutsker — постик после звонка (скрин + благодарность)",
+      "sub": "Loutsker — потенциальный протагонист Creative OS. Сразу после звонка с Юлей сегодня 27.04 — постик в комьюнити: скрин хороший + благодарность. Правило для всех протагонистов.",
+      "priority": "high",
+      "done": true,
+      "tags": [
+        [
+          "red",
+          "горит"
+        ],
+        [
+          "amber",
+          "контент"
+        ]
+      ],
+      "project": "BLR",
+      "created_at": "2026-04-27T10:35:43Z"
+    },
+    {
+      "id": "t254",
+      "title": "@Loutsker — markdown кейс",
+      "sub": "Подготовить markdown-файл кейса для встречи в формате мини-подкаста с Димой. Формат: ситуация → AI → результат → цитата.",
+      "priority": "high",
+      "done": false,
+      "tags": [
+        [
+          "amber",
+          "контент"
+        ]
+      ],
+      "project": "BLR",
+      "created_at": "2026-04-27T10:35:43Z"
+    },
+    {
+      "id": "t255",
+      "title": "Анонс gmail-lab-extraction-skill в комьюнити",
+      "sub": "Open source штука от Димы: вытащить свои анализы из Gmail на комп. Self-hosted, MIT. Опубликовать на этой неделе (до 3 мая).",
+      "priority": "mid",
+      "done": true,
+      "tags": [
+        [
+          "amber",
+          "контент"
+        ],
+        [
+          "teal",
+          "инструменты"
+        ]
+      ],
+      "project": "BLR",
+      "created_at": "2026-04-27T10:35:43Z"
+    },
+    {
+      "id": "t256",
+      "title": "soul.md → публикация в Creative OS спринте",
+      "sub": "Блок от Лены Дегтярь. Материалы получены (done). Нужна публикация + рецепт 'собери свой soul.md' для участников. W1-W2 Creative OS.",
+      "priority": "high",
+      "done": false,
+      "tags": [
+        [
+          "amber",
+          "контент"
+        ]
+      ],
+      "project": "BLR",
+      "created_at": "2026-04-27T10:35:43Z"
+    },
+    {
+      "id": "t257",
+      "title": "text.zip vibecon скиллы → разобрать и запланировать",
+      "sub": "Пачка скиллов про текст с vibecon.cc (в Downloads/text.zip). Разобрать что там, запланировать для Creative OS. Оригиналы: https://drive.google.com/drive/folders/1_DAKy1YvF8J6cyhOtjXXSVzd1UyguWoe",
+      "priority": "mid",
+      "done": false,
+      "tags": [
+        [
+          "amber",
+          "контент"
+        ]
+      ],
+      "project": "BLR",
+      "created_at": "2026-04-27T10:35:43Z"
+    },
+    {
+      "id": "t258",
+      "title": "Демо-день со Славой @velvet_slava — наметить дату",
+      "sub": "Дата: 7.05 11:00 МСК (зафиксирована с Юлей 27.04). 3 участника × 15 мин кейсов. Не технический фокус — как думаю, что построил, что дало. Слава модерирует. Ксения собирает темы кейсов заранее.",
+      "priority": "high",
+      "done": true,
+      "tags": [
+        [
+          "amber",
+          "контент"
+        ]
+      ],
+      "project": "BLR",
+      "created_at": "2026-04-27T10:35:43Z"
+    },
+    {
+      "id": "t259",
+      "title": "Драфт анонса demo Слава 7.05 → Юле, публикация 30.04",
+      "sub": "Собрать темы кейсов, подготовить черновик поста про демо-день со Славой (7.05 11:00 МСК). Согласовать с Юлей, опубликовать в чате 30.04.",
+      "priority": "high",
+      "done": false,
+      "tags": [
+        [
+          "amber",
+          "контент"
+        ]
+      ],
+      "project": "BLR",
+      "created_at": "2026-04-27T15:28:24Z"
+    },
+    {
+      "id": "t260",
+      "title": "Драфт анонса Opening Creative OS 11.05 → публикация 4.05 (−7д)",
+      "sub": "Основной анонс Creative OS (старт W1 спринта 11.05). Опубликовать в пятницу 4.05 (за 7 дней до старта). Согласовать с Юлей.",
+      "priority": "high",
+      "done": false,
+      "tags": [
+        [
+          "amber",
+          "контент"
+        ]
+      ],
+      "project": "BLR",
+      "created_at": "2026-04-27T15:28:24Z"
+    },
+    {
+      "id": "t261",
+      "title": "Драфт анонса чек-ин Дима 12.05 → публикация 5.05 (−7д)",
+      "sub": "Анонс check-in с Димой 12.05 (День 2 спринта). Опубликовать в понедельник 5.05 (за 7 дней до события). Согласовать с Юлей.",
+      "priority": "high",
+      "done": false,
+      "tags": [
+        [
+          "amber",
+          "контент"
+        ]
+      ],
+      "project": "BLR",
+      "created_at": "2026-04-27T15:28:24Z"
+    },
+    {
+      "id": "t262",
+      "title": "Подтвердить @Loutsker, Мика Ян, Рома Кумар + кружочки от них до 1.05",
+      "sub": "Протагонисты демо-дня (Loutsker + 2 ещё). Подтвердить участие, собрать кружочки (изображения/аватары) для поста. Дедлайн: 1 мая.",
+      "priority": "high",
+      "done": false,
+      "tags": [
+        [
+          "amber",
+          "контент"
+        ]
+      ],
+      "project": "BLR",
+      "created_at": "2026-04-27T15:28:24Z"
+    },
+    {
+      "id": "t263",
+      "title": "Синк Ксения+Юля+Дима — 28.04 11:00 МСК",
+      "sub": "Завтра 11:00. Главный вопрос — финализация дат Creative OS (чек-ины, демо-день, фокусы). Идея от Юли: эмпатия к агенту → отдельный постик с источниками.",
+      "priority": "high",
+      "done": false,
+      "tags": [
+        [
+          "red",
+          "горит"
+        ]
+      ],
+      "project": "BLR",
+      "created_at": "2026-04-27T15:28:24Z"
+    },
+    {
+      "id": "t264",
+      "title": "Ответить Славе в вопросах-ответах",
+      "sub": "Ветка в чате: вопросы про демо-день, формат, кейсы, сроки. Ответить так, чтоб Слава всё понял и готов модерировать.",
+      "priority": "mid",
+      "done": false,
+      "tags": [
+        [
+          "teal",
+          "спринт"
+        ]
+      ],
+      "project": "BLR",
+      "created_at": "2026-04-27T15:28:24Z"
+    },
+    {
+      "id": "t265",
+      "title": "Постик про эмпатию к агенту + источники",
+      "sub": "Идея Юли 27.04: пост про эмпатию к агенту в контексте Creative OS. Собрать источники (интервью, статьи, промты, примеры). Периодически напоминать как коуч-промт Димы.",
+      "priority": "low",
+      "done": false,
+      "tags": [
+        [
+          "amber",
+          "контент"
+        ]
+      ],
+      "project": "BLR",
+      "created_at": "2026-04-27T15:28:24Z"
     }
   ],
   "backlog": [
@@ -6854,6 +7221,12 @@
           "title": "Изучить урок 1.2 gconf — принципы креативного мышления с AI (для майской практики)",
           "sub": "Видео 32 мин от Димы Мацкевича. Суть: развивать любопытство и игривость вместо прагматичного применения с первого шага. Источник: Projects/08_gconf_metaskills/source/course-structure.md. Забрать: что из этого можно встроить в Creative OS спринт — как принцип-открывашку для участников.",
           "added": "2026-04-20",
+          "project": "BLR"
+        },
+        {
+          "id": "b101",
+          "title": "Егор @egoregerev — лумсик про superflow",
+          "sub": "github.com/egerev/superflow — записывает после 7 мая. Добавить в план спринта Creative OS как контент на вторую-третью неделю.",
           "project": "BLR"
         }
       ]
