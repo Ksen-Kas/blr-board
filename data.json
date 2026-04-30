@@ -3855,9 +3855,21 @@
       "date": "2026-04-26",
       "action": "session",
       "title": "ретро апреля + спринт Health OS + план мая, артефакты Лены, sourcing Creative OS, мокапы blr-rhythm.html"
+    },
+    {
+      "ts": "2026-04-30T06:08:42Z",
+      "action": "added i24",
+      "details": "зубной у Андрея — 7 мая в 11:00"
     }
   ],
-  "inbox": [],
+  "inbox": [
+    {
+      "id": "i24",
+      "text": "зубной у Андрея — 7 мая в 11:00",
+      "added": "2026-04-30T06:08:42Z",
+      "done": false
+    }
+  ],
   "fire": [
     {
       "id": "f60",
