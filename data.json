@@ -3860,6 +3860,31 @@
       "ts": "2026-04-30T06:08:42Z",
       "action": "added i24",
       "details": "зубной у Андрея — 7 мая в 11:00"
+    },
+    {
+      "ts": "2026-04-30T06:10:24Z",
+      "action": "added f70",
+      "details": "Костёр BLR — пятница 2 мая: анонс и подготовка"
+    },
+    {
+      "ts": "2026-04-30T06:10:24Z",
+      "action": "added f71",
+      "details": "Анонс демо + поиск участников на демо-сессию"
+    },
+    {
+      "ts": "2026-04-30T06:10:24Z",
+      "action": "added f72",
+      "details": "Описание кейса участника (для демо / кейс-ритма)"
+    },
+    {
+      "ts": "2026-04-30T06:10:24Z",
+      "action": "added f73",
+      "details": "Запись с Вадимом Чулаковым — Creative OS май"
+    },
+    {
+      "ts": "2026-04-30T06:10:24Z",
+      "action": "added f74",
+      "details": "Анонс лабы в канал Community (от Юли срочно)"
     }
   ],
   "inbox": [
@@ -4657,6 +4682,46 @@
       "done": true,
       "priority": "fire",
       "project": "BLR"
+    },
+    {
+      "id": "f70",
+      "title": "Костёр BLR — пятница 2 мая: анонс и подготовка",
+      "done": false,
+      "priority": "fire",
+      "project": "BLR",
+      "added": "2026-04-30T06:10:24Z"
+    },
+    {
+      "id": "f71",
+      "title": "Анонс демо + поиск участников на демо-сессию",
+      "done": false,
+      "priority": "fire",
+      "project": "BLR",
+      "added": "2026-04-30T06:10:24Z"
+    },
+    {
+      "id": "f72",
+      "title": "Описание кейса участника (для демо / кейс-ритма)",
+      "done": false,
+      "priority": "fire",
+      "project": "BLR",
+      "added": "2026-04-30T06:10:24Z"
+    },
+    {
+      "id": "f73",
+      "title": "Запись с Вадимом Чулаковым — Creative OS май",
+      "done": false,
+      "priority": "fire",
+      "project": "BLR",
+      "added": "2026-04-30T06:10:24Z"
+    },
+    {
+      "id": "f74",
+      "title": "Анонс лабы в канал Community (от Юли срочно)",
+      "done": false,
+      "priority": "fire",
+      "project": "BLR",
+      "added": "2026-04-30T06:10:24Z"
     }
   ],
   "tasks": [
